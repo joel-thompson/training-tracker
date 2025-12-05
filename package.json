@@ -16,5 +16,8 @@
     "db:generate": "bun run --filter backend db:generate",
     "db:push": "bun run --filter backend db:push",
     "db:studio": "bun run --filter backend db:studio"
+  },
+  "devDependencies": {
+    "typescript": "^5.9.3"
   }
 }

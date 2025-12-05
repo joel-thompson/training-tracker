@@ -1,5 +1,5 @@
 import { Hono } from "hono";
-import { TestType } from "shared/types";
+import type { TestType } from "shared/types";
 import { greet } from "shared/utils";
 
 const app = new Hono();
