@@ -10,14 +10,27 @@ import {
   SignInButton,
   SignUpButton,
   UserButton,
+  useAuth,
 } from "@clerk/clerk-react";
 
 function App() {
   const [count, setCount] = useState(0);
+  const { getToken } = useAuth();
 
   const testData: TestType = {
     message: greet("Frontend"),
     timestamp: 1,
+  };
+
+  const testRequest = async () => {
+    const token = await getToken();
+    const response = await fetch("http://localhost:3000/", {
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
+    });
+    const data = (await response.json()) as TestType;
+    console.log(data);
   };
 
   return (
@@ -31,6 +44,7 @@ function App() {
           <UserButton />
         </SignedIn>
       </header>
+      <button onClick={() => void testRequest()}>Test Request</button>
       <h1>{testData.message}</h1>
       <p>Timestamp: {testData.timestamp}</p>
       <div>
