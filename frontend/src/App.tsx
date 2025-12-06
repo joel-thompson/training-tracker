@@ -4,6 +4,13 @@ import viteLogo from "/vite.svg";
 import "./App.css";
 import type { TestType } from "shared/types";
 import { greet } from "shared/utils";
+import {
+  SignedIn,
+  SignedOut,
+  SignInButton,
+  SignUpButton,
+  UserButton,
+} from "@clerk/clerk-react";
 
 function App() {
   const [count, setCount] = useState(0);
@@ -15,6 +22,15 @@ function App() {
 
   return (
     <>
+      <header>
+        <SignedOut>
+          <SignInButton />
+          <SignUpButton />
+        </SignedOut>
+        <SignedIn>
+          <UserButton />
+        </SignedIn>
+      </header>
       <h1>{testData.message}</h1>
       <p>Timestamp: {testData.timestamp}</p>
       <div>
