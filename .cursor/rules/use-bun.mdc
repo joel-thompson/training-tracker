@@ -1,0 +1,6 @@
+---
+alwaysApply: true
+---
+
+use bun to run commands.
+ex: bun run dev instead of npm run dev.
