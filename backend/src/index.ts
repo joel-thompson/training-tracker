@@ -6,17 +6,31 @@ import { cors } from "hono/cors";
 
 const app = new Hono();
 
+// Health check (no auth required)
+app.get("/health", (c) => {
+  return c.json({
+    success: true,
+    data: {
+      status: "healthy",
+      timestamp: new Date().toISOString(),
+    },
+  });
+});
+
+// CORS
 app.use(
   "*",
   cors({
-    origin: "http://localhost:5173", // Your React dev server URL
+    origin: [process.env.FRONTEND_URL ?? "http://localhost:5173"],
+    allowMethods: ["GET", "POST", "PATCH", "DELETE", "OPTIONS"],
+    allowHeaders: ["Content-Type", "Authorization"],
     credentials: true,
   })
 );
 
-app.use("*", clerkMiddleware());
+app.use("/api/*", clerkMiddleware());
 
-app.get("/", (c) => {
+app.get("/api", (c) => {
   // return c.text("Hello Hono!");
   const auth = getAuth(c);
   if (!auth?.userId) {

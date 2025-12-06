@@ -24,7 +24,7 @@ function App() {
 
   const testRequest = async () => {
     const token = await getToken();
-    const response = await fetch("http://localhost:3000/", {
+    const response = await fetch("/api", {
       headers: {
         Authorization: `Bearer ${token}`,
       },
