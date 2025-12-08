@@ -1,0 +1,25 @@
+---
+alwaysApply: true
+---
+
+# Training Tracker
+
+A BJJ (Brazilian Jiu-Jitsu) training tracker application built as a monorepo using Bun workspaces.
+
+## Project Structure
+
+- **`frontend/`** - React 19 + Vite application with Clerk authentication
+- **`backend/`** - Hono API server running on Bun with Clerk auth
+- **`shared/`** - Shared types, utilities, and constants used by both frontend and backend
+
+## Tech Stack
+
+- **Runtime**: Bun
+- **Frontend**: React 19, Vite
+- **Backend**: Hono
+- **Auth**: Clerk
+- **Language**: TypeScript
+
+## Development
+
+Run `bun run dev` from the root to start both frontend and backend concurrently.
