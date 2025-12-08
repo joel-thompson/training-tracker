@@ -2,7 +2,7 @@ import { createFileRoute } from "@tanstack/react-router";
 import { useAuth } from "@clerk/clerk-react";
 import type { TestType } from "shared/types";
 import { greet } from "shared/utils";
-import { useState } from "react";
+import { useQuery } from "@tanstack/react-query";
 
 export const Route = createFileRoute("/_app/")({
   component: HomePage,
@@ -11,27 +11,28 @@ export const Route = createFileRoute("/_app/")({
 function HomePage() {
   const { getToken } = useAuth();
 
-  const [testRequestData, setTestRequestData] = useState<TestType | null>(null);
+  const { data: testRequestData, refetch } = useQuery({
+    queryKey: ["testRequest"],
+    queryFn: async () => {
+      const token = await getToken();
+      const response = await fetch("/api", {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      });
+      return response.json() as Promise<TestType>;
+    },
+    enabled: false,
+  });
 
   const testData: TestType = {
     message: greet("Frontend"),
     timestamp: 1,
   };
 
-  const testRequest = async () => {
-    const token = await getToken();
-    const response = await fetch("/api", {
-      headers: {
-        Authorization: `Bearer ${token}`,
-      },
-    });
-    const data = (await response.json()) as TestType;
-    setTestRequestData(data);
-  };
-
   return (
     <div>
-      <button onClick={() => void testRequest()}>Test Request</button>
+      <button onClick={() => void refetch()}>Test Request</button>
       <h1>{testData.message}</h1>
       <p>Timestamp: {testData.timestamp}</p>
 
