@@ -7,7 +7,7 @@ import reactX from "eslint-plugin-react-x";
 import reactDom from "eslint-plugin-react-dom";
 
 export default [
-  { ignores: ["dist"] },
+  { ignores: ["dist", "**/routeTree.gen.ts"] },
   js.configs.recommended,
   ...tseslint.configs.recommended,
   ...tseslint.configs.recommendedTypeChecked,
