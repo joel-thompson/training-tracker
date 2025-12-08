@@ -3,6 +3,7 @@ import { useAuth } from "@clerk/clerk-react";
 import type { TestType } from "shared/types";
 import { greet } from "shared/utils";
 import { useQuery } from "@tanstack/react-query";
+import { Button } from "@/components/ui/button";
 
 export const Route = createFileRoute("/_app/")({
   component: HomePage,
@@ -32,7 +33,8 @@ function HomePage() {
 
   return (
     <div>
-      <button onClick={() => void refetch()}>Test Request</button>
+      <Button onClick={() => void refetch()}>Test Requestss</Button>
+
       <h1>{testData.message}</h1>
       <p>Timestamp: {testData.timestamp}</p>
 
