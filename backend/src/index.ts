@@ -39,7 +39,7 @@ app.get("/api", (c) => {
 
   const testData: TestType = {
     message: greet("Backend"),
-    timestamp: 1,
+    timestamp: 1 + Math.random(),
   };
 
   return c.json(testData);
