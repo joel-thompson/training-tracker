@@ -1,0 +1,10 @@
+---
+alwaysApply: true
+---
+
+update the appropriate AGENTS.md files to reflect the latest changes.
+
+examples:
+when updating the frontend project, update the frontend/AGENTS.md file.
+when updating the backend project, update the backend/AGENTS.md file.
+when updating the shared project, update the shared/AGENTS.md file.

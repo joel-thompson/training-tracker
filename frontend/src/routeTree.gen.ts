@@ -9,11 +9,25 @@
 // Additionally, you should also exclude this file from your linter and/or formatter to prevent it from being checked or modified.
 
 import { Route as rootRouteImport } from './routes/__root'
+import { Route as SignInRouteImport } from './routes/sign-in'
 import { Route as AboutRouteImport } from './routes/about'
 import { Route as AppRouteImport } from './routes/_app'
 import { Route as AppIndexRouteImport } from './routes/_app/index'
 import { Route as AppWelcomeRouteImport } from './routes/_app/welcome'
+import { Route as AppWeekRouteImport } from './routes/_app/week'
+import { Route as AppStatsRouteImport } from './routes/_app/stats'
+import { Route as AppSettingsRouteImport } from './routes/_app/settings'
+import { Route as AppHistoryRouteImport } from './routes/_app/history'
+import { Route as AppGoalsRouteImport } from './routes/_app/goals'
+import { Route as AppSessionsNewRouteImport } from './routes/_app/sessions.new'
+import { Route as AppReviewsNewRouteImport } from './routes/_app/reviews.new'
+import { Route as AppSessionsIdEditRouteImport } from './routes/_app/sessions.$id.edit'
 
+const SignInRoute = SignInRouteImport.update({
+  id: '/sign-in',
+  path: '/sign-in',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const AboutRoute = AboutRouteImport.update({
   id: '/about',
   path: '/about',
@@ -33,39 +47,152 @@ const AppWelcomeRoute = AppWelcomeRouteImport.update({
   path: '/welcome',
   getParentRoute: () => AppRoute,
 } as any)
+const AppWeekRoute = AppWeekRouteImport.update({
+  id: '/week',
+  path: '/week',
+  getParentRoute: () => AppRoute,
+} as any)
+const AppStatsRoute = AppStatsRouteImport.update({
+  id: '/stats',
+  path: '/stats',
+  getParentRoute: () => AppRoute,
+} as any)
+const AppSettingsRoute = AppSettingsRouteImport.update({
+  id: '/settings',
+  path: '/settings',
+  getParentRoute: () => AppRoute,
+} as any)
+const AppHistoryRoute = AppHistoryRouteImport.update({
+  id: '/history',
+  path: '/history',
+  getParentRoute: () => AppRoute,
+} as any)
+const AppGoalsRoute = AppGoalsRouteImport.update({
+  id: '/goals',
+  path: '/goals',
+  getParentRoute: () => AppRoute,
+} as any)
+const AppSessionsNewRoute = AppSessionsNewRouteImport.update({
+  id: '/sessions/new',
+  path: '/sessions/new',
+  getParentRoute: () => AppRoute,
+} as any)
+const AppReviewsNewRoute = AppReviewsNewRouteImport.update({
+  id: '/reviews/new',
+  path: '/reviews/new',
+  getParentRoute: () => AppRoute,
+} as any)
+const AppSessionsIdEditRoute = AppSessionsIdEditRouteImport.update({
+  id: '/sessions/$id/edit',
+  path: '/sessions/$id/edit',
+  getParentRoute: () => AppRoute,
+} as any)
 
 export interface FileRoutesByFullPath {
   '/about': typeof AboutRoute
+  '/sign-in': typeof SignInRoute
+  '/goals': typeof AppGoalsRoute
+  '/history': typeof AppHistoryRoute
+  '/settings': typeof AppSettingsRoute
+  '/stats': typeof AppStatsRoute
+  '/week': typeof AppWeekRoute
   '/welcome': typeof AppWelcomeRoute
   '/': typeof AppIndexRoute
+  '/reviews/new': typeof AppReviewsNewRoute
+  '/sessions/new': typeof AppSessionsNewRoute
+  '/sessions/$id/edit': typeof AppSessionsIdEditRoute
 }
 export interface FileRoutesByTo {
   '/about': typeof AboutRoute
+  '/sign-in': typeof SignInRoute
+  '/goals': typeof AppGoalsRoute
+  '/history': typeof AppHistoryRoute
+  '/settings': typeof AppSettingsRoute
+  '/stats': typeof AppStatsRoute
+  '/week': typeof AppWeekRoute
   '/welcome': typeof AppWelcomeRoute
   '/': typeof AppIndexRoute
+  '/reviews/new': typeof AppReviewsNewRoute
+  '/sessions/new': typeof AppSessionsNewRoute
+  '/sessions/$id/edit': typeof AppSessionsIdEditRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/_app': typeof AppRouteWithChildren
   '/about': typeof AboutRoute
+  '/sign-in': typeof SignInRoute
+  '/_app/goals': typeof AppGoalsRoute
+  '/_app/history': typeof AppHistoryRoute
+  '/_app/settings': typeof AppSettingsRoute
+  '/_app/stats': typeof AppStatsRoute
+  '/_app/week': typeof AppWeekRoute
   '/_app/welcome': typeof AppWelcomeRoute
   '/_app/': typeof AppIndexRoute
+  '/_app/reviews/new': typeof AppReviewsNewRoute
+  '/_app/sessions/new': typeof AppSessionsNewRoute
+  '/_app/sessions/$id/edit': typeof AppSessionsIdEditRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
-  fullPaths: '/about' | '/welcome' | '/'
+  fullPaths:
+    | '/about'
+    | '/sign-in'
+    | '/goals'
+    | '/history'
+    | '/settings'
+    | '/stats'
+    | '/week'
+    | '/welcome'
+    | '/'
+    | '/reviews/new'
+    | '/sessions/new'
+    | '/sessions/$id/edit'
   fileRoutesByTo: FileRoutesByTo
-  to: '/about' | '/welcome' | '/'
-  id: '__root__' | '/_app' | '/about' | '/_app/welcome' | '/_app/'
+  to:
+    | '/about'
+    | '/sign-in'
+    | '/goals'
+    | '/history'
+    | '/settings'
+    | '/stats'
+    | '/week'
+    | '/welcome'
+    | '/'
+    | '/reviews/new'
+    | '/sessions/new'
+    | '/sessions/$id/edit'
+  id:
+    | '__root__'
+    | '/_app'
+    | '/about'
+    | '/sign-in'
+    | '/_app/goals'
+    | '/_app/history'
+    | '/_app/settings'
+    | '/_app/stats'
+    | '/_app/week'
+    | '/_app/welcome'
+    | '/_app/'
+    | '/_app/reviews/new'
+    | '/_app/sessions/new'
+    | '/_app/sessions/$id/edit'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
   AppRoute: typeof AppRouteWithChildren
   AboutRoute: typeof AboutRoute
+  SignInRoute: typeof SignInRoute
 }
 
 declare module '@tanstack/react-router' {
   interface FileRoutesByPath {
+    '/sign-in': {
+      id: '/sign-in'
+      path: '/sign-in'
+      fullPath: '/sign-in'
+      preLoaderRoute: typeof SignInRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/about': {
       id: '/about'
       path: '/about'
@@ -94,17 +221,89 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AppWelcomeRouteImport
       parentRoute: typeof AppRoute
     }
+    '/_app/week': {
+      id: '/_app/week'
+      path: '/week'
+      fullPath: '/week'
+      preLoaderRoute: typeof AppWeekRouteImport
+      parentRoute: typeof AppRoute
+    }
+    '/_app/stats': {
+      id: '/_app/stats'
+      path: '/stats'
+      fullPath: '/stats'
+      preLoaderRoute: typeof AppStatsRouteImport
+      parentRoute: typeof AppRoute
+    }
+    '/_app/settings': {
+      id: '/_app/settings'
+      path: '/settings'
+      fullPath: '/settings'
+      preLoaderRoute: typeof AppSettingsRouteImport
+      parentRoute: typeof AppRoute
+    }
+    '/_app/history': {
+      id: '/_app/history'
+      path: '/history'
+      fullPath: '/history'
+      preLoaderRoute: typeof AppHistoryRouteImport
+      parentRoute: typeof AppRoute
+    }
+    '/_app/goals': {
+      id: '/_app/goals'
+      path: '/goals'
+      fullPath: '/goals'
+      preLoaderRoute: typeof AppGoalsRouteImport
+      parentRoute: typeof AppRoute
+    }
+    '/_app/sessions/new': {
+      id: '/_app/sessions/new'
+      path: '/sessions/new'
+      fullPath: '/sessions/new'
+      preLoaderRoute: typeof AppSessionsNewRouteImport
+      parentRoute: typeof AppRoute
+    }
+    '/_app/reviews/new': {
+      id: '/_app/reviews/new'
+      path: '/reviews/new'
+      fullPath: '/reviews/new'
+      preLoaderRoute: typeof AppReviewsNewRouteImport
+      parentRoute: typeof AppRoute
+    }
+    '/_app/sessions/$id/edit': {
+      id: '/_app/sessions/$id/edit'
+      path: '/sessions/$id/edit'
+      fullPath: '/sessions/$id/edit'
+      preLoaderRoute: typeof AppSessionsIdEditRouteImport
+      parentRoute: typeof AppRoute
+    }
   }
 }
 
 interface AppRouteChildren {
+  AppGoalsRoute: typeof AppGoalsRoute
+  AppHistoryRoute: typeof AppHistoryRoute
+  AppSettingsRoute: typeof AppSettingsRoute
+  AppStatsRoute: typeof AppStatsRoute
+  AppWeekRoute: typeof AppWeekRoute
   AppWelcomeRoute: typeof AppWelcomeRoute
   AppIndexRoute: typeof AppIndexRoute
+  AppReviewsNewRoute: typeof AppReviewsNewRoute
+  AppSessionsNewRoute: typeof AppSessionsNewRoute
+  AppSessionsIdEditRoute: typeof AppSessionsIdEditRoute
 }
 
 const AppRouteChildren: AppRouteChildren = {
+  AppGoalsRoute: AppGoalsRoute,
+  AppHistoryRoute: AppHistoryRoute,
+  AppSettingsRoute: AppSettingsRoute,
+  AppStatsRoute: AppStatsRoute,
+  AppWeekRoute: AppWeekRoute,
   AppWelcomeRoute: AppWelcomeRoute,
   AppIndexRoute: AppIndexRoute,
+  AppReviewsNewRoute: AppReviewsNewRoute,
+  AppSessionsNewRoute: AppSessionsNewRoute,
+  AppSessionsIdEditRoute: AppSessionsIdEditRoute,
 }
 
 const AppRouteWithChildren = AppRoute._addFileChildren(AppRouteChildren)
@@ -112,6 +311,7 @@ const AppRouteWithChildren = AppRoute._addFileChildren(AppRouteChildren)
 const rootRouteChildren: RootRouteChildren = {
   AppRoute: AppRouteWithChildren,
   AboutRoute: AboutRoute,
+  SignInRoute: SignInRoute,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)
