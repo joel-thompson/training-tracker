@@ -40,4 +40,5 @@ app.get("/api/example", (c) => {
 - `FRONTEND_URL` - Frontend origin for CORS (default: http://localhost:5173)
 - `CLERK_SECRET_KEY` - Clerk secret key for authentication
 - `CLERK_PUBLISHABLE_KEY` - Clerk publishable key for authentication
+- `DATABASE_URL` - PostgreSQL connection string
 
