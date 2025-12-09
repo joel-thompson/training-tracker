@@ -4,6 +4,13 @@ import type { TestType } from "shared/types";
 import { greet } from "shared/utils";
 import { useQuery } from "@tanstack/react-query";
 import { Button } from "@/components/ui/button";
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardHeader,
+  CardTitle,
+} from "@/components/ui/card";
 
 export const Route = createFileRoute("/_app/")({
   component: HomePage,
@@ -32,18 +39,37 @@ function HomePage() {
   };
 
   return (
-    <div>
-      <Button onClick={() => void refetch()}>Test Requestss</Button>
-
-      <h1>{testData.message}</h1>
-      <p>Timestamp: {testData.timestamp}</p>
+    <div className="space-y-6">
+      <Card>
+        <CardHeader>
+          <CardTitle className="text-2xl font-bold">
+            {testData.message}
+          </CardTitle>
+          <CardDescription>Timestamp: {testData.timestamp}</CardDescription>
+        </CardHeader>
+        <CardContent>
+          <Button onClick={() => void refetch()}>Test Request</Button>
+        </CardContent>
+      </Card>
 
       {testRequestData && (
-        <div>
-          <h2>Test Request Data</h2>
-          <p>Message: {testRequestData.message}</p>
-          <p>Timestamp: {testRequestData.timestamp}</p>
-        </div>
+        <Card>
+          <CardHeader>
+            <CardTitle className="text-xl font-semibold">
+              Test Request Data
+            </CardTitle>
+          </CardHeader>
+          <CardContent className="space-y-2">
+            <p className="text-sm">
+              <span className="font-medium">Message:</span>{" "}
+              {testRequestData.message}
+            </p>
+            <p className="text-sm">
+              <span className="font-medium">Timestamp:</span>{" "}
+              {testRequestData.timestamp}
+            </p>
+          </CardContent>
+        </Card>
       )}
     </div>
   );
