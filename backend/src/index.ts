@@ -1,21 +1,14 @@
 import { Hono } from "hono";
-import type { TestType } from "shared/types";
-import { greet } from "shared/utils";
-import { clerkMiddleware, getAuth } from "@hono/clerk-auth";
+import { clerkMiddleware } from "@hono/clerk-auth";
 import { cors } from "hono/cors";
+import { healthHandler } from "./handlers/health";
+import { dbTestHandler } from "./handlers/dbTest";
+import { apiTestHandler } from "./handlers/apiTest";
 
 const app = new Hono();
 
 // Health check (no auth required)
-app.get("/health", (c) => {
-  return c.json({
-    success: true,
-    data: {
-      status: "healthy",
-      timestamp: new Date().toISOString(),
-    },
-  });
-});
+app.get("/health", healthHandler);
 
 // CORS
 app.use(
@@ -30,19 +23,7 @@ app.use(
 
 app.use("/api/*", clerkMiddleware());
 
-app.get("/api", (c) => {
-  // return c.text("Hello Hono!");
-  const auth = getAuth(c);
-  if (!auth?.userId) {
-    return c.json({ error: "Unauthorized" }, 401);
-  }
-
-  const testData: TestType = {
-    message: greet("Backend"),
-    timestamp: 1 + Math.random(),
-  };
-
-  return c.json(testData);
-});
+app.get("/api/test", apiTestHandler);
+app.get("/api/db/test", dbTestHandler);
 
 export default app;

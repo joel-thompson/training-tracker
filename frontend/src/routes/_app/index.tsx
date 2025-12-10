@@ -23,7 +23,7 @@ function HomePage() {
     queryKey: ["testRequest"],
     queryFn: async () => {
       const token = await getToken();
-      const response = await fetch("/api", {
+      const response = await fetch("/api/test", {
         headers: {
           Authorization: `Bearer ${token}`,
         },

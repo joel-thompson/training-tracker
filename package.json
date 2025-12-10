@@ -15,9 +15,6 @@
     "lint": "bun run --filter backend lint && bun run --filter frontend lint && bun run --filter shared lint",
     "db:generate": "bun run --filter backend db:generate",
     "db:migrate": "bun run --filter backend db:migrate",
-    "db:studio": "bun run --filter backend db:studio",
-    "db:start": "bun run --filter backend db:start",
-    "db:stop": "bun run --filter backend db:stop",
-    "db:logs": "bun run --filter backend db:logs"
+    "db:studio": "bun run --filter backend db:studio"
   }
 }
