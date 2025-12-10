@@ -88,7 +88,7 @@ function EditSessionPageWrapper() {
 
 ## Environment Variables
 
-- `VITE_CLERK_PUBLISHABLE_KEY` - Clerk publishable key for authentication
+See `src/utils/env.ts` for the list of environment variables.
 
 ## Code Style
 
