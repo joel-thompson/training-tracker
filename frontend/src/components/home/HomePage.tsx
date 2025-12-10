@@ -10,6 +10,7 @@ import {
   CardHeader,
   CardTitle,
 } from "@/components/ui/card";
+import { api } from "@/utils/api";
 
 export function HomePage() {
   const { getToken } = useAuth();
@@ -18,11 +19,7 @@ export function HomePage() {
     queryKey: ["testRequest"],
     queryFn: async () => {
       const token = await getToken();
-      const response = await fetch("/api/test", {
-        headers: {
-          Authorization: `Bearer ${token}`,
-        },
-      });
+      const response = await api("/api/test", { token });
       return response.json() as Promise<TestType>;
     },
     enabled: false,
@@ -32,11 +29,7 @@ export function HomePage() {
     queryKey: ["dbTestRequest"],
     queryFn: async () => {
       const token = await getToken();
-      const response = await fetch("/api/db/test", {
-        headers: {
-          Authorization: `Bearer ${token}`,
-        },
-      });
+      const response = await api("/api/db/test", { token });
       return response.json() as Promise<DbTestType[]>;
     },
     enabled: false,

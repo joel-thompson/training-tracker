@@ -4,6 +4,7 @@ import { cors } from "hono/cors";
 import { healthHandler } from "./handlers/health";
 import { dbTestHandler } from "./handlers/dbTest";
 import { apiTestHandler } from "./handlers/apiTest";
+import { getEnvRequired } from "./utils/env";
 
 const app = new Hono();
 
@@ -14,7 +15,7 @@ app.get("/health", healthHandler);
 app.use(
   "*",
   cors({
-    origin: [process.env.FRONTEND_URL ?? "http://localhost:5173"],
+    origin: [getEnvRequired("FRONTEND_URL")],
     allowMethods: ["GET", "POST", "PATCH", "DELETE", "OPTIONS"],
     allowHeaders: ["Content-Type", "Authorization"],
     credentials: true,
