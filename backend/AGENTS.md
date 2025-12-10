@@ -17,6 +17,26 @@ Hono API server running on Bun.
 - `/health` - Health check (no auth)
 - `/api/*` - Protected routes (Clerk auth required)
 
+## Handlers Pattern
+
+Route handlers are separated from route definitions. Handlers live in `src/handlers/` and are imported into `index.ts`:
+
+```typescript
+import { myHandler } from "./handlers/myHandler";
+
+app.get("/myEndpoint", myHandler);
+```
+
+Each handler receives a Hono `Context` and returns a response:
+
+```typescript
+import type { Context } from "hono";
+
+export const myHandler = (c: Context) => {
+  return c.json({ message: "Hello" });
+};
+```
+
 ## Auth Pattern
 
 Routes under `/api/*` use Clerk middleware:
@@ -40,4 +60,5 @@ app.get("/api/example", (c) => {
 - `FRONTEND_URL` - Frontend origin for CORS (default: http://localhost:5173)
 - `CLERK_SECRET_KEY` - Clerk secret key for authentication
 - `CLERK_PUBLISHABLE_KEY` - Clerk publishable key for authentication
+- `DATABASE_URL` - PostgreSQL connection string
 
