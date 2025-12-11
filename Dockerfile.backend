@@ -12,5 +12,4 @@ COPY shared shared
 COPY backend backend
 
 WORKDIR /app/backend
-EXPOSE 3000
 CMD ["bun", "run", "src/index.ts"]
