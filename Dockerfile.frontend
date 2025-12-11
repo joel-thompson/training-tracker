@@ -1,0 +1,21 @@
+FROM oven/bun:1-alpine AS builder
+WORKDIR /app
+
+COPY package.json bun.lock ./
+COPY shared/package.json shared/
+COPY frontend/package.json frontend/
+COPY backend/package.json backend/
+
+RUN bun install --frozen-lockfile
+
+COPY shared shared
+COPY frontend frontend
+
+WORKDIR /app/frontend
+RUN bun run build
+
+FROM nginx:alpine
+COPY --from=builder /app/frontend/dist /usr/share/nginx/html
+EXPOSE 80
+CMD ["nginx", "-g", "daemon off;"]
+
