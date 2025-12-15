@@ -8,7 +8,8 @@
     ".": "./src/index.ts",
     "./types": "./src/types/index.ts",
     "./utils": "./src/utils/index.ts",
-    "./constants": "./src/constants/index.ts"
+    "./constants": "./src/constants/index.ts",
+    "./validation": "./src/validation/index.ts"
   },
   "scripts": {
     "lint": "eslint ."
@@ -18,5 +19,8 @@
     "eslint": "^9.39.1",
     "globals": "^16.5.0",
     "typescript-eslint": "^8.48.1"
+  },
+  "dependencies": {
+    "zod": "^4.2.0"
   }
 }
