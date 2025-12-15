@@ -36,6 +36,91 @@ src/components/
 └── marketing/             # Public marketing pages
 ```
 
+## React Query Hooks
+
+Custom hooks for API data fetching are in `src/hooks/`. Hooks are organized by feature in subdirectories:
+
+```
+src/hooks/
+└── sessions/                # Session API hooks
+    ├── sessionKeys.ts       # Query key factory for session cache management
+    ├── useListSessions.ts  # List sessions with infinite query pagination
+    ├── useSession.ts       # Fetch single session by ID
+    ├── useSessionDates.ts  # Fetch all training dates
+    ├── useCreateSession.ts # Create new session
+    ├── useUpdateSession.ts # Update session
+    ├── useDeleteSession.ts # Soft delete session
+    ├── useRestoreSession.ts # Restore deleted session
+    ├── useAddSessionItem.ts # Add item to session
+    ├── useUpdateSessionItem.ts # Update session item
+    └── useDeleteSessionItem.ts # Delete session item
+```
+
+### Session Hooks
+
+**Query Hooks:**
+- `useListSessions(params?)` - Uses `useInfiniteQuery` for paginated session lists. Returns `fetchNextPage()`, `hasNextPage`, and all sessions via `data.pages.flatMap(p => p.sessions)`
+- `useSession(id)` - Fetch single session by ID
+- `useSessionDates()` - Fetch all training dates
+
+**Mutation Hooks:**
+- `useCreateSession()` - Create new session (invalidates list + dates)
+- `useUpdateSession()` - Update session (invalidates detail + list)
+- `useDeleteSession()` - Soft delete session (invalidates all)
+- `useRestoreSession()` - Restore deleted session (invalidates all)
+- `useAddSessionItem()` - Add item to session (invalidates detail)
+- `useUpdateSessionItem()` - Update session item (invalidates detail)
+- `useDeleteSessionItem()` - Delete session item (invalidates detail)
+
+**Query Key Factory:**
+Use `sessionKeys` from `sessions/sessionKeys.ts` for manual cache invalidation:
+```typescript
+import { sessionKeys } from "@/hooks/sessions/sessionKeys";
+
+// Invalidate all session data
+queryClient.invalidateQueries({ queryKey: sessionKeys.all });
+
+// Invalidate all list queries
+queryClient.invalidateQueries({ queryKey: sessionKeys.allLists() });
+
+// Invalidate all by-ID queries
+queryClient.invalidateQueries({ queryKey: sessionKeys.allById() });
+
+// Invalidate specific session by ID
+queryClient.invalidateQueries({ queryKey: sessionKeys.byId(id) });
+```
+
+**Usage Example:**
+```typescript
+import { useListSessions } from "@/hooks/sessions/useListSessions";
+import { useCreateSession } from "@/hooks/sessions/useCreateSession";
+
+function SessionsPage() {
+  const { data, fetchNextPage, hasNextPage } = useListSessions({
+    classType: "gi",
+    weekStartDate: "2025-12-08",
+  });
+  
+  const createSession = useCreateSession();
+  
+  // Get all loaded sessions
+  const allSessions = data?.pages.flatMap(p => p.sessions) ?? [];
+  
+  // Load more pages
+  if (hasNextPage) {
+    fetchNextPage();
+  }
+  
+  // Create session
+  const handleCreate = () => {
+    createSession.mutate({
+      sessionDate: "2025-12-08",
+      classType: "gi",
+    });
+  };
+}
+```
+
 ### Component Conventions
 
 - Page components live in feature folders (e.g., `components/sessions/NewSessionPage.tsx`)
