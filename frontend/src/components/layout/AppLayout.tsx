@@ -1,12 +1,6 @@
-import { Outlet, Link, useLocation } from "@tanstack/react-router";
-import {
-  SignedIn,
-  SignedOut,
-  SignInButton,
-  SignUpButton,
-  UserButton,
-} from "@clerk/clerk-react";
-import { Home, Plus, Clock, MoreHorizontal } from "lucide-react";
+import { Outlet, Link, useLocation, Navigate } from "@tanstack/react-router";
+import { useAuth, UserButton } from "@clerk/clerk-react";
+import { Home, Plus, Clock, MoreHorizontal, Loader2 } from "lucide-react";
 import {
   Popover,
   PopoverContent,
@@ -14,8 +8,21 @@ import {
 } from "@/components/ui/popover";
 
 export function AppLayout() {
+  const { isSignedIn, isLoaded } = useAuth();
   const location = useLocation();
   const pathname = location.pathname;
+
+  if (!isLoaded) {
+    return (
+      <div className="flex min-h-screen items-center justify-center">
+        <Loader2 className="h-8 w-8 animate-spin text-muted-foreground" />
+      </div>
+    );
+  }
+
+  if (!isSignedIn) {
+    return <Navigate to="/about" />;
+  }
 
   const isActive = (path: string) => {
     if (path === "/") {
@@ -74,13 +81,7 @@ export function AppLayout() {
             </Link>
           </nav>
           <div className="flex items-center gap-4">
-            <SignedOut>
-              <SignInButton />
-              <SignUpButton />
-            </SignedOut>
-            <SignedIn>
-              <UserButton />
-            </SignedIn>
+            <UserButton />
           </div>
         </div>
       </header>
