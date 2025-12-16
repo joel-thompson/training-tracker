@@ -186,12 +186,12 @@ export function NewSessionPage() {
 
         <Card>
           <CardHeader>
-            <CardTitle>3-2-1 Reflection</CardTitle>
+            <CardTitle>Reflection</CardTitle>
           </CardHeader>
           <CardContent className="space-y-6">
             <div className="space-y-3">
               <div className="flex items-center justify-between">
-                <Label>3 Things That Went Well</Label>
+                <Label>Things That Went Well</Label>
               </div>
               {successes.map((success, index) => (
                 <div key={`success-${index}`} className="flex gap-2">
@@ -235,7 +235,7 @@ export function NewSessionPage() {
 
             <div className="space-y-3">
               <div className="flex items-center justify-between">
-                <Label>2 Things to Improve</Label>
+                <Label>Things to Improve</Label>
               </div>
               {problems.map((problem, index) => (
                 <div key={`problem-${index}`} className="flex gap-2">
@@ -279,7 +279,7 @@ export function NewSessionPage() {
 
             <div className="space-y-3">
               <div className="flex items-center justify-between">
-                <Label>1 Question to Explore</Label>
+                <Label>Question to Explore</Label>
               </div>
               {questions.map((question, index) => (
                 <div key={`question-${index}`} className="flex gap-2">

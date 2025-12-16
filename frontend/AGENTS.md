@@ -22,7 +22,7 @@ Page components are organized by feature in `src/components/`:
 src/components/
 ├── ui/                    # shadcn/ui components (Button, Card, etc.)
 ├── layout/                # Layout components
-│   └── AppLayout.tsx      # Main app layout (header, nav, auth)
+│   └── AppLayout.tsx      # Main app layout (header, nav, auth, mobile bottom tab bar)
 ├── home/                  # Home/dashboard page
 ├── sessions/              # Session management pages
 ├── history/               # Training history page
@@ -195,6 +195,23 @@ function EditSessionPageWrapper() {
 ## Environment Variables
 
 See `src/utils/env.ts` for the list of environment variables.
+
+## Navigation Layout
+
+**AppLayout** (`components/layout/AppLayout.tsx`):
+- Desktop: Horizontal navigation bar in header with all links visible
+- Mobile: Fixed bottom tab bar with 4 items:
+  - **Home** - Links to `/`
+  - **New** - Links to `/sessions/new`
+  - **History** - Links to `/history`
+  - **More** - Popover menu containing Week, Goals, Stats, Settings
+- Main content has bottom padding on mobile to account for tab bar
+- Active route highlighting based on current pathname
+
+**HomePage** (`components/home/HomePage.tsx`):
+- Simple welcome card with two action buttons:
+  - "New Session" button linking to `/sessions/new`
+  - "View History" button linking to `/history`
 
 ## Code Style
 

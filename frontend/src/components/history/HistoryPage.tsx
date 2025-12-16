@@ -72,7 +72,7 @@ function SessionCard({ session }: { session: Session }) {
             {session.techniqueCovered && (
               <div>
                 <h4 className="text-sm font-medium mb-2">Technique Covered</h4>
-                <p className="text-muted-foreground text-sm whitespace-pre-wrap">
+                <p className=" text-sm whitespace-pre-wrap">
                   {session.techniqueCovered}
                 </p>
               </div>
@@ -84,15 +84,12 @@ function SessionCard({ session }: { session: Session }) {
                 {itemsByType.success.length > 0 && (
                   <div>
                     <h4 className="text-sm font-medium mb-2">
-                      3 Things That Went Well
+                      Things That Went Well
                     </h4>
                     <ul className="space-y-1">
                       {itemsByType.success.map((item) => (
-                        <li
-                          key={item.id}
-                          className="text-muted-foreground text-sm pl-4"
-                        >
-                          • {item.content}
+                        <li key={item.id} className=" text-sm pl-4">
+                          {item.content}
                         </li>
                       ))}
                     </ul>
@@ -101,15 +98,12 @@ function SessionCard({ session }: { session: Session }) {
                 {itemsByType.problem.length > 0 && (
                   <div>
                     <h4 className="text-sm font-medium mb-2">
-                      2 Things to Improve
+                      Things to Improve
                     </h4>
                     <ul className="space-y-1">
                       {itemsByType.problem.map((item) => (
-                        <li
-                          key={item.id}
-                          className="text-muted-foreground text-sm pl-4"
-                        >
-                          • {item.content}
+                        <li key={item.id} className=" text-sm pl-4">
+                          {item.content}
                         </li>
                       ))}
                     </ul>
@@ -118,15 +112,12 @@ function SessionCard({ session }: { session: Session }) {
                 {itemsByType.question.length > 0 && (
                   <div>
                     <h4 className="text-sm font-medium mb-2">
-                      1 Question to Explore
+                      Questions to Explore
                     </h4>
                     <ul className="space-y-1">
                       {itemsByType.question.map((item) => (
-                        <li
-                          key={item.id}
-                          className="text-muted-foreground text-sm pl-4"
-                        >
-                          • {item.content}
+                        <li key={item.id} className=" text-sm pl-4">
+                          {item.content}
                         </li>
                       ))}
                     </ul>
@@ -137,7 +128,7 @@ function SessionCard({ session }: { session: Session }) {
             {session.generalNotes && (
               <div>
                 <h4 className="text-sm font-medium mb-2">Notes</h4>
-                <p className="text-muted-foreground text-sm whitespace-pre-wrap">
+                <p className="text-sm whitespace-pre-wrap">
                   {session.generalNotes}
                 </p>
               </div>

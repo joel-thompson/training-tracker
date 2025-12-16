@@ -334,7 +334,7 @@ export function EditSessionPage({ sessionId }: EditSessionPageProps) {
 
         <Card>
           <CardHeader>
-            <CardTitle>3-2-1 Reflection</CardTitle>
+            <CardTitle>Reflection</CardTitle>
           </CardHeader>
           <CardContent className="space-y-6">
             {(["success", "problem", "question"] as const).map((type) => {
@@ -343,9 +343,9 @@ export function EditSessionPage({ sessionId }: EditSessionPageProps) {
                 <div key={type} className="space-y-3">
                   <div className="flex items-center justify-between">
                     <Label>
-                      {type === "success" && "3 Things That Went Well"}
-                      {type === "problem" && "2 Things to Improve"}
-                      {type === "question" && "1 Question to Explore"}
+                      {type === "success" && "Things That Went Well"}
+                      {type === "problem" && "Things to Improve"}
+                      {type === "question" && "Question to Explore"}
                     </Label>
                   </div>
                   {items.map((item) => (
