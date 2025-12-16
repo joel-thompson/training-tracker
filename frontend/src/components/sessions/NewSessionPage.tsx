@@ -1,37 +1,17 @@
 /* eslint-disable react-x/no-array-index-key */
 import { useState } from "react";
 import { useNavigate } from "@tanstack/react-router";
-import { CalendarIcon, Plus, X } from "lucide-react";
+import { Plus } from "lucide-react";
 import { format } from "date-fns";
 import { useCreateSession } from "@/hooks/sessions/useCreateSession";
 import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
-import { Textarea } from "@/components/ui/textarea";
 import { Label } from "@/components/ui/label";
-import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from "@/components/ui/select";
-import {
-  Popover,
-  PopoverContent,
-  PopoverTrigger,
-} from "@/components/ui/popover";
-import { Calendar } from "@/components/ui/calendar";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import type { ClassType } from "shared/types";
-
-const CLASS_TYPE_LABELS: Record<ClassType, string> = {
-  gi: "Gi",
-  nogi: "No-Gi",
-  open_mat: "Open Mat",
-  private: "Private",
-  competition: "Competition",
-  other: "Other",
-};
+import { SessionDatePicker } from "./components/SessionDatePicker";
+import { ClassTypeSelect } from "./components/ClassTypeSelect";
+import { CharCountTextarea } from "./components/CharCountTextarea";
+import { ItemInputRow } from "./components/ItemInputRow";
 
 export function NewSessionPage() {
   const navigate = useNavigate();
@@ -127,59 +107,27 @@ export function NewSessionPage() {
           <CardContent className="space-y-4">
             <div className="space-y-2">
               <Label htmlFor="sessionDate">Date</Label>
-              <Popover>
-                <PopoverTrigger asChild>
-                  <Button
-                    variant="outline"
-                    className="w-full justify-start text-left font-normal"
-                  >
-                    <CalendarIcon className="mr-2 h-4 w-4" />
-                    {format(sessionDate, "PPP")}
-                  </Button>
-                </PopoverTrigger>
-                <PopoverContent className="w-auto p-0" align="start">
-                  <Calendar
-                    mode="single"
-                    selected={sessionDate}
-                    onSelect={(date) => date && setSessionDate(date)}
-                    initialFocus
-                  />
-                </PopoverContent>
-              </Popover>
+              <SessionDatePicker
+                value={sessionDate}
+                onChange={setSessionDate}
+              />
             </div>
 
             <div className="space-y-2">
               <Label htmlFor="classType">Class Type</Label>
-              <Select
-                value={classType}
-                onValueChange={(value) => setClassType(value as ClassType)}
-              >
-                <SelectTrigger id="classType">
-                  <SelectValue placeholder="Select class type" />
-                </SelectTrigger>
-                <SelectContent>
-                  {Object.entries(CLASS_TYPE_LABELS).map(([value, label]) => (
-                    <SelectItem key={value} value={value}>
-                      {label}
-                    </SelectItem>
-                  ))}
-                </SelectContent>
-              </Select>
+              <ClassTypeSelect value={classType} onChange={setClassType} />
             </div>
 
             <div className="space-y-2">
               <Label htmlFor="techniqueCovered">Technique Covered</Label>
-              <Textarea
+              <CharCountTextarea
                 id="techniqueCovered"
                 value={techniqueCovered}
-                onChange={(e) => setTechniqueCovered(e.target.value)}
+                onChange={setTechniqueCovered}
                 placeholder="e.g., Armbar from guard, scissor sweep details..."
                 rows={3}
                 maxLength={1000}
               />
-              <p className="text-muted-foreground text-xs">
-                {techniqueCovered.length}/1000 characters
-              </p>
             </div>
           </CardContent>
         </Card>
@@ -194,33 +142,20 @@ export function NewSessionPage() {
                 <Label>Things That Went Well</Label>
               </div>
               {successes.map((success, index) => (
-                <div key={`success-${index}`} className="flex gap-2">
-                  <Input
-                    value={success}
-                    onChange={(e) =>
-                      handleItemChange(
-                        index,
-                        e.target.value,
-                        successes,
-                        setSuccesses
-                      )
-                    }
-                    placeholder={`Success ${index + 1}`}
-                    maxLength={1000}
-                  />
-                  {successes.length > 1 && (
-                    <Button
-                      type="button"
-                      variant="outline"
-                      size="icon"
-                      onClick={() =>
-                        handleRemoveItem(index, successes, setSuccesses)
-                      }
-                    >
-                      <X className="h-4 w-4" />
-                    </Button>
-                  )}
-                </div>
+                <ItemInputRow
+                  key={`success-${index}`}
+                  value={success}
+                  onChange={(value) =>
+                    handleItemChange(index, value, successes, setSuccesses)
+                  }
+                  onRemove={
+                    successes.length > 1
+                      ? () => handleRemoveItem(index, successes, setSuccesses)
+                      : undefined
+                  }
+                  placeholder={`Success ${index + 1}`}
+                  showRemove={successes.length > 1}
+                />
               ))}
               <Button
                 type="button"
@@ -238,33 +173,20 @@ export function NewSessionPage() {
                 <Label>Things to Improve</Label>
               </div>
               {problems.map((problem, index) => (
-                <div key={`problem-${index}`} className="flex gap-2">
-                  <Input
-                    value={problem}
-                    onChange={(e) =>
-                      handleItemChange(
-                        index,
-                        e.target.value,
-                        problems,
-                        setProblems
-                      )
-                    }
-                    placeholder={`Problem ${index + 1}`}
-                    maxLength={1000}
-                  />
-                  {problems.length > 1 && (
-                    <Button
-                      type="button"
-                      variant="outline"
-                      size="icon"
-                      onClick={() =>
-                        handleRemoveItem(index, problems, setProblems)
-                      }
-                    >
-                      <X className="h-4 w-4" />
-                    </Button>
-                  )}
-                </div>
+                <ItemInputRow
+                  key={`problem-${index}`}
+                  value={problem}
+                  onChange={(value) =>
+                    handleItemChange(index, value, problems, setProblems)
+                  }
+                  onRemove={
+                    problems.length > 1
+                      ? () => handleRemoveItem(index, problems, setProblems)
+                      : undefined
+                  }
+                  placeholder={`Problem ${index + 1}`}
+                  showRemove={problems.length > 1}
+                />
               ))}
               <Button
                 type="button"
@@ -282,33 +204,20 @@ export function NewSessionPage() {
                 <Label>Question to Explore</Label>
               </div>
               {questions.map((question, index) => (
-                <div key={`question-${index}`} className="flex gap-2">
-                  <Input
-                    value={question}
-                    onChange={(e) =>
-                      handleItemChange(
-                        index,
-                        e.target.value,
-                        questions,
-                        setQuestions
-                      )
-                    }
-                    placeholder={`Question ${index + 1}`}
-                    maxLength={1000}
-                  />
-                  {questions.length > 1 && (
-                    <Button
-                      type="button"
-                      variant="outline"
-                      size="icon"
-                      onClick={() =>
-                        handleRemoveItem(index, questions, setQuestions)
-                      }
-                    >
-                      <X className="h-4 w-4" />
-                    </Button>
-                  )}
-                </div>
+                <ItemInputRow
+                  key={`question-${index}`}
+                  value={question}
+                  onChange={(value) =>
+                    handleItemChange(index, value, questions, setQuestions)
+                  }
+                  onRemove={
+                    questions.length > 1
+                      ? () => handleRemoveItem(index, questions, setQuestions)
+                      : undefined
+                  }
+                  placeholder={`Question ${index + 1}`}
+                  showRemove={questions.length > 1}
+                />
               ))}
               <Button
                 type="button"
@@ -328,16 +237,13 @@ export function NewSessionPage() {
             <CardTitle>General Notes</CardTitle>
           </CardHeader>
           <CardContent>
-            <Textarea
+            <CharCountTextarea
               value={generalNotes}
-              onChange={(e) => setGeneralNotes(e.target.value)}
+              onChange={setGeneralNotes}
               placeholder="Any additional notes about this session..."
               rows={6}
               maxLength={5000}
             />
-            <p className="text-muted-foreground mt-2 text-xs">
-              {generalNotes.length}/5000 characters
-            </p>
           </CardContent>
         </Card>
 

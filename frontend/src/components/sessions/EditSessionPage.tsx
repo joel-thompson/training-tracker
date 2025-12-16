@@ -1,6 +1,6 @@
 import { useState, useMemo } from "react";
 import { useNavigate } from "@tanstack/react-router";
-import { CalendarIcon, Plus, X, Trash2 } from "lucide-react";
+import { Plus, Trash2 } from "lucide-react";
 import { format, parseISO } from "date-fns";
 import { useSession } from "@/hooks/sessions/useSession";
 import { useUpdateSession } from "@/hooks/sessions/useUpdateSession";
@@ -10,21 +10,7 @@ import { useUpdateSessionItem } from "@/hooks/sessions/useUpdateSessionItem";
 import { useDeleteSessionItem } from "@/hooks/sessions/useDeleteSessionItem";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-import { Textarea } from "@/components/ui/textarea";
 import { Label } from "@/components/ui/label";
-import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from "@/components/ui/select";
-import {
-  Popover,
-  PopoverContent,
-  PopoverTrigger,
-} from "@/components/ui/popover";
-import { Calendar } from "@/components/ui/calendar";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import {
   AlertDialog,
@@ -39,25 +25,15 @@ import {
 } from "@/components/ui/alert-dialog";
 import { Skeleton } from "@/components/ui/skeleton";
 import type { ClassType, ItemType, SessionItem } from "shared/types";
+import { SessionDatePicker } from "./components/SessionDatePicker";
+import { ClassTypeSelect } from "./components/ClassTypeSelect";
+import { CharCountTextarea } from "./components/CharCountTextarea";
+import { ItemInputRow } from "./components/ItemInputRow";
+import { ITEM_TYPE_LABELS } from "./components/constants";
 
 interface EditSessionPageProps {
   sessionId: string;
 }
-
-const CLASS_TYPE_LABELS: Record<ClassType, string> = {
-  gi: "Gi",
-  nogi: "No-Gi",
-  open_mat: "Open Mat",
-  private: "Private",
-  competition: "Competition",
-  other: "Other",
-};
-
-const ITEM_TYPE_LABELS: Record<ItemType, string> = {
-  success: "Success",
-  problem: "Problem",
-  question: "Question",
-};
 
 export function EditSessionPage({ sessionId }: EditSessionPageProps) {
   const navigate = useNavigate();
@@ -292,62 +268,28 @@ export function EditSessionPage({ sessionId }: EditSessionPageProps) {
           <CardContent className="space-y-4">
             <div className="space-y-2">
               <Label htmlFor="sessionDate">Date</Label>
-              <Popover>
-                <PopoverTrigger asChild>
-                  <Button
-                    variant="outline"
-                    className="w-full justify-start text-left font-normal"
-                    disabled={!formSessionDate}
-                  >
-                    <CalendarIcon className="mr-2 h-4 w-4" />
-                    {formSessionDate
-                      ? format(formSessionDate, "PPP")
-                      : "Select date"}
-                  </Button>
-                </PopoverTrigger>
-                <PopoverContent className="w-auto p-0" align="start">
-                  <Calendar
-                    mode="single"
-                    selected={formSessionDate}
-                    onSelect={(date) => date && setLocalSessionDate(date)}
-                    initialFocus
-                  />
-                </PopoverContent>
-              </Popover>
+              <SessionDatePicker
+                value={formSessionDate}
+                onChange={setLocalSessionDate}
+                disabled={!formSessionDate}
+              />
             </div>
 
             <div className="space-y-2">
               <Label htmlFor="classType">Class Type</Label>
-              <Select
-                value={formClassType}
-                onValueChange={(value) => setClassType(value as ClassType)}
-              >
-                <SelectTrigger id="classType">
-                  <SelectValue placeholder="Select class type" />
-                </SelectTrigger>
-                <SelectContent>
-                  {Object.entries(CLASS_TYPE_LABELS).map(([value, label]) => (
-                    <SelectItem key={value} value={value}>
-                      {label}
-                    </SelectItem>
-                  ))}
-                </SelectContent>
-              </Select>
+              <ClassTypeSelect value={formClassType} onChange={setClassType} />
             </div>
 
             <div className="space-y-2">
               <Label htmlFor="techniqueCovered">Technique Covered</Label>
-              <Textarea
+              <CharCountTextarea
                 id="techniqueCovered"
                 value={formTechniqueCovered}
-                onChange={(e) => setTechniqueCovered(e.target.value)}
+                onChange={setTechniqueCovered}
                 placeholder="e.g., Armbar from guard, scissor sweep details..."
                 rows={3}
                 maxLength={1000}
               />
-              <p className="text-muted-foreground text-xs">
-                {formTechniqueCovered.length}/1000 characters
-              </p>
             </div>
           </CardContent>
         </Card>
@@ -369,33 +311,24 @@ export function EditSessionPage({ sessionId }: EditSessionPageProps) {
                     </Label>
                   </div>
                   {items.map((item) => (
-                    <div key={item.id} className="flex gap-2">
-                      <Input
-                        value={formEditingItems[item.id] ?? ""}
-                        onChange={(e) =>
-                          setEditingItems({
-                            ...formEditingItems,
-                            [item.id]: e.target.value,
-                          })
-                        }
-                        onBlur={() => {
-                          handleUpdateItem(item);
-                        }}
-                        placeholder={`${ITEM_TYPE_LABELS[type]} ${item.order}`}
-                        maxLength={1000}
-                      />
-                      <Button
-                        type="button"
-                        variant="outline"
-                        size="icon"
-                        onClick={() => {
-                          handleDeleteItem(item);
-                        }}
-                        disabled={deleteItem.isPending}
-                      >
-                        <X className="h-4 w-4" />
-                      </Button>
-                    </div>
+                    <ItemInputRow
+                      key={item.id}
+                      value={formEditingItems[item.id] ?? ""}
+                      onChange={(value) =>
+                        setEditingItems({
+                          ...formEditingItems,
+                          [item.id]: value,
+                        })
+                      }
+                      onBlur={() => {
+                        handleUpdateItem(item);
+                      }}
+                      onRemove={() => {
+                        handleDeleteItem(item);
+                      }}
+                      placeholder={`${ITEM_TYPE_LABELS[type]} ${item.order}`}
+                      disabled={deleteItem.isPending}
+                    />
                   ))}
                   <div className="flex gap-2">
                     <Input
@@ -442,16 +375,13 @@ export function EditSessionPage({ sessionId }: EditSessionPageProps) {
             <CardTitle>General Notes</CardTitle>
           </CardHeader>
           <CardContent>
-            <Textarea
+            <CharCountTextarea
               value={formGeneralNotes}
-              onChange={(e) => setGeneralNotes(e.target.value)}
+              onChange={setGeneralNotes}
               placeholder="Any additional notes about this session..."
               rows={6}
               maxLength={5000}
             />
-            <p className="text-muted-foreground mt-2 text-xs">
-              {formGeneralNotes.length}/5000 characters
-            </p>
           </CardContent>
         </Card>
 
