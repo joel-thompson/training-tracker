@@ -6,6 +6,7 @@ import { secureHeaders } from "hono/secure-headers";
 import { healthHandler } from "./handlers/health";
 import { dbTestHandler } from "./handlers/dbTest";
 import { apiTestHandler } from "./handlers/apiTest";
+import { sessions } from "./routes/sessions";
 import { getEnvRequired } from "./utils/env";
 
 const app = new Hono();
@@ -32,5 +33,8 @@ app.use("/api/*", clerkMiddleware());
 
 app.get("/api/test", apiTestHandler);
 app.get("/api/db/test", dbTestHandler);
+
+// API v1 routes
+app.route("/api/v1/sessions", sessions);
 
 export default app;
