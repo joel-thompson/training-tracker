@@ -128,6 +128,27 @@ function SessionsPage() {
 - For routes with params/search, pass them as props from the route component
 - Use named exports for page components (e.g., `export function HomePage()`)
 
+### Session Pages
+
+**New Session (`/sessions/new`):**
+- Form to create sessions with 3-2-1 reflection items
+- Items submitted inline with session creation (`items: { success: [...], problem: [...], question: [...] }`)
+- Uses `useCreateSession()` hook
+- Navigates to `/history` on success
+
+**Edit Session (`/sessions/:id/edit`):**
+- Fetches session with `useSession(id)`
+- Updates session metadata via `useUpdateSession()`
+- Items managed separately: `useAddSessionItem()`, `useUpdateSessionItem()`, `useDeleteSessionItem()`
+- Delete confirmation dialog using `AlertDialog`
+- Navigates to `/history` on save/delete
+
+**History (`/history`):**
+- Lists all sessions using `useListSessions()` with infinite scroll
+- Expandable session cards using `Collapsible` component
+- Edit button links to `/sessions/:id/edit`
+- Load more button when `hasNextPage` is true
+
 ## Routing (TanStack Router)
 
 File-based routing in `src/routes/`:

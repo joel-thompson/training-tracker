@@ -7,7 +7,7 @@ import { sessionKeys } from "./sessionKeys";
 async function fetchSessionDates(
   token: string | null
 ): Promise<SessionDatesResponse> {
-  const response = await api("/api/sessions/dates", { token });
+  const response = await api("/api/v1/sessions/dates", { token });
 
   const result = (await response.json()) as ApiResponse<SessionDatesResponse>;
   if (!result.success) {

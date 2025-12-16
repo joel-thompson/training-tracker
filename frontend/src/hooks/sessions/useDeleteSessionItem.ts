@@ -1,6 +1,6 @@
 import { useAuth } from "@clerk/clerk-react";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
-import type { ApiResponse } from "shared/types";
+import type { ApiResponse, DeleteItemResponse } from "shared/types";
 import { api } from "@/utils/api";
 import { sessionKeys } from "./sessionKeys";
 
@@ -17,15 +17,15 @@ export function useDeleteSessionItem() {
       itemId: string;
     }) => {
       const token = await getToken();
-      const response = await api(`/api/sessions/${sessionId}/items/${itemId}`, {
-        method: "DELETE",
-        token,
-      });
+      const response = await api(
+        `/api/v1/sessions/${sessionId}/items/${itemId}`,
+        {
+          method: "DELETE",
+          token,
+        }
+      );
 
-      const result = (await response.json()) as ApiResponse<{
-        id: string;
-        deleted: true;
-      }>;
+      const result = (await response.json()) as ApiResponse<DeleteItemResponse>;
       if (!result.success) {
         throw new Error(result.error.message);
       }

@@ -7,5 +7,5 @@ export const Route = createFileRoute("/_app/sessions/$id/edit")({
 
 function EditSessionPageWrapper() {
   const { id } = Route.useParams();
-  return <EditSessionPage sessionId={id} />;
+  return <EditSessionPage key={id} sessionId={id} />;
 }

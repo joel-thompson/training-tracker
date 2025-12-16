@@ -11,7 +11,7 @@ export function useCreateSession() {
   return useMutation({
     mutationFn: async (input: CreateSessionInput) => {
       const token = await getToken();
-      const response = await api("/api/sessions", {
+      const response = await api("/api/v1/sessions", {
         method: "POST",
         body: JSON.stringify(input),
         token,

@@ -8,7 +8,7 @@ async function fetchSession(
   id: string,
   token: string | null
 ): Promise<Session> {
-  const response = await api(`/api/sessions/${id}`, { token });
+  const response = await api(`/api/v1/sessions/${id}`, { token });
 
   const result = (await response.json()) as ApiResponse<Session>;
   if (!result.success) {

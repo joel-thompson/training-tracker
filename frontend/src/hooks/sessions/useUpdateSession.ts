@@ -17,7 +17,7 @@ export function useUpdateSession() {
       input: UpdateSessionInput;
     }) => {
       const token = await getToken();
-      const response = await api(`/api/sessions/${id}`, {
+      const response = await api(`/api/v1/sessions/${id}`, {
         method: "PATCH",
         body: JSON.stringify(input),
         token,

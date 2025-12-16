@@ -26,7 +26,7 @@ async function fetchListSessions(
   }
 
   const queryString = searchParams.toString();
-  const path = `/api/sessions${queryString ? `?${queryString}` : ""}`;
+  const path = `/api/v1/sessions${queryString ? `?${queryString}` : ""}`;
   const response = await api(path, { token });
 
   const result = (await response.json()) as ApiResponse<ListSessionsResponse>;

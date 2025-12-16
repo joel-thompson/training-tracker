@@ -1,6 +1,6 @@
 import { useAuth } from "@clerk/clerk-react";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
-import type { ApiResponse } from "shared/types";
+import type { ApiResponse, RestoreSessionResponse } from "shared/types";
 import { api } from "@/utils/api";
 import { sessionKeys } from "./sessionKeys";
 
@@ -11,16 +11,13 @@ export function useRestoreSession() {
   return useMutation({
     mutationFn: async (id: string) => {
       const token = await getToken();
-      const response = await api(`/api/sessions/${id}/restore`, {
+      const response = await api(`/api/v1/sessions/${id}/restore`, {
         method: "POST",
         token,
       });
 
-      const result = (await response.json()) as ApiResponse<{
-        id: string;
-        deletedAt: null;
-        updatedAt: string;
-      }>;
+      const result =
+        (await response.json()) as ApiResponse<RestoreSessionResponse>;
       if (!result.success) {
         throw new Error(result.error.message);
       }
