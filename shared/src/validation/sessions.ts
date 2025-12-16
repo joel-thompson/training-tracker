@@ -51,7 +51,7 @@ export const listSessionsQuerySchema = z.object({
     .enum(["true", "false"])
     .transform((v) => v === "true")
     .optional()
-    .default("false"),
+    .default(false),
 });
 
 export const createItemSchema = z.object({
@@ -62,4 +62,3 @@ export const createItemSchema = z.object({
 export const updateItemSchema = z.object({
   content: z.string().min(1).max(1000),
 });
-
