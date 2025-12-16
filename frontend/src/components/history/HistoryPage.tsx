@@ -35,9 +35,9 @@ function SessionCard({ session }: { session: Session }) {
   return (
     <Card>
       <Collapsible open={isOpen} onOpenChange={setIsOpen}>
-        <CardHeader>
-          <div className="flex items-start justify-between">
-            <div className="space-y-1">
+        <CollapsibleTrigger asChild>
+          <CardHeader className="cursor-pointer">
+            <div className="flex items-start justify-between">
               <div className="flex items-center gap-2">
                 <h3 className="text-lg font-semibold">
                   {format(parseISO(session.sessionDate), "PPP")}
@@ -46,32 +46,37 @@ function SessionCard({ session }: { session: Session }) {
                   {CLASS_TYPE_LABELS[session.classType] || session.classType}
                 </Badge>
               </div>
-              {session.techniqueCovered && (
-                <p className="text-muted-foreground text-sm">
-                  {session.techniqueCovered}
-                </p>
-              )}
-            </div>
-            <div className="flex items-center gap-2">
-              <Link to="/sessions/$id/edit" params={{ id: session.id }}>
-                <Button variant="ghost" size="icon">
-                  <Edit className="h-4 w-4" />
-                </Button>
-              </Link>
-              <CollapsibleTrigger asChild>
-                <Button variant="ghost" size="icon">
+              <div className="flex items-center gap-2">
+                <Link
+                  to="/sessions/$id/edit"
+                  params={{ id: session.id }}
+                  onClick={(e) => e.stopPropagation()}
+                >
+                  <Button variant="ghost" size="icon">
+                    <Edit className="h-4 w-4" />
+                  </Button>
+                </Link>
+                <div className="flex items-center justify-center size-9">
                   {isOpen ? (
                     <ChevronUp className="h-4 w-4" />
                   ) : (
                     <ChevronDown className="h-4 w-4" />
                   )}
-                </Button>
-              </CollapsibleTrigger>
+                </div>
+              </div>
             </div>
-          </div>
-        </CardHeader>
+          </CardHeader>
+        </CollapsibleTrigger>
         <CollapsibleContent>
           <CardContent className="space-y-4">
+            {session.techniqueCovered && (
+              <div>
+                <h4 className="text-sm font-medium mb-2">Technique Covered</h4>
+                <p className="text-muted-foreground text-sm whitespace-pre-wrap">
+                  {session.techniqueCovered}
+                </p>
+              </div>
+            )}
             {(itemsByType.success.length > 0 ||
               itemsByType.problem.length > 0 ||
               itemsByType.question.length > 0) && (
@@ -137,7 +142,8 @@ function SessionCard({ session }: { session: Session }) {
                 </p>
               </div>
             )}
-            {!session.generalNotes &&
+            {!session.techniqueCovered &&
+              !session.generalNotes &&
               itemsByType.success.length === 0 &&
               itemsByType.problem.length === 0 &&
               itemsByType.question.length === 0 && (
