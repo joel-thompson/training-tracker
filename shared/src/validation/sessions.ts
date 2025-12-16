@@ -41,7 +41,7 @@ export const updateSessionSchema = z.object({
 
 export const listSessionsQuerySchema = z.object({
   limit: z.coerce.number().min(1).max(100).optional().default(20),
-  cursor: z.string().uuid().optional(),
+  cursor: z.uuid().optional(),
   classType: classTypeSchema.optional(),
   weekStartDate: z
     .string()

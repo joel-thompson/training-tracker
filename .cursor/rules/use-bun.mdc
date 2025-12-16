@@ -2,5 +2,6 @@
 alwaysApply: true
 ---
 
-use bun to run commands.
+use bun to run commands. you may need to run nvm use to use the correct version of node.
 ex: bun run dev instead of npm run dev.
+ex: nvm use && bun run command instead of npm run command.

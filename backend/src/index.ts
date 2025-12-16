@@ -7,6 +7,7 @@ import { healthHandler } from "./handlers/health";
 import { dbTestHandler } from "./handlers/dbTest";
 import { apiTestHandler } from "./handlers/apiTest";
 import { sessions } from "./routes/sessions";
+import { goals } from "./routes/goals";
 import { getEnvRequired } from "./utils/env";
 
 const app = new Hono();
@@ -36,5 +37,6 @@ app.get("/api/db/test", dbTestHandler);
 
 // API v1 routes
 app.route("/api/v1/sessions", sessions);
+app.route("/api/v1/goals", goals);
 
 export default app;

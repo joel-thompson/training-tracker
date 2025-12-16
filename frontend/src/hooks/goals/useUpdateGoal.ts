@@ -1,21 +1,21 @@
 import { useAuth } from "@clerk/clerk-react";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
-import type { Session, UpdateSessionInput, ApiResponse } from "shared/types";
+import type { Goal, UpdateGoalInput, ApiResponse } from "shared/types";
 import { api } from "@/utils/api";
-import { sessionKeys } from "./sessionKeys";
+import { goalKeys } from "./goalKeys";
 
-async function updateSession(
+async function updateGoal(
   id: string,
-  input: UpdateSessionInput,
+  input: UpdateGoalInput,
   token: string | null
-): Promise<Session> {
-  const response = await api(`/api/v1/sessions/${id}`, {
+): Promise<Goal> {
+  const response = await api(`/api/v1/goals/${id}`, {
     method: "PATCH",
     body: JSON.stringify(input),
     token,
   });
 
-  const result = (await response.json()) as ApiResponse<Session>;
+  const result = (await response.json()) as ApiResponse<Goal>;
   if (!result.success) {
     throw new Error(result.error.message);
   }
@@ -23,7 +23,7 @@ async function updateSession(
   return result.data;
 }
 
-export function useUpdateSession() {
+export function useUpdateGoal() {
   const { getToken } = useAuth();
   const queryClient = useQueryClient();
 
@@ -33,16 +33,17 @@ export function useUpdateSession() {
       input,
     }: {
       id: string;
-      input: UpdateSessionInput;
+      input: UpdateGoalInput;
     }) => {
       const token = await getToken();
-      return updateSession(id, input, token);
+      return updateGoal(id, input, token);
     },
     onSuccess: (data) => {
       void queryClient.invalidateQueries({
-        queryKey: sessionKeys.byId(data.id),
+        queryKey: goalKeys.byId(data.id),
       });
-      void queryClient.invalidateQueries({ queryKey: sessionKeys.allLists() });
+      void queryClient.invalidateQueries({ queryKey: goalKeys.allLists() });
+      void queryClient.invalidateQueries({ queryKey: goalKeys.active() });
     },
   });
 }

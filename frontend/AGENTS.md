@@ -215,6 +215,42 @@ See `src/utils/env.ts` for the list of environment variables.
 
 ## Code Style
 
+### Hook Conventions
+
+For TanStack Query hooks (`useQuery`, `useMutation`, `useInfiniteQuery`), always define the `queryFn`/`mutationFn` logic as a separate async function above the hook:
+
+```typescript
+// API function defined above the hook
+async function fetchGoal(id: string, token: string | null): Promise<Goal> {
+  const response = await api(`/api/v1/goals/${id}`, { token });
+  const result = (await response.json()) as ApiResponse<Goal>;
+  if (!result.success) {
+    throw new Error(result.error.message);
+  }
+  return result.data;
+}
+
+// Hook calls the API function
+export function useGoal(id: string) {
+  const { getToken } = useAuth();
+
+  return useQuery({
+    queryKey: goalKeys.byId(id),
+    queryFn: async () => {
+      const token = await getToken();
+      return fetchGoal(id, token);
+    },
+    enabled: !!id,
+  });
+}
+```
+
+**Rules:**
+- Always define `queryFn`/`mutationFn` logic as a separate async function above the hook
+- API function should accept all arguments including `token: string | null` as the last parameter
+- Hook's `queryFn`/`mutationFn` should only call `getToken()` and invoke the API function
+- This pattern improves testability, reusability, and consistency across all hooks
+
 ### When to Use Effects
 
 - **DO use Effects** to synchronize with external systems (APIs, browser APIs, third-party libraries)

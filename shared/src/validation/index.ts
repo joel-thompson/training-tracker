@@ -8,3 +8,8 @@ export {
   updateItemSchema,
 } from "./sessions";
 
+export {
+  createGoalSchema,
+  updateGoalSchema,
+  listGoalsQuerySchema,
+} from "./goals";

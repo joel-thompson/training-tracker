@@ -1,19 +1,19 @@
 import { useAuth } from "@clerk/clerk-react";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
-import type { ApiResponse, DeleteSessionResponse } from "shared/types";
+import type { ApiResponse, DeleteGoalResponse } from "shared/types";
 import { api } from "@/utils/api";
-import { sessionKeys } from "./sessionKeys";
+import { goalKeys } from "./goalKeys";
 
-async function deleteSession(
+async function deleteGoal(
   id: string,
   token: string | null
-): Promise<DeleteSessionResponse> {
-  const response = await api(`/api/v1/sessions/${id}`, {
+): Promise<DeleteGoalResponse> {
+  const response = await api(`/api/v1/goals/${id}`, {
     method: "DELETE",
     token,
   });
 
-  const result = (await response.json()) as ApiResponse<DeleteSessionResponse>;
+  const result = (await response.json()) as ApiResponse<DeleteGoalResponse>;
   if (!result.success) {
     throw new Error(result.error.message);
   }
@@ -21,20 +21,20 @@ async function deleteSession(
   return result.data;
 }
 
-export function useDeleteSession() {
+export function useDeleteGoal() {
   const { getToken } = useAuth();
   const queryClient = useQueryClient();
 
   return useMutation({
     mutationFn: async (id: string) => {
       const token = await getToken();
-      return deleteSession(id, token);
+      return deleteGoal(id, token);
     },
     onSuccess: (data) => {
-      void queryClient.invalidateQueries({ queryKey: sessionKeys.allLists() });
-      void queryClient.invalidateQueries({ queryKey: sessionKeys.dates() });
+      void queryClient.invalidateQueries({ queryKey: goalKeys.allLists() });
+      void queryClient.invalidateQueries({ queryKey: goalKeys.active() });
       void queryClient.invalidateQueries({
-        queryKey: sessionKeys.byId(data.id),
+        queryKey: goalKeys.byId(data.id),
       });
     },
   });

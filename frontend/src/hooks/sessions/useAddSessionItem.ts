@@ -4,6 +4,25 @@ import type { CreateItemInput, ApiResponse, SessionItem } from "shared/types";
 import { api } from "@/utils/api";
 import { sessionKeys } from "./sessionKeys";
 
+async function addSessionItem(
+  sessionId: string,
+  input: CreateItemInput,
+  token: string | null
+): Promise<SessionItem> {
+  const response = await api(`/api/v1/sessions/${sessionId}/items`, {
+    method: "POST",
+    body: JSON.stringify(input),
+    token,
+  });
+
+  const result = (await response.json()) as ApiResponse<SessionItem>;
+  if (!result.success) {
+    throw new Error(result.error.message);
+  }
+
+  return result.data;
+}
+
 export function useAddSessionItem() {
   const { getToken } = useAuth();
   const queryClient = useQueryClient();
@@ -17,18 +36,7 @@ export function useAddSessionItem() {
       input: CreateItemInput;
     }) => {
       const token = await getToken();
-      const response = await api(`/api/v1/sessions/${sessionId}/items`, {
-        method: "POST",
-        body: JSON.stringify(input),
-        token,
-      });
-
-      const result = (await response.json()) as ApiResponse<SessionItem>;
-      if (!result.success) {
-        throw new Error(result.error.message);
-      }
-
-      return result.data;
+      return addSessionItem(sessionId, input, token);
     },
     onSuccess: (data) => {
       void queryClient.invalidateQueries({
