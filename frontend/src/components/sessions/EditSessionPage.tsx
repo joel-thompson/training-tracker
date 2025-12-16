@@ -38,7 +38,7 @@ import {
   AlertDialogTrigger,
 } from "@/components/ui/alert-dialog";
 import { Skeleton } from "@/components/ui/skeleton";
-import type { ClassType, SessionItem } from "shared/types";
+import type { ClassType, ItemType, SessionItem } from "shared/types";
 
 interface EditSessionPageProps {
   sessionId: string;
@@ -53,7 +53,7 @@ const CLASS_TYPE_LABELS: Record<ClassType, string> = {
   other: "Other",
 };
 
-const ITEM_TYPE_LABELS: Record<"success" | "problem" | "question", string> = {
+const ITEM_TYPE_LABELS: Record<ItemType, string> = {
   success: "Success",
   problem: "Problem",
   question: "Question",
@@ -124,11 +124,26 @@ export function EditSessionPage({ sessionId }: EditSessionPageProps) {
       ? editingItems
       : initialFormState.editingItems;
 
-  const handleUpdateSession = (e: React.FormEvent) => {
+  const handleUpdateSession = async (e: React.FormEvent) => {
     e.preventDefault();
 
     if (!session || !formSessionDate || !formClassType) {
       return;
+    }
+
+    // Save any pending new items first
+    const pendingItemPromises = (["success", "problem", "question"] as const)
+      .filter((type) => newItemContent[type].trim())
+      .map((type) =>
+        addItem.mutateAsync({
+          sessionId: session.id,
+          input: { type, content: newItemContent[type].trim() },
+        })
+      );
+
+    if (pendingItemPromises.length > 0) {
+      await Promise.all(pendingItemPromises);
+      setNewItemContent({ success: "", problem: "", question: "" });
     }
 
     updateSession.mutate(
@@ -158,7 +173,7 @@ export function EditSessionPage({ sessionId }: EditSessionPageProps) {
     });
   };
 
-  const handleAddItem = (type: "success" | "problem" | "question") => {
+  const handleAddItem = (type: ItemType) => {
     if (!session) return;
     const content = newItemContent[type].trim();
     if (!content) return;
@@ -196,7 +211,7 @@ export function EditSessionPage({ sessionId }: EditSessionPageProps) {
     });
   };
 
-  const getItemsByType = (type: "success" | "problem" | "question") => {
+  const getItemsByType = (type: ItemType) => {
     return session?.items?.filter((item) => item.type === type) ?? [];
   };
 
@@ -264,7 +279,12 @@ export function EditSessionPage({ sessionId }: EditSessionPageProps) {
         </AlertDialog>
       </div>
 
-      <form onSubmit={handleUpdateSession} className="space-y-6">
+      <form
+        onSubmit={(e) => {
+          void handleUpdateSession(e);
+        }}
+        className="space-y-6"
+      >
         <Card>
           <CardHeader>
             <CardTitle>Session Details</CardTitle>
@@ -450,11 +470,14 @@ export function EditSessionPage({ sessionId }: EditSessionPageProps) {
             disabled={
               !formSessionDate ||
               !formClassType ||
+              addItem.isPending ||
               updateSession.isPending ||
               deleteSession.isPending
             }
           >
-            {updateSession.isPending ? "Saving..." : "Save Changes"}
+            {addItem.isPending || updateSession.isPending
+              ? "Saving..."
+              : "Save Changes"}
           </Button>
         </div>
       </form>

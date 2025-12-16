@@ -8,7 +8,7 @@ import {
   errorResponse,
   ErrorCodes,
 } from "../../utils/response";
-import type { Session } from "shared/types";
+import type { ItemType, Session } from "shared/types";
 
 export const createSessionHandler = async (c: Context) => {
   const userId = requireUserId(c);
@@ -42,7 +42,7 @@ export const createSessionHandler = async (c: Context) => {
     if (items) {
       const itemsToInsert: {
         sessionId: string;
-        type: "success" | "problem" | "question";
+        type: ItemType;
         content: string;
         order: number;
       }[] = [];
