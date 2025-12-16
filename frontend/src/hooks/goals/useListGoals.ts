@@ -44,4 +44,3 @@ export function useListGoals(params: ListGoalsParams = {}) {
     initialPageParam: undefined as string | undefined,
   });
 }
-

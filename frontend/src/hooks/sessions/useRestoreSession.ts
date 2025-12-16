@@ -4,6 +4,23 @@ import type { ApiResponse, RestoreSessionResponse } from "shared/types";
 import { api } from "@/utils/api";
 import { sessionKeys } from "./sessionKeys";
 
+async function restoreSession(
+  id: string,
+  token: string | null
+): Promise<RestoreSessionResponse> {
+  const response = await api(`/api/v1/sessions/${id}/restore`, {
+    method: "POST",
+    token,
+  });
+
+  const result = (await response.json()) as ApiResponse<RestoreSessionResponse>;
+  if (!result.success) {
+    throw new Error(result.error.message);
+  }
+
+  return result.data;
+}
+
 export function useRestoreSession() {
   const { getToken } = useAuth();
   const queryClient = useQueryClient();
@@ -11,18 +28,7 @@ export function useRestoreSession() {
   return useMutation({
     mutationFn: async (id: string) => {
       const token = await getToken();
-      const response = await api(`/api/v1/sessions/${id}/restore`, {
-        method: "POST",
-        token,
-      });
-
-      const result =
-        (await response.json()) as ApiResponse<RestoreSessionResponse>;
-      if (!result.success) {
-        throw new Error(result.error.message);
-      }
-
-      return result.data;
+      return restoreSession(id, token);
     },
     onSuccess: (data) => {
       void queryClient.invalidateQueries({ queryKey: sessionKeys.allLists() });

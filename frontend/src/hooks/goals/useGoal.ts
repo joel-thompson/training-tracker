@@ -27,4 +27,3 @@ export function useGoal(id: string) {
     enabled: !!id,
   });
 }
-

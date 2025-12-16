@@ -4,10 +4,7 @@ import type { Goal, ApiResponse } from "shared/types";
 import { api } from "@/utils/api";
 import { goalKeys } from "./goalKeys";
 
-async function reactivateGoal(
-  id: string,
-  token: string | null
-): Promise<Goal> {
+async function reactivateGoal(id: string, token: string | null): Promise<Goal> {
   const response = await api(`/api/v1/goals/${id}/reactivate`, {
     method: "POST",
     token,
@@ -39,4 +36,3 @@ export function useReactivateGoal() {
     },
   });
 }
-
