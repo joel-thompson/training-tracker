@@ -1,12 +1,19 @@
 /* eslint-disable react-x/no-array-index-key */
 import { useState } from "react";
-import { useNavigate } from "@tanstack/react-router";
-import { Plus } from "lucide-react";
+import { useNavigate, Link } from "@tanstack/react-router";
+import { Plus, ChevronDown, ChevronUp } from "lucide-react";
 import { format } from "date-fns";
 import { useCreateSession } from "@/hooks/sessions/useCreateSession";
+import { useActiveGoals } from "@/hooks/goals/useActiveGoals";
 import { Button } from "@/components/ui/button";
 import { Label } from "@/components/ui/label";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import {
+  Collapsible,
+  CollapsibleContent,
+  CollapsibleTrigger,
+} from "@/components/ui/collapsible";
+import { Skeleton } from "@/components/ui/skeleton";
 import type { ClassType } from "shared/types";
 import { SessionDatePicker } from "./components/SessionDatePicker";
 import { ClassTypeSelect } from "./components/ClassTypeSelect";
@@ -16,6 +23,11 @@ import { ItemInputRow } from "./components/ItemInputRow";
 export function NewSessionPage() {
   const navigate = useNavigate();
   const createSession = useCreateSession();
+  const { data: activeGoalsData, isLoading: activeGoalsLoading } =
+    useActiveGoals();
+  const [goalsOpen, setGoalsOpen] = useState(true);
+
+  const activeGoals = activeGoalsData?.goals ?? [];
 
   const [sessionDate, setSessionDate] = useState<Date>(() => new Date());
   const [classType, setClassType] = useState<ClassType>("gi");
@@ -98,6 +110,59 @@ export function NewSessionPage() {
           Log a new training session
         </p>
       </div>
+
+      {activeGoalsLoading && (
+        <Card>
+          <CardHeader>
+            <Skeleton className="h-6 w-32" />
+            <Skeleton className="h-4 w-48 mt-2" />
+          </CardHeader>
+        </Card>
+      )}
+
+      {!activeGoalsLoading && activeGoals.length > 0 && (
+        <Card>
+          <Collapsible open={goalsOpen} onOpenChange={setGoalsOpen}>
+            <CollapsibleTrigger asChild>
+              <CardHeader className="cursor-pointer">
+                <div className="flex items-center justify-between">
+                  <CardTitle className="text-lg font-semibold">
+                    Current Goals
+                  </CardTitle>
+                  <div className="flex items-center gap-2">
+                    <Link
+                      to="/goals"
+                      onClick={(e) => e.stopPropagation()}
+                      className="text-primary text-sm underline"
+                    >
+                      Manage
+                    </Link>
+                    {goalsOpen ? (
+                      <ChevronUp className="h-4 w-4" />
+                    ) : (
+                      <ChevronDown className="h-4 w-4" />
+                    )}
+                  </div>
+                </div>
+              </CardHeader>
+            </CollapsibleTrigger>
+            <CollapsibleContent>
+              <CardContent>
+                <div className="space-y-2">
+                  {activeGoals.map((goal) => (
+                    <div
+                      key={goal.id}
+                      className="text-sm p-3 rounded-md bg-muted/50"
+                    >
+                      {goal.goalText}
+                    </div>
+                  ))}
+                </div>
+              </CardContent>
+            </CollapsibleContent>
+          </Collapsible>
+        </Card>
+      )}
 
       <form onSubmit={handleSubmit} className="space-y-6">
         <Card>

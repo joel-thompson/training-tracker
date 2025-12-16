@@ -2,10 +2,10 @@
 alwaysApply: true
 ---
 
-run linting after making changes to the code: 'nvm use && bun run lint'
+run linting and typechecking after making changes to the code: 'nvm use && bun run lint && bun run typecheck'
 
 only worry about linting the code that you have changed.
 
-ex after making changes to the frontend: 'cd /Users/Joel/src/training-tracker/frontend && nvm use && bun run lint'
-ex after making changes to the backend: 'cd /Users/Joel/src/training-tracker/backend && nvm use && bun run lint'
-ex after making changes to the shared: 'cd /Users/Joel/src/training-tracker/shared && nvm use && bun run lint'
+ex after making changes to the frontend: 'cd /Users/Joel/src/training-tracker/frontend && nvm use && bun run lint && bun run typecheck'
+ex after making changes to the backend: 'cd /Users/Joel/src/training-tracker/backend && nvm use && bun run lint && bun run typecheck'
+ex after making changes to the shared: 'cd /Users/Joel/src/training-tracker/shared && nvm use && bun run lint && bun run typecheck'
