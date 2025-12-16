@@ -23,5 +23,16 @@ export type {
   DeleteItemResponse,
 } from "./sessions";
 
+// Goal types
+export type {
+  CreateGoalInput,
+  UpdateGoalInput,
+  ListGoalsQuery,
+  Goal,
+  ListGoalsResponse,
+  ActiveGoalsResponse,
+  DeleteGoalResponse,
+} from "./goals";
+
 // Testing types
 export type { TestType, DbTestType } from "./testing";

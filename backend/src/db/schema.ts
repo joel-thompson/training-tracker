@@ -6,6 +6,7 @@ import {
   date,
   timestamp,
   integer,
+  boolean,
 } from "drizzle-orm/pg-core";
 
 export const testTable = pgTable("test_table", {
@@ -49,4 +50,13 @@ export const sessionItems = pgTable("session_items", {
   content: text("content").notNull(),
   order: integer("order").notNull(),
   createdAt: timestamp("created_at").defaultNow().notNull(),
+});
+
+export const trainingGoals = pgTable("training_goals", {
+  id: uuid("id").defaultRandom().primaryKey(),
+  userId: text("user_id").notNull(),
+  goalText: text("goal_text").notNull(),
+  isActive: boolean("is_active").notNull().default(true),
+  createdAt: timestamp("created_at").defaultNow().notNull(),
+  completedAt: timestamp("completed_at"),
 });
