@@ -13,3 +13,10 @@ export {
   updateGoalSchema,
   listGoalsQuerySchema,
 } from "./goals";
+
+export {
+  createGameItemSchema,
+  updateGameItemSchema,
+  createGameTransitionSchema,
+  updateGameTransitionSchema,
+} from "./game";

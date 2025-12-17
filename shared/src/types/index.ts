@@ -34,5 +34,19 @@ export type {
   DeleteGoalResponse,
 } from "./goals";
 
+// Game types
+export type {
+  CreateGameItemInput,
+  UpdateGameItemInput,
+  CreateGameTransitionInput,
+  UpdateGameTransitionInput,
+  GameItem,
+  GameTransition,
+  ListGameItemsResponse,
+  ListGameTransitionsResponse,
+  DeleteGameItemResponse,
+  DeleteGameTransitionResponse,
+} from "./game";
+
 // Testing types
 export type { TestType, DbTestType } from "./testing";
