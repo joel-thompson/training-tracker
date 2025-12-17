@@ -79,6 +79,7 @@ function GameItemRow({
   item,
   level = 0,
   transitions,
+  allItems,
   onEdit,
   onDelete,
   onAddChild,
@@ -88,6 +89,7 @@ function GameItemRow({
   item: GameItem;
   level?: number;
   transitions: GameTransition[];
+  allItems: GameItem[];
   onEdit: (item: GameItem) => void;
   onDelete: (item: GameItem) => void;
   onAddChild: (parentId: string) => void;
@@ -95,11 +97,14 @@ function GameItemRow({
   onDeleteTransition: (transitionId: string) => void;
 }) {
   const [isOpen, setIsOpen] = useState(false);
-  const hasChildren = item.children && item.children.length > 0;
+  const hasChildren = (item.children?.length ?? 0) > 0;
   const outgoingTransitions = transitions.filter(
     (t) => t.fromItemId === item.id
   );
   const incomingTransitions = transitions.filter((t) => t.toItemId === item.id);
+  const hasTransitions =
+    outgoingTransitions.length > 0 || incomingTransitions.length > 0;
+  const shouldShowChevron = hasChildren || hasTransitions;
 
   return (
     <div>
@@ -107,7 +112,7 @@ function GameItemRow({
         className="group flex items-center gap-2 rounded-md px-2 py-1.5 hover:bg-accent"
         style={{ paddingLeft: `${level * 1.5 + 0.5}rem` }}
       >
-        {hasChildren ? (
+        {shouldShowChevron ? (
           <Collapsible open={isOpen} onOpenChange={setIsOpen}>
             <CollapsibleTrigger asChild>
               <Button variant="ghost" size="icon" className="h-6 w-6">
@@ -125,10 +130,10 @@ function GameItemRow({
         <div className="flex-1 min-w-0">
           <div className="flex items-center gap-2">
             <span className="font-medium truncate">{item.name}</span>
-            {(outgoingTransitions.length > 0 ||
-              incomingTransitions.length > 0) && (
+            {hasTransitions && (
               <span className="text-muted-foreground text-xs">
-                ({outgoingTransitions.length}→ {incomingTransitions.length}←)
+                {outgoingTransitions.length} to · {incomingTransitions.length}{" "}
+                from
               </span>
             )}
           </div>
@@ -172,23 +177,79 @@ function GameItemRow({
           </DropdownMenuContent>
         </DropdownMenu>
       </div>
-      {hasChildren && (
+      {shouldShowChevron && (
         <Collapsible open={isOpen} onOpenChange={setIsOpen}>
           <CollapsibleContent>
-            <div>
-              {item.children!.map((child) => (
-                <GameItemRow
-                  key={child.id}
-                  item={child}
-                  level={level + 1}
-                  transitions={transitions}
-                  onEdit={onEdit}
-                  onDelete={onDelete}
-                  onAddChild={onAddChild}
-                  onAddTransition={onAddTransition}
-                  onDeleteTransition={onDeleteTransition}
-                />
-              ))}
+            <div
+              className="space-y-2"
+              style={{ paddingLeft: `${level * 1.5 + 1}rem` }}
+            >
+              {hasTransitions && (
+                <div className="space-y-2 py-2">
+                  {outgoingTransitions.length > 0 && (
+                    <div>
+                      <div className="text-xs font-medium text-muted-foreground mb-1">
+                        To:
+                      </div>
+                      <div className="space-y-1">
+                        {outgoingTransitions.map((transition) => {
+                          const toItem = allItems.find(
+                            (item) => item.id === transition.toItemId
+                          );
+                          return (
+                            <div
+                              key={transition.id}
+                              className="text-sm text-muted-foreground"
+                            >
+                              {toItem?.name ?? "Unknown"}
+                            </div>
+                          );
+                        })}
+                      </div>
+                    </div>
+                  )}
+                  {incomingTransitions.length > 0 && (
+                    <div>
+                      <div className="text-xs font-medium text-muted-foreground mb-1">
+                        From:
+                      </div>
+                      <div className="space-y-1">
+                        {incomingTransitions.map((transition) => {
+                          const fromItem = allItems.find(
+                            (item) => item.id === transition.fromItemId
+                          );
+                          return (
+                            <div
+                              key={transition.id}
+                              className="text-sm text-muted-foreground"
+                            >
+                              {fromItem?.name ?? "Unknown"}
+                            </div>
+                          );
+                        })}
+                      </div>
+                    </div>
+                  )}
+                </div>
+              )}
+              {hasChildren && (
+                <div>
+                  {item.children!.map((child) => (
+                    <GameItemRow
+                      key={child.id}
+                      item={child}
+                      level={level + 1}
+                      transitions={transitions}
+                      allItems={allItems}
+                      onEdit={onEdit}
+                      onDelete={onDelete}
+                      onAddChild={onAddChild}
+                      onAddTransition={onAddTransition}
+                      onDeleteTransition={onDeleteTransition}
+                    />
+                  ))}
+                </div>
+              )}
             </div>
           </CollapsibleContent>
         </Collapsible>
@@ -387,19 +448,21 @@ function TransitionDialog({
                 <PopoverContent className="w-[400px] p-0">
                   <ScrollArea className="h-64">
                     <div className="p-2">
-                      {allItems.map((item) => (
-                        <Button
-                          key={item.id}
-                          variant="ghost"
-                          className="w-full justify-start"
-                          onClick={() => {
-                            setToItemId(item.id);
-                            setShowPicker(false);
-                          }}
-                        >
-                          {item.name}
-                        </Button>
-                      ))}
+                      {allItems
+                        .filter((item) => item.id !== fromItemId)
+                        .map((item) => (
+                          <Button
+                            key={item.id}
+                            variant="ghost"
+                            className="w-full justify-start"
+                            onClick={() => {
+                              setToItemId(item.id);
+                              setShowPicker(false);
+                            }}
+                          >
+                            {item.name}
+                          </Button>
+                        ))}
                     </div>
                   </ScrollArea>
                 </PopoverContent>
@@ -593,6 +656,7 @@ export function GamePage() {
                   key={item.id}
                   item={item}
                   transitions={transitions}
+                  allItems={allItems}
                   onEdit={handleEditItem}
                   onDelete={handleDeleteClick}
                   onAddChild={(parentId) => {
@@ -609,6 +673,7 @@ export function GamePage() {
       </Card>
 
       <ItemFormDialog
+        key={createDialogOpen ? `create-${parentId ?? "root"}` : "closed"}
         open={createDialogOpen}
         onOpenChange={setCreateDialogOpen}
         onSubmit={handleCreateItem}
