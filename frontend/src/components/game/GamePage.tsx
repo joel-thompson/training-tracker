@@ -8,6 +8,7 @@ import {
   MoreVertical,
   ArrowRight,
   ArrowLeft,
+  Eye,
 } from "lucide-react";
 import { useGameItems } from "@/hooks/game/useGameItems";
 import { useGameTransitions } from "@/hooks/game/useGameTransitions";
@@ -84,6 +85,7 @@ function GameItemRow({
   showTransitions = true,
   onEdit,
   onDelete,
+  onView,
   onAddChild,
   onAddTransition,
   onDeleteTransition,
@@ -95,6 +97,7 @@ function GameItemRow({
   showTransitions?: boolean;
   onEdit: (item: GameItem) => void;
   onDelete: (item: GameItem) => void;
+  onView: (item: GameItem) => void;
   onAddChild: (parentId: string) => void;
   onAddTransition: (fromItemId: string) => void;
   onDeleteTransition: (transitionId: string) => void;
@@ -147,35 +150,25 @@ function GameItemRow({
           )}
         </div>
         <div className="flex items-center gap-1 shrink-0">
-          <Button
-            variant="ghost"
-            size="icon"
-            className="h-7 w-7 opacity-0 group-hover:opacity-100 transition-opacity"
-            onClick={() => onAddChild(item.id)}
-            title="Add Child"
-          >
-            <Plus className="h-4 w-4" />
-          </Button>
-          <Button
-            variant="ghost"
-            size="icon"
-            className="h-7 w-7 opacity-0 group-hover:opacity-100 transition-opacity"
-            onClick={() => onAddTransition(item.id)}
-            title="Manage Transitions"
-          >
-            <ArrowRight className="h-4 w-4" />
-          </Button>
           <DropdownMenu>
             <DropdownMenuTrigger asChild>
-              <Button
-                variant="ghost"
-                size="icon"
-                className="h-7 w-7 opacity-0 group-hover:opacity-100 transition-opacity"
-              >
+              <Button variant="ghost" size="icon" className="h-7 w-7">
                 <MoreVertical className="h-4 w-4" />
               </Button>
             </DropdownMenuTrigger>
             <DropdownMenuContent align="end">
+              <DropdownMenuItem onClick={() => onView(item)}>
+                <Eye className="mr-2 h-4 w-4" />
+                View
+              </DropdownMenuItem>
+              <DropdownMenuItem onClick={() => onAddChild(item.id)}>
+                <Plus className="mr-2 h-4 w-4" />
+                Add Child
+              </DropdownMenuItem>
+              <DropdownMenuItem onClick={() => onAddTransition(item.id)}>
+                <ArrowRight className="mr-2 h-4 w-4" />
+                Add Transition
+              </DropdownMenuItem>
               <DropdownMenuItem onClick={() => onEdit(item)}>
                 <Edit className="mr-2 h-4 w-4" />
                 Edit
@@ -274,6 +267,7 @@ function GameItemRow({
                       showTransitions={showTransitions}
                       onEdit={onEdit}
                       onDelete={onDelete}
+                      onView={onView}
                       onAddChild={onAddChild}
                       onAddTransition={onAddTransition}
                       onDeleteTransition={onDeleteTransition}
@@ -365,6 +359,79 @@ function ItemFormDialog({
             </Button>
           </DialogFooter>
         </form>
+      </DialogContent>
+    </Dialog>
+  );
+}
+
+function ViewItemDialog({
+  open,
+  onOpenChange,
+  item,
+}: {
+  open: boolean;
+  onOpenChange: (open: boolean) => void;
+  item: GameItem | null;
+}) {
+  if (!item) return null;
+
+  function renderChildren(children: GameItem[], level = 0) {
+    if (!children || children.length === 0) return null;
+
+    return (
+      <div className="space-y-2" style={{ paddingLeft: `${level * 1.5}rem` }}>
+        {children.map((child) => (
+          <div key={child.id} className="border-l-2 border-border pl-4 py-2">
+            <div className="font-medium">{child.name}</div>
+            {child.notes && (
+              <p className="text-muted-foreground text-sm mt-1">
+                {child.notes}
+              </p>
+            )}
+            {child.children && child.children.length > 0 && (
+              <div className="mt-2">
+                {renderChildren(child.children, level + 1)}
+              </div>
+            )}
+          </div>
+        ))}
+      </div>
+    );
+  }
+
+  return (
+    <Dialog open={open} onOpenChange={onOpenChange}>
+      <DialogContent className="max-w-2xl">
+        <DialogHeader>
+          <DialogTitle>{item.name}</DialogTitle>
+        </DialogHeader>
+        <div className="space-y-4 py-4">
+          {item.notes && (
+            <div>
+              <p className="text-muted-foreground whitespace-pre-wrap">
+                {item.notes}
+              </p>
+            </div>
+          )}
+          {item.children && item.children.length > 0 && (
+            <div>
+              <ScrollArea className="max-h-96 rounded-md border p-4">
+                {renderChildren(item.children)}
+              </ScrollArea>
+            </div>
+          )}
+          {(!item.notes || item.notes.trim().length === 0) &&
+            (!item.children || item.children.length === 0) && (
+              <p className="text-muted-foreground text-sm">
+                No additional details available.
+              </p>
+            )}
+        </div>
+        <DialogFooter>
+          <Button variant="outline" onClick={() => onOpenChange(false)}>
+            Close
+          </Button>
+        </DialogFooter>
       </DialogContent>
     </Dialog>
   );
@@ -723,8 +790,10 @@ export function GamePage() {
   const [editDialogOpen, setEditDialogOpen] = useState(false);
   const [deleteDialogOpen, setDeleteDialogOpen] = useState(false);
   const [transitionDialogOpen, setTransitionDialogOpen] = useState(false);
+  const [viewDialogOpen, setViewDialogOpen] = useState(false);
   const [editingItem, setEditingItem] = useState<GameItem | null>(null);
   const [deletingItem, setDeletingItem] = useState<GameItem | null>(null);
+  const [viewingItem, setViewingItem] = useState<GameItem | null>(null);
   const [transitionFromItemId, setTransitionFromItemId] = useState<
     string | null
   >(null);
@@ -839,6 +908,11 @@ export function GamePage() {
     deleteTransition.mutate(transitionId);
   };
 
+  const handleViewItem = (item: GameItem) => {
+    setViewingItem(item);
+    setViewDialogOpen(true);
+  };
+
   return (
     <div className="space-y-6">
       <div className="flex items-center justify-between">
@@ -926,6 +1000,7 @@ export function GamePage() {
                   showTransitions={showTransitions}
                   onEdit={handleEditItem}
                   onDelete={handleDeleteClick}
+                  onView={handleViewItem}
                   onAddChild={(parentId) => {
                     setParentId(parentId);
                     setCreateDialogOpen(true);
@@ -965,6 +1040,17 @@ export function GamePage() {
         onUpdate={handleUpdateTransition}
         onDelete={handleDeleteTransition}
         isSubmitting={createTransition.isPending}
+      />
+
+      <ViewItemDialog
+        open={viewDialogOpen}
+        onOpenChange={(open) => {
+          setViewDialogOpen(open);
+          if (!open) {
+            setViewingItem(null);
+          }
+        }}
+        item={viewingItem}
       />
 
       <AlertDialog open={deleteDialogOpen} onOpenChange={setDeleteDialogOpen}>
