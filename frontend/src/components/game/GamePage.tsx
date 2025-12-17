@@ -7,6 +7,7 @@ import {
   ChevronDown,
   MoreVertical,
   ArrowRight,
+  ArrowLeft,
 } from "lucide-react";
 import { useGameItems } from "@/hooks/game/useGameItems";
 import { useGameTransitions } from "@/hooks/game/useGameTransitions";
@@ -15,6 +16,7 @@ import { useUpdateGameItem } from "@/hooks/game/useUpdateGameItem";
 import { useDeleteGameItem } from "@/hooks/game/useDeleteGameItem";
 import { useCreateGameTransition } from "@/hooks/game/useCreateGameTransition";
 import { useDeleteGameTransition } from "@/hooks/game/useDeleteGameTransition";
+import { useUpdateGameTransition } from "@/hooks/game/useUpdateGameTransition";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import {
@@ -45,7 +47,6 @@ import {
   DropdownMenu,
   DropdownMenuContent,
   DropdownMenuItem,
-  DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import {
@@ -80,6 +81,7 @@ function GameItemRow({
   level = 0,
   transitions,
   allItems,
+  showTransitions = true,
   onEdit,
   onDelete,
   onAddChild,
@@ -90,6 +92,7 @@ function GameItemRow({
   level?: number;
   transitions: GameTransition[];
   allItems: GameItem[];
+  showTransitions?: boolean;
   onEdit: (item: GameItem) => void;
   onDelete: (item: GameItem) => void;
   onAddChild: (parentId: string) => void;
@@ -104,18 +107,18 @@ function GameItemRow({
   const incomingTransitions = transitions.filter((t) => t.toItemId === item.id);
   const hasTransitions =
     outgoingTransitions.length > 0 || incomingTransitions.length > 0;
-  const shouldShowChevron = hasChildren || hasTransitions;
+  const shouldShowChevron = hasChildren || (showTransitions && hasTransitions);
 
   return (
     <div>
       <div
-        className="group flex items-center gap-2 rounded-md px-2 py-1.5 hover:bg-accent"
+        className="group flex items-center gap-2 rounded-md px-2 py-2 hover:bg-accent transition-colors"
         style={{ paddingLeft: `${level * 1.5 + 0.5}rem` }}
       >
         {shouldShowChevron ? (
           <Collapsible open={isOpen} onOpenChange={setIsOpen}>
             <CollapsibleTrigger asChild>
-              <Button variant="ghost" size="icon" className="h-6 w-6">
+              <Button variant="ghost" size="icon" className="h-6 w-6 shrink-0">
                 {isOpen ? (
                   <ChevronDown className="h-4 w-4" />
                 ) : (
@@ -125,73 +128,85 @@ function GameItemRow({
             </CollapsibleTrigger>
           </Collapsible>
         ) : (
-          <div className="h-6 w-6" />
+          <div className="h-6 w-6 shrink-0" />
         )}
         <div className="flex-1 min-w-0">
-          <div className="flex items-center gap-2">
+          <div className="flex items-center gap-2 flex-wrap">
             <span className="font-medium truncate">{item.name}</span>
-            {hasTransitions && (
-              <span className="text-muted-foreground text-xs">
+            {showTransitions && hasTransitions && (
+              <span className="text-muted-foreground text-xs whitespace-nowrap">
                 {outgoingTransitions.length} to · {incomingTransitions.length}{" "}
                 from
               </span>
             )}
           </div>
           {item.notes && (
-            <p className="text-muted-foreground text-sm truncate">
+            <p className="text-muted-foreground text-sm mt-0.5 truncate">
               {item.notes}
             </p>
           )}
         </div>
-        <DropdownMenu>
-          <DropdownMenuTrigger asChild>
-            <Button
-              variant="ghost"
-              size="icon"
-              className="h-8 w-8 opacity-0 group-hover:opacity-100"
-            >
-              <MoreVertical className="h-4 w-4" />
-            </Button>
-          </DropdownMenuTrigger>
-          <DropdownMenuContent align="end">
-            <DropdownMenuItem onClick={() => onAddChild(item.id)}>
-              <Plus className="mr-2 h-4 w-4" />
-              Add Child
-            </DropdownMenuItem>
-            <DropdownMenuItem onClick={() => onAddTransition(item.id)}>
-              <ArrowRight className="mr-2 h-4 w-4" />
-              Add Transition
-            </DropdownMenuItem>
-            <DropdownMenuSeparator />
-            <DropdownMenuItem onClick={() => onEdit(item)}>
-              <Edit className="mr-2 h-4 w-4" />
-              Edit
-            </DropdownMenuItem>
-            <DropdownMenuItem
-              onClick={() => onDelete(item)}
-              className="text-destructive"
-            >
-              <Trash2 className="mr-2 h-4 w-4" />
-              Delete
-            </DropdownMenuItem>
-          </DropdownMenuContent>
-        </DropdownMenu>
+        <div className="flex items-center gap-1 shrink-0">
+          <Button
+            variant="ghost"
+            size="icon"
+            className="h-7 w-7 opacity-0 group-hover:opacity-100 transition-opacity"
+            onClick={() => onAddChild(item.id)}
+            title="Add Child"
+          >
+            <Plus className="h-4 w-4" />
+          </Button>
+          <Button
+            variant="ghost"
+            size="icon"
+            className="h-7 w-7 opacity-0 group-hover:opacity-100 transition-opacity"
+            onClick={() => onAddTransition(item.id)}
+            title="Manage Transitions"
+          >
+            <ArrowRight className="h-4 w-4" />
+          </Button>
+          <DropdownMenu>
+            <DropdownMenuTrigger asChild>
+              <Button
+                variant="ghost"
+                size="icon"
+                className="h-7 w-7 opacity-0 group-hover:opacity-100 transition-opacity"
+              >
+                <MoreVertical className="h-4 w-4" />
+              </Button>
+            </DropdownMenuTrigger>
+            <DropdownMenuContent align="end">
+              <DropdownMenuItem onClick={() => onEdit(item)}>
+                <Edit className="mr-2 h-4 w-4" />
+                Edit
+              </DropdownMenuItem>
+              <DropdownMenuItem
+                onClick={() => onDelete(item)}
+                className="text-destructive"
+              >
+                <Trash2 className="mr-2 h-4 w-4" />
+                Delete
+              </DropdownMenuItem>
+            </DropdownMenuContent>
+          </DropdownMenu>
+        </div>
       </div>
       {shouldShowChevron && (
         <Collapsible open={isOpen} onOpenChange={setIsOpen}>
           <CollapsibleContent>
             <div
-              className="space-y-2"
-              style={{ paddingLeft: `${level * 1.5 + 1}rem` }}
+              className="space-y-3 pt-2 pb-1"
+              style={{ paddingLeft: `${level * 1.5 + 1.5}rem` }}
             >
-              {hasTransitions && (
-                <div className="space-y-2 py-2">
+              {showTransitions && hasTransitions && (
+                <div className="space-y-3 pb-2 border-b border-border/50">
                   {outgoingTransitions.length > 0 && (
-                    <div>
-                      <div className="text-xs font-medium text-muted-foreground mb-1">
+                    <div className="space-y-1.5">
+                      <div className="flex items-center gap-1.5 text-xs font-semibold text-muted-foreground uppercase tracking-wide">
+                        <ArrowRight className="h-3 w-3" />
                         To:
                       </div>
-                      <div className="space-y-1">
+                      <div className="space-y-1.5 pl-4">
                         {outgoingTransitions.map((transition) => {
                           const toItem = allItems.find(
                             (item) => item.id === transition.toItemId
@@ -199,9 +214,16 @@ function GameItemRow({
                           return (
                             <div
                               key={transition.id}
-                              className="text-sm text-muted-foreground"
+                              className="text-sm text-foreground"
                             >
-                              {toItem?.name ?? "Unknown"}
+                              <div className="font-medium">
+                                {toItem?.name ?? "Unknown"}
+                              </div>
+                              {transition.notes && (
+                                <p className="text-muted-foreground text-xs mt-0.5">
+                                  {transition.notes}
+                                </p>
+                              )}
                             </div>
                           );
                         })}
@@ -209,11 +231,12 @@ function GameItemRow({
                     </div>
                   )}
                   {incomingTransitions.length > 0 && (
-                    <div>
-                      <div className="text-xs font-medium text-muted-foreground mb-1">
+                    <div className="space-y-1.5">
+                      <div className="flex items-center gap-1.5 text-xs font-semibold text-muted-foreground uppercase tracking-wide">
+                        <ArrowLeft className="h-3 w-3" />
                         From:
                       </div>
-                      <div className="space-y-1">
+                      <div className="space-y-1.5 pl-4">
                         {incomingTransitions.map((transition) => {
                           const fromItem = allItems.find(
                             (item) => item.id === transition.fromItemId
@@ -221,9 +244,16 @@ function GameItemRow({
                           return (
                             <div
                               key={transition.id}
-                              className="text-sm text-muted-foreground"
+                              className="text-sm text-foreground"
                             >
-                              {fromItem?.name ?? "Unknown"}
+                              <div className="font-medium">
+                                {fromItem?.name ?? "Unknown"}
+                              </div>
+                              {transition.notes && (
+                                <p className="text-muted-foreground text-xs mt-0.5">
+                                  {transition.notes}
+                                </p>
+                              )}
                             </div>
                           );
                         })}
@@ -233,7 +263,7 @@ function GameItemRow({
                 </div>
               )}
               {hasChildren && (
-                <div>
+                <div className="space-y-1">
                   {item.children!.map((child) => (
                     <GameItemRow
                       key={child.id}
@@ -241,6 +271,7 @@ function GameItemRow({
                       level={level + 1}
                       transitions={transitions}
                       allItems={allItems}
+                      showTransitions={showTransitions}
                       onEdit={onEdit}
                       onDelete={onDelete}
                       onAddChild={onAddChild}
@@ -346,6 +377,7 @@ function TransitionDialog({
   allItems,
   transitions,
   onSubmit,
+  onUpdate,
   onDelete,
   isSubmitting,
 }: {
@@ -355,15 +387,24 @@ function TransitionDialog({
   allItems: GameItem[];
   transitions: GameTransition[];
   onSubmit: (toItemId: string, notes?: string | null) => void;
+  onUpdate: (transitionId: string, notes?: string | null) => void;
   onDelete: (transitionId: string) => void;
   isSubmitting: boolean;
 }) {
   const [toItemId, setToItemId] = useState("");
   const [notes, setNotes] = useState("");
   const [showPicker, setShowPicker] = useState(false);
+  const [editingTransitionId, setEditingTransitionId] = useState<string | null>(
+    null
+  );
+  const [editNotes, setEditNotes] = useState("");
 
+  const fromItem = allItems.find((item) => item.id === fromItemId);
   const outgoingTransitions = transitions.filter(
     (t) => t.fromItemId === fromItemId
+  );
+  const incomingTransitions = transitions.filter(
+    (t) => t.toItemId === fromItemId
   );
 
   const handleSubmit = (e: React.FormEvent) => {
@@ -375,64 +416,251 @@ function TransitionDialog({
     }
   };
 
+  const handleStartEdit = (transition: GameTransition) => {
+    setEditingTransitionId(transition.id);
+    setEditNotes(transition.notes ?? "");
+  };
+
+  const handleSaveEdit = (transitionId: string) => {
+    onUpdate(transitionId, editNotes.trim() || null);
+    setEditingTransitionId(null);
+    setEditNotes("");
+  };
+
+  const handleCancelEdit = () => {
+    setEditingTransitionId(null);
+    setEditNotes("");
+  };
+
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
       <DialogContent className="max-w-2xl">
         <DialogHeader>
-          <DialogTitle>Transitions</DialogTitle>
+          <DialogTitle>
+            Transitions {fromItem ? `from ${fromItem.name}` : ""}
+          </DialogTitle>
           <DialogDescription>
             Define when and how you move from this position to others
           </DialogDescription>
         </DialogHeader>
-        <div className="space-y-4 py-4">
-          <div className="space-y-2">
-            <Label>Outgoing Transitions</Label>
-            {outgoingTransitions.length === 0 ? (
-              <p className="text-muted-foreground text-sm">
-                No transitions yet. Add one below.
-              </p>
-            ) : (
-              <ScrollArea className="h-32 rounded-md border p-4">
-                <div className="space-y-2">
-                  {outgoingTransitions.map((transition) => {
-                    const toItem = allItems.find(
-                      (item) => item.id === transition.toItemId
-                    );
-                    return (
-                      <div
-                        key={transition.id}
-                        className="flex items-center justify-between rounded-md border p-2"
-                      >
-                        <div className="flex-1">
-                          <div className="flex items-center gap-2">
-                            <ArrowRight className="h-4 w-4" />
-                            <span className="font-medium">
-                              {toItem?.name ?? "Unknown"}
-                            </span>
-                          </div>
-                          {transition.notes && (
-                            <p className="text-muted-foreground text-sm">
-                              {transition.notes}
-                            </p>
+        <div className="space-y-6 py-4">
+          <div className="space-y-4">
+            <div className="space-y-2">
+              <Label className="flex items-center gap-2">
+                <ArrowRight className="h-4 w-4" />
+                Outgoing Transitions
+              </Label>
+              {outgoingTransitions.length === 0 ? (
+                <p className="text-muted-foreground text-sm pl-6">
+                  No outgoing transitions yet. Add one below.
+                </p>
+              ) : (
+                <ScrollArea
+                  className={`${
+                    editingTransitionId &&
+                    outgoingTransitions.some(
+                      (t) => t.id === editingTransitionId
+                    )
+                      ? "h-64"
+                      : "h-40"
+                  } rounded-md border p-4`}
+                >
+                  <div className="space-y-2">
+                    {outgoingTransitions.map((transition) => {
+                      const toItem = allItems.find(
+                        (item) => item.id === transition.toItemId
+                      );
+                      const isEditing = editingTransitionId === transition.id;
+                      return (
+                        <div
+                          key={transition.id}
+                          className="flex items-start justify-between rounded-md border p-3 bg-card"
+                        >
+                          {isEditing ? (
+                            <div className="flex-1 space-y-2">
+                              <div className="flex items-center gap-2">
+                                <ArrowRight className="h-4 w-4 shrink-0" />
+                                <span className="font-medium">
+                                  {toItem?.name ?? "Unknown"}
+                                </span>
+                              </div>
+                              <Textarea
+                                value={editNotes}
+                                onChange={(e) => setEditNotes(e.target.value)}
+                                placeholder="Add notes about this transition..."
+                                rows={2}
+                                maxLength={1000}
+                                className="resize-none text-sm"
+                              />
+                              <div className="flex gap-2">
+                                <Button
+                                  size="sm"
+                                  onClick={() => handleSaveEdit(transition.id)}
+                                >
+                                  Save
+                                </Button>
+                                <Button
+                                  size="sm"
+                                  variant="outline"
+                                  onClick={handleCancelEdit}
+                                >
+                                  Cancel
+                                </Button>
+                              </div>
+                            </div>
+                          ) : (
+                            <>
+                              <div className="flex-1">
+                                <div className="flex items-center gap-2">
+                                  <ArrowRight className="h-4 w-4 shrink-0" />
+                                  <span className="font-medium">
+                                    {toItem?.name ?? "Unknown"}
+                                  </span>
+                                </div>
+                                {transition.notes && (
+                                  <p className="text-muted-foreground text-sm mt-1 ml-6">
+                                    {transition.notes}
+                                  </p>
+                                )}
+                              </div>
+                              <div className="flex gap-1 ml-2">
+                                <Button
+                                  variant="ghost"
+                                  size="icon"
+                                  className="h-8 w-8"
+                                  onClick={() => handleStartEdit(transition)}
+                                >
+                                  <Edit className="h-4 w-4" />
+                                </Button>
+                                <Button
+                                  variant="ghost"
+                                  size="icon"
+                                  className="h-8 w-8"
+                                  onClick={() => onDelete(transition.id)}
+                                >
+                                  <Trash2 className="h-4 w-4" />
+                                </Button>
+                              </div>
+                            </>
                           )}
                         </div>
-                        <Button
-                          variant="ghost"
-                          size="icon"
-                          onClick={() => onDelete(transition.id)}
+                      );
+                    })}
+                  </div>
+                </ScrollArea>
+              )}
+            </div>
+
+            <div className="space-y-2">
+              <Label className="flex items-center gap-2">
+                <ArrowLeft className="h-4 w-4" />
+                Incoming Transitions
+              </Label>
+              {incomingTransitions.length === 0 ? (
+                <p className="text-muted-foreground text-sm pl-6">
+                  No incoming transitions.
+                </p>
+              ) : (
+                <ScrollArea
+                  className={`${
+                    editingTransitionId &&
+                    incomingTransitions.some(
+                      (t) => t.id === editingTransitionId
+                    )
+                      ? "h-64"
+                      : "h-40"
+                  } rounded-md border p-4`}
+                >
+                  <div className="space-y-2">
+                    {incomingTransitions.map((transition) => {
+                      const fromItem = allItems.find(
+                        (item) => item.id === transition.fromItemId
+                      );
+                      const isEditing = editingTransitionId === transition.id;
+                      return (
+                        <div
+                          key={transition.id}
+                          className="flex items-start justify-between rounded-md border p-3 bg-card"
                         >
-                          <Trash2 className="h-4 w-4" />
-                        </Button>
-                      </div>
-                    );
-                  })}
-                </div>
-              </ScrollArea>
-            )}
+                          {isEditing ? (
+                            <div className="flex-1 space-y-2">
+                              <div className="flex items-center gap-2">
+                                <ArrowLeft className="h-4 w-4 shrink-0" />
+                                <span className="font-medium">
+                                  {fromItem?.name ?? "Unknown"}
+                                </span>
+                              </div>
+                              <Textarea
+                                value={editNotes}
+                                onChange={(e) => setEditNotes(e.target.value)}
+                                placeholder="Add notes about this transition..."
+                                rows={2}
+                                maxLength={1000}
+                                className="resize-none text-sm"
+                              />
+                              <div className="flex gap-2">
+                                <Button
+                                  size="sm"
+                                  onClick={() => handleSaveEdit(transition.id)}
+                                >
+                                  Save
+                                </Button>
+                                <Button
+                                  size="sm"
+                                  variant="outline"
+                                  onClick={handleCancelEdit}
+                                >
+                                  Cancel
+                                </Button>
+                              </div>
+                            </div>
+                          ) : (
+                            <>
+                              <div className="flex-1">
+                                <div className="flex items-center gap-2">
+                                  <ArrowLeft className="h-4 w-4 shrink-0" />
+                                  <span className="font-medium">
+                                    {fromItem?.name ?? "Unknown"}
+                                  </span>
+                                </div>
+                                {transition.notes && (
+                                  <p className="text-muted-foreground text-sm mt-1 ml-6">
+                                    {transition.notes}
+                                  </p>
+                                )}
+                              </div>
+                              <div className="flex gap-1 ml-2">
+                                <Button
+                                  variant="ghost"
+                                  size="icon"
+                                  className="h-8 w-8"
+                                  onClick={() => handleStartEdit(transition)}
+                                >
+                                  <Edit className="h-4 w-4" />
+                                </Button>
+                                <Button
+                                  variant="ghost"
+                                  size="icon"
+                                  className="h-8 w-8"
+                                  onClick={() => onDelete(transition.id)}
+                                >
+                                  <Trash2 className="h-4 w-4" />
+                                </Button>
+                              </div>
+                            </>
+                          )}
+                        </div>
+                      );
+                    })}
+                  </div>
+                </ScrollArea>
+              )}
+            </div>
           </div>
+
           <form onSubmit={handleSubmit} className="space-y-4 border-t pt-4">
             <div className="space-y-2">
-              <Label htmlFor="toItem">To</Label>
+              <Label htmlFor="toItem">Add Outgoing Transition</Label>
               <Popover open={showPicker} onOpenChange={setShowPicker}>
                 <PopoverTrigger asChild>
                   <Button
@@ -501,6 +729,7 @@ export function GamePage() {
     string | null
   >(null);
   const [parentId, setParentId] = useState<string | null>(null);
+  const [showTransitions, setShowTransitions] = useState(true);
 
   const { data: itemsData, isLoading: itemsLoading } = useGameItems();
   const { data: transitionsData } = useGameTransitions();
@@ -509,6 +738,7 @@ export function GamePage() {
   const updateItem = useUpdateGameItem();
   const deleteItem = useDeleteGameItem();
   const createTransition = useCreateGameTransition();
+  const updateTransition = useUpdateGameTransition();
   const deleteTransition = useDeleteGameTransition();
 
   const items = itemsData?.items ?? [];
@@ -595,6 +825,16 @@ export function GamePage() {
     }
   };
 
+  const handleUpdateTransition = (
+    transitionId: string,
+    notes?: string | null
+  ) => {
+    updateTransition.mutate({
+      id: transitionId,
+      input: { notes: notes ?? null },
+    });
+  };
+
   const handleDeleteTransition = (transitionId: string) => {
     deleteTransition.mutate(transitionId);
   };
@@ -621,7 +861,33 @@ export function GamePage() {
 
       <Card>
         <CardHeader>
-          <CardTitle>Positions & Techniques</CardTitle>
+          <div className="flex items-center justify-between">
+            <CardTitle>Positions & Techniques</CardTitle>
+            <div className="flex items-center gap-2">
+              <Label
+                htmlFor="show-transitions"
+                className="text-sm font-normal cursor-pointer"
+              >
+                Show Transitions
+              </Label>
+              <button
+                id="show-transitions"
+                type="button"
+                onClick={() => setShowTransitions(!showTransitions)}
+                className={`relative inline-flex h-6 w-11 items-center rounded-full transition-colors ${
+                  showTransitions ? "bg-primary" : "bg-muted"
+                }`}
+                role="switch"
+                aria-checked={showTransitions}
+              >
+                <span
+                  className={`inline-block h-4 w-4 transform rounded-full bg-white transition-transform ${
+                    showTransitions ? "translate-x-6" : "translate-x-1"
+                  }`}
+                />
+              </button>
+            </div>
+          </div>
         </CardHeader>
         <CardContent>
           {itemsLoading && (
@@ -657,6 +923,7 @@ export function GamePage() {
                   item={item}
                   transitions={transitions}
                   allItems={allItems}
+                  showTransitions={showTransitions}
                   onEdit={handleEditItem}
                   onDelete={handleDeleteClick}
                   onAddChild={(parentId) => {
@@ -695,6 +962,7 @@ export function GamePage() {
         allItems={allItems}
         transitions={transitions}
         onSubmit={handleCreateTransition}
+        onUpdate={handleUpdateTransition}
         onDelete={handleDeleteTransition}
         isSubmitting={createTransition.isPending}
       />
