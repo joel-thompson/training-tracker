@@ -3,5 +3,10 @@ alwaysApply: true
 ---
 
 use bun to run commands. you may need to run nvm use to use the correct version of node.
-ex: bun run dev instead of npm run dev.
-ex: nvm use && bun run command instead of npm run command.
+
+do not use bunx or npx to run linting or typechecking.
+
+examples:
+nvm use && bun lint
+nvm use && bun typecheck
+cd frontend && nvm use && bun lint
