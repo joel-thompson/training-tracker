@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useRef } from "react";
 import {
   Plus,
   Edit,
@@ -555,6 +555,7 @@ function TransitionDialog({
     null
   );
   const [editNotes, setEditNotes] = useState("");
+  const touchStartY = useRef(0);
 
   const fromItem = allItems.find((item) => item.id === fromItemId);
   const outgoingTransitions = transitions.filter(
@@ -831,25 +832,36 @@ function TransitionDialog({
                   </Button>
                 </PopoverTrigger>
                 <PopoverContent className="w-[400px] p-0">
-                  <ScrollArea className="h-64">
-                    <div className="p-2">
-                      {allItems
-                        .filter((item) => item.id !== fromItemId)
-                        .map((item) => (
-                          <Button
-                            key={item.id}
-                            variant="ghost"
-                            className="w-full justify-start"
-                            onClick={() => {
-                              setToItemId(item.id);
-                              setShowPicker(false);
-                            }}
-                          >
-                            {item.name}
-                          </Button>
-                        ))}
-                    </div>
-                  </ScrollArea>
+                  <div
+                    className="max-h-64 overflow-y-auto p-2"
+                    onWheel={(e) => {
+                      e.currentTarget.scrollTop += e.deltaY;
+                    }}
+                    onTouchStart={(e) => {
+                      touchStartY.current = e.touches[0].clientY;
+                    }}
+                    onTouchMove={(e) => {
+                      const delta = touchStartY.current - e.touches[0].clientY;
+                      e.currentTarget.scrollTop += delta;
+                      touchStartY.current = e.touches[0].clientY;
+                    }}
+                  >
+                    {allItems
+                      .filter((item) => item.id !== fromItemId)
+                      .map((item) => (
+                        <Button
+                          key={item.id}
+                          variant="ghost"
+                          className="w-full justify-start"
+                          onClick={() => {
+                            setToItemId(item.id);
+                            setShowPicker(false);
+                          }}
+                        >
+                          {item.name}
+                        </Button>
+                      ))}
+                  </div>
                 </PopoverContent>
               </Popover>
             </div>
@@ -892,6 +904,7 @@ function MoveToDialog({
 }) {
   const [selectedParentId, setSelectedParentId] = useState<string | null>(null);
   const [showPicker, setShowPicker] = useState(false);
+  const touchStartY = useRef(0);
 
   if (!item) return null;
 
@@ -972,28 +985,39 @@ function MoveToDialog({
                 </Button>
               </PopoverTrigger>
               <PopoverContent className="w-[400px] p-0">
-                <ScrollArea className="h-64">
-                  <div className="p-2">
-                    <Button
-                      variant="ghost"
-                      className="w-full justify-start"
-                      onClick={() => {
-                        setSelectedParentId(null);
+                <div
+                  className="max-h-64 overflow-y-auto p-2"
+                  onWheel={(e) => {
+                    e.currentTarget.scrollTop += e.deltaY;
+                  }}
+                  onTouchStart={(e) => {
+                    touchStartY.current = e.touches[0].clientY;
+                  }}
+                  onTouchMove={(e) => {
+                    const delta = touchStartY.current - e.touches[0].clientY;
+                    e.currentTarget.scrollTop += delta;
+                    touchStartY.current = e.touches[0].clientY;
+                  }}
+                >
+                  <Button
+                    variant="ghost"
+                    className="w-full justify-start"
+                    onClick={() => {
+                      setSelectedParentId(null);
+                      setShowPicker(false);
+                    }}
+                  >
+                    Root (top level)
+                  </Button>
+                  {validTargets
+                    .filter((target) => !target.parentId)
+                    .map((target) =>
+                      renderItemOption(target, 0, () => {
+                        setSelectedParentId(target.id);
                         setShowPicker(false);
-                      }}
-                    >
-                      Root (top level)
-                    </Button>
-                    {validTargets
-                      .filter((target) => !target.parentId)
-                      .map((target) =>
-                        renderItemOption(target, 0, () => {
-                          setSelectedParentId(target.id);
-                          setShowPicker(false);
-                        })
-                      )}
-                  </div>
-                </ScrollArea>
+                      })
+                    )}
+                </div>
               </PopoverContent>
             </Popover>
           </div>
