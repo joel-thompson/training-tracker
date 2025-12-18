@@ -1327,6 +1327,11 @@ export function GamePage() {
       />
 
       <ItemFormDialog
+        key={
+          editDialogOpen && editingItem
+            ? `edit-${editingItem.id}`
+            : "edit-closed"
+        }
         open={editDialogOpen}
         onOpenChange={setEditDialogOpen}
         item={editingItem ?? undefined}
