@@ -23,3 +23,7 @@ export const createGameTransitionSchema = z.object({
 export const updateGameTransitionSchema = z.object({
   notes: z.string().max(1000).optional().nullable(),
 });
+
+export const reorderGameItemSchema = z.object({
+  direction: z.enum(["up", "down"]),
+});

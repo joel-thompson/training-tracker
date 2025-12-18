@@ -4,6 +4,7 @@ import type {
   updateGameItemSchema,
   createGameTransitionSchema,
   updateGameTransitionSchema,
+  reorderGameItemSchema,
 } from "../validation/game";
 
 // Input types inferred from Zod schemas
@@ -15,6 +16,7 @@ export type CreateGameTransitionInput = z.infer<
 export type UpdateGameTransitionInput = z.infer<
   typeof updateGameTransitionSchema
 >;
+export type ReorderGameItemInput = z.infer<typeof reorderGameItemSchema>;
 
 // GameItem as it appears in API responses
 export interface GameItem {

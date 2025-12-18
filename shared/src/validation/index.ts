@@ -19,4 +19,5 @@ export {
   updateGameItemSchema,
   createGameTransitionSchema,
   updateGameTransitionSchema,
+  reorderGameItemSchema,
 } from "./game";

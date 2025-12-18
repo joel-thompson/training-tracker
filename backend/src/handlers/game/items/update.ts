@@ -34,7 +34,7 @@ export const updateGameItemHandler = async (c: Context) => {
     return c.json(errorResponse(ErrorCodes.NOT_FOUND, "Item not found"), 404);
   }
 
-  if (parsed.data.parentId !== undefined && parsed.data.parentId !== null) {
+  if (parsed.data.parentId != null) {
     const [parent] = await db
       .select()
       .from(gameItems)
@@ -58,6 +58,46 @@ export const updateGameItemHandler = async (c: Context) => {
         errorResponse(
           ErrorCodes.VALIDATION_ERROR,
           "Item cannot be its own parent"
+        ),
+        400
+      );
+    }
+
+    // Check for circular reference: ensure new parent is not a descendant
+    const allItems = await db
+      .select()
+      .from(gameItems)
+      .where(eq(gameItems.userId, userId));
+
+    function isDescendant(
+      itemId: string,
+      potentialParentId: string,
+      items: typeof allItems
+    ): boolean {
+      const itemMap = new Map<string, (typeof allItems)[0]>();
+      for (const item of items) {
+        itemMap.set(item.id, item);
+      }
+
+      function traverse(currentId: string): boolean {
+        const current = itemMap.get(currentId);
+        if (!current?.parentId) {
+          return false;
+        }
+        if (current.parentId === potentialParentId) {
+          return true;
+        }
+        return traverse(current.parentId);
+      }
+
+      return traverse(itemId);
+    }
+
+    if (isDescendant(parsed.data.parentId, itemId, allItems)) {
+      return c.json(
+        errorResponse(
+          ErrorCodes.VALIDATION_ERROR,
+          "Cannot move item into its own descendant"
         ),
         400
       );

@@ -5,16 +5,19 @@ import {
   Trash2,
   ChevronRight,
   ChevronDown,
+  ChevronUp,
   MoreVertical,
   ArrowRight,
   ArrowLeft,
   Eye,
+  FolderPlus,
 } from "lucide-react";
 import { useGameItems } from "@/hooks/game/useGameItems";
 import { useGameTransitions } from "@/hooks/game/useGameTransitions";
 import { useCreateGameItem } from "@/hooks/game/useCreateGameItem";
 import { useUpdateGameItem } from "@/hooks/game/useUpdateGameItem";
 import { useDeleteGameItem } from "@/hooks/game/useDeleteGameItem";
+import { useReorderGameItem } from "@/hooks/game/useReorderGameItem";
 import { useCreateGameTransition } from "@/hooks/game/useCreateGameTransition";
 import { useDeleteGameTransition } from "@/hooks/game/useDeleteGameTransition";
 import { useUpdateGameTransition } from "@/hooks/game/useUpdateGameTransition";
@@ -89,6 +92,12 @@ function GameItemRow({
   onAddChild,
   onAddTransition,
   onDeleteTransition,
+  onMoveTo,
+  onMoveUp,
+  onMoveDown,
+  canMoveUp = false,
+  canMoveDown = false,
+  getSiblings,
 }: {
   item: GameItem;
   level?: number;
@@ -101,6 +110,12 @@ function GameItemRow({
   onAddChild: (parentId: string) => void;
   onAddTransition: (fromItemId: string) => void;
   onDeleteTransition: (transitionId: string) => void;
+  onMoveTo: (item: GameItem) => void;
+  onMoveUp: (item: GameItem) => void;
+  onMoveDown: (item: GameItem) => void;
+  canMoveUp?: boolean;
+  canMoveDown?: boolean;
+  getSiblings: (item: GameItem) => GameItem[];
 }) {
   const [isOpen, setIsOpen] = useState(false);
   const hasChildren = (item.children?.length ?? 0) > 0;
@@ -168,6 +183,24 @@ function GameItemRow({
               <DropdownMenuItem onClick={() => onAddTransition(item.id)}>
                 <ArrowRight className="mr-2 h-4 w-4" />
                 Add Transition
+              </DropdownMenuItem>
+              <DropdownMenuItem onClick={() => onMoveTo(item)}>
+                <FolderPlus className="mr-2 h-4 w-4" />
+                Move to...
+              </DropdownMenuItem>
+              <DropdownMenuItem
+                onClick={() => onMoveUp(item)}
+                disabled={!canMoveUp}
+              >
+                <ChevronUp className="mr-2 h-4 w-4" />
+                Move Up
+              </DropdownMenuItem>
+              <DropdownMenuItem
+                onClick={() => onMoveDown(item)}
+                disabled={!canMoveDown}
+              >
+                <ChevronDown className="mr-2 h-4 w-4" />
+                Move Down
               </DropdownMenuItem>
               <DropdownMenuItem onClick={() => onEdit(item)}>
                 <Edit className="mr-2 h-4 w-4" />
@@ -257,22 +290,37 @@ function GameItemRow({
               )}
               {hasChildren && (
                 <div className="space-y-1">
-                  {item.children!.map((child) => (
-                    <GameItemRow
-                      key={child.id}
-                      item={child}
-                      level={level + 1}
-                      transitions={transitions}
-                      allItems={allItems}
-                      showTransitions={showTransitions}
-                      onEdit={onEdit}
-                      onDelete={onDelete}
-                      onView={onView}
-                      onAddChild={onAddChild}
-                      onAddTransition={onAddTransition}
-                      onDeleteTransition={onDeleteTransition}
-                    />
-                  ))}
+                  {item.children!.map((child) => {
+                    const siblings = getSiblings(child);
+                    const sortedSiblings = [...siblings].sort(
+                      (a, b) => a.displayOrder - b.displayOrder
+                    );
+                    const currentIndex = sortedSiblings.findIndex(
+                      (s) => s.id === child.id
+                    );
+                    return (
+                      <GameItemRow
+                        key={child.id}
+                        item={child}
+                        level={level + 1}
+                        transitions={transitions}
+                        allItems={allItems}
+                        showTransitions={showTransitions}
+                        onEdit={onEdit}
+                        onDelete={onDelete}
+                        onView={onView}
+                        onAddChild={onAddChild}
+                        onAddTransition={onAddTransition}
+                        onDeleteTransition={onDeleteTransition}
+                        onMoveTo={onMoveTo}
+                        onMoveUp={onMoveUp}
+                        onMoveDown={onMoveDown}
+                        canMoveUp={currentIndex > 0}
+                        canMoveDown={currentIndex < sortedSiblings.length - 1}
+                        getSiblings={getSiblings}
+                      />
+                    );
+                  })}
                 </div>
               )}
             </div>
@@ -785,6 +833,151 @@ function TransitionDialog({
   );
 }
 
+function MoveToDialog({
+  open,
+  onOpenChange,
+  item,
+  allItems,
+  onSubmit,
+  isSubmitting,
+}: {
+  open: boolean;
+  onOpenChange: (open: boolean) => void;
+  item: GameItem | null;
+  allItems: GameItem[];
+  onSubmit: (parentId: string | null) => void;
+  isSubmitting: boolean;
+}) {
+  const [selectedParentId, setSelectedParentId] = useState<string | null>(null);
+  const [showPicker, setShowPicker] = useState(false);
+
+  if (!item) return null;
+
+  function getDescendantIds(item: GameItem): Set<string> {
+    const ids = new Set<string>([item.id]);
+    if (item.children) {
+      for (const child of item.children) {
+        const childIds = getDescendantIds(child);
+        childIds.forEach((id) => ids.add(id));
+      }
+    }
+    return ids;
+  }
+
+  const descendantIds = getDescendantIds(item);
+  const validTargets = allItems.filter(
+    (target) => !descendantIds.has(target.id) && target.id !== item.id
+  );
+
+  function renderItemOption(
+    targetItem: GameItem,
+    level = 0,
+    onClick: () => void
+  ) {
+    return (
+      <div key={targetItem.id}>
+        <Button
+          variant="ghost"
+          className="w-full justify-start"
+          onClick={onClick}
+          style={{ paddingLeft: `${level * 1.5 + 0.5}rem` }}
+        >
+          {targetItem.name}
+        </Button>
+        {targetItem.children?.map((child) =>
+          renderItemOption(child, level + 1, () => {
+            setSelectedParentId(child.id);
+            setShowPicker(false);
+          })
+        )}
+      </div>
+    );
+  }
+
+  const handleSubmit = () => {
+    onSubmit(selectedParentId);
+    setSelectedParentId(null);
+  };
+
+  const selectedItem = selectedParentId
+    ? allItems.find((i) => i.id === selectedParentId)
+    : null;
+
+  return (
+    <Dialog open={open} onOpenChange={onOpenChange}>
+      <DialogContent>
+        <DialogHeader>
+          <DialogTitle>Move {item.name}</DialogTitle>
+          <DialogDescription>
+            Select a new parent for this item. Choose "Move to root" to make it
+            a top-level item.
+          </DialogDescription>
+        </DialogHeader>
+        <div className="space-y-4 py-4">
+          <div className="space-y-2">
+            <Label>Target Position</Label>
+            <Popover open={showPicker} onOpenChange={setShowPicker}>
+              <PopoverTrigger asChild>
+                <Button
+                  variant="outline"
+                  className="w-full justify-start"
+                  type="button"
+                >
+                  {selectedItem
+                    ? selectedItem.name
+                    : selectedParentId === null
+                    ? "Root (top level)"
+                    : "Select target position..."}
+                </Button>
+              </PopoverTrigger>
+              <PopoverContent className="w-[400px] p-0">
+                <ScrollArea className="h-64">
+                  <div className="p-2">
+                    <Button
+                      variant="ghost"
+                      className="w-full justify-start"
+                      onClick={() => {
+                        setSelectedParentId(null);
+                        setShowPicker(false);
+                      }}
+                    >
+                      Root (top level)
+                    </Button>
+                    {validTargets
+                      .filter((target) => !target.parentId)
+                      .map((target) =>
+                        renderItemOption(target, 0, () => {
+                          setSelectedParentId(target.id);
+                          setShowPicker(false);
+                        })
+                      )}
+                  </div>
+                </ScrollArea>
+              </PopoverContent>
+            </Popover>
+          </div>
+        </div>
+        <DialogFooter>
+          <Button
+            type="button"
+            variant="outline"
+            onClick={() => {
+              onOpenChange(false);
+              setSelectedParentId(null);
+            }}
+            disabled={isSubmitting}
+          >
+            Cancel
+          </Button>
+          <Button type="button" onClick={handleSubmit} disabled={isSubmitting}>
+            {isSubmitting ? "Moving..." : "Move"}
+          </Button>
+        </DialogFooter>
+      </DialogContent>
+    </Dialog>
+  );
+}
+
 export function GamePage() {
   const [createDialogOpen, setCreateDialogOpen] = useState(false);
   const [editDialogOpen, setEditDialogOpen] = useState(false);
@@ -798,7 +991,9 @@ export function GamePage() {
     string | null
   >(null);
   const [parentId, setParentId] = useState<string | null>(null);
-  const [showTransitions, setShowTransitions] = useState(true);
+  const [showTransitions, setShowTransitions] = useState(false);
+  const [moveToDialogOpen, setMoveToDialogOpen] = useState(false);
+  const [movingItem, setMovingItem] = useState<GameItem | null>(null);
 
   const { data: itemsData, isLoading: itemsLoading } = useGameItems();
   const { data: transitionsData } = useGameTransitions();
@@ -806,6 +1001,7 @@ export function GamePage() {
   const createItem = useCreateGameItem();
   const updateItem = useUpdateGameItem();
   const deleteItem = useDeleteGameItem();
+  const reorderItem = useReorderGameItem();
   const createTransition = useCreateGameTransition();
   const updateTransition = useUpdateGameTransition();
   const deleteTransition = useDeleteGameTransition();
@@ -913,6 +1109,58 @@ export function GamePage() {
     setViewDialogOpen(true);
   };
 
+  const handleMoveTo = (item: GameItem) => {
+    setMovingItem(item);
+    setMoveToDialogOpen(true);
+  };
+
+  const handleMoveToSubmit = (parentId: string | null) => {
+    if (movingItem) {
+      updateItem.mutate(
+        {
+          id: movingItem.id,
+          input: { parentId },
+        },
+        {
+          onSuccess: () => {
+            setMoveToDialogOpen(false);
+            setMovingItem(null);
+          },
+        }
+      );
+    }
+  };
+
+  function findItemInTree(tree: GameItem[], id: string): GameItem | undefined {
+    for (const item of tree) {
+      if (item.id === id) {
+        return item;
+      }
+      if (item.children) {
+        const found = findItemInTree(item.children, id);
+        if (found) return found;
+      }
+    }
+    return undefined;
+  }
+
+  function getSiblings(item: GameItem): GameItem[] {
+    const parentId = item.parentId;
+    if (parentId === null) {
+      return items;
+    }
+    const parent = findItemInTree(items, parentId);
+    return parent?.children ?? [];
+  }
+
+  const handleMoveUp = (item: GameItem) => {
+    reorderItem.mutate({ id: item.id, direction: "up" });
+  };
+
+  const handleMoveDown = (item: GameItem) => {
+    reorderItem.mutate({ id: item.id, direction: "down" });
+  };
+
   return (
     <div className="space-y-6">
       <div className="flex items-center justify-between">
@@ -991,24 +1239,39 @@ export function GamePage() {
           )}
           {!itemsLoading && items.length > 0 && (
             <div className="space-y-1">
-              {items.map((item) => (
-                <GameItemRow
-                  key={item.id}
-                  item={item}
-                  transitions={transitions}
-                  allItems={allItems}
-                  showTransitions={showTransitions}
-                  onEdit={handleEditItem}
-                  onDelete={handleDeleteClick}
-                  onView={handleViewItem}
-                  onAddChild={(parentId) => {
-                    setParentId(parentId);
-                    setCreateDialogOpen(true);
-                  }}
-                  onAddTransition={handleAddTransition}
-                  onDeleteTransition={handleDeleteTransition}
-                />
-              ))}
+              {items.map((item) => {
+                const siblings = getSiblings(item);
+                const sortedSiblings = [...siblings].sort(
+                  (a, b) => a.displayOrder - b.displayOrder
+                );
+                const currentIndex = sortedSiblings.findIndex(
+                  (s) => s.id === item.id
+                );
+                return (
+                  <GameItemRow
+                    key={item.id}
+                    item={item}
+                    transitions={transitions}
+                    allItems={allItems}
+                    showTransitions={showTransitions}
+                    onEdit={handleEditItem}
+                    onDelete={handleDeleteClick}
+                    onView={handleViewItem}
+                    onAddChild={(parentId) => {
+                      setParentId(parentId);
+                      setCreateDialogOpen(true);
+                    }}
+                    onAddTransition={handleAddTransition}
+                    onDeleteTransition={handleDeleteTransition}
+                    onMoveTo={handleMoveTo}
+                    onMoveUp={handleMoveUp}
+                    onMoveDown={handleMoveDown}
+                    canMoveUp={currentIndex > 0}
+                    canMoveDown={currentIndex < sortedSiblings.length - 1}
+                    getSiblings={getSiblings}
+                  />
+                );
+              })}
             </div>
           )}
         </CardContent>
@@ -1051,6 +1314,20 @@ export function GamePage() {
           }
         }}
         item={viewingItem}
+      />
+
+      <MoveToDialog
+        open={moveToDialogOpen}
+        onOpenChange={(open) => {
+          setMoveToDialogOpen(open);
+          if (!open) {
+            setMovingItem(null);
+          }
+        }}
+        item={movingItem}
+        allItems={allItems}
+        onSubmit={handleMoveToSubmit}
+        isSubmitting={updateItem.isPending}
       />
 
       <AlertDialog open={deleteDialogOpen} onOpenChange={setDeleteDialogOpen}>
