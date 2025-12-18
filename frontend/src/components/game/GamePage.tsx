@@ -64,6 +64,50 @@ import { Textarea } from "@/components/ui/textarea";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import type { GameItem, GameTransition } from "shared/types";
 
+// Tailwind padding classes for tree indentation (level * 0.5rem + base)
+const ITEM_PADDING = [
+  "pl-2",
+  "pl-4",
+  "pl-6",
+  "pl-8",
+  "pl-10",
+  "pl-12",
+  "pl-14",
+  "pl-16",
+] as const;
+const CONTENT_PADDING = [
+  "pl-6",
+  "pl-8",
+  "pl-10",
+  "pl-12",
+  "pl-14",
+  "pl-16",
+  "pl-18",
+  "pl-20",
+] as const;
+const NESTED_PADDING = [
+  "pl-0",
+  "pl-2",
+  "pl-4",
+  "pl-6",
+  "pl-8",
+  "pl-10",
+  "pl-12",
+  "pl-14",
+] as const;
+
+function getItemPadding(level: number) {
+  return ITEM_PADDING[Math.min(level, ITEM_PADDING.length - 1)];
+}
+
+function getContentPadding(level: number) {
+  return CONTENT_PADDING[Math.min(level, CONTENT_PADDING.length - 1)];
+}
+
+function getNestedPadding(level: number) {
+  return NESTED_PADDING[Math.min(level, NESTED_PADDING.length - 1)];
+}
+
 function flattenItems(items: GameItem[]): GameItem[] {
   const result: GameItem[] = [];
   function traverse(item: GameItem) {
@@ -130,8 +174,9 @@ function GameItemRow({
   return (
     <div>
       <div
-        className="group flex items-center gap-2 rounded-md px-2 py-2 hover:bg-accent transition-colors"
-        style={{ paddingLeft: `${level * 1.5 + 0.5}rem` }}
+        className={`group flex items-center gap-2 rounded-md px-2 py-2 hover:bg-accent transition-colors ${getItemPadding(
+          level
+        )}`}
       >
         {shouldShowChevron ? (
           <Collapsible open={isOpen} onOpenChange={setIsOpen}>
@@ -220,10 +265,7 @@ function GameItemRow({
       {shouldShowChevron && (
         <Collapsible open={isOpen} onOpenChange={setIsOpen}>
           <CollapsibleContent>
-            <div
-              className="space-y-3 pt-2 pb-1"
-              style={{ paddingLeft: `${level * 1.5 + 1.5}rem` }}
-            >
+            <div className={`space-y-3 pt-2 pb-1 ${getContentPadding(level)}`}>
               {showTransitions && hasTransitions && (
                 <div className="space-y-3 pb-2 border-b border-border/50">
                   {outgoingTransitions.length > 0 && (
@@ -427,7 +469,7 @@ function ViewItemDialog({
     if (!children || children.length === 0) return null;
 
     return (
-      <div className="space-y-2" style={{ paddingLeft: `${level * 1.5}rem` }}>
+      <div className={`space-y-2 ${getNestedPadding(level)}`}>
         {children.map((child) => (
           <div key={child.id} className="border-l-2 border-border pl-4 py-2">
             <div className="font-medium">{child.name}</div>
@@ -878,9 +920,8 @@ function MoveToDialog({
       <div key={targetItem.id}>
         <Button
           variant="ghost"
-          className="w-full justify-start"
+          className={`w-full justify-start ${getItemPadding(level)}`}
           onClick={onClick}
-          style={{ paddingLeft: `${level * 1.5 + 0.5}rem` }}
         >
           {targetItem.name}
         </Button>
