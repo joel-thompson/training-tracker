@@ -40,6 +40,7 @@ export type {
   UpdateGameItemInput,
   CreateGameTransitionInput,
   UpdateGameTransitionInput,
+  ReorderGameItemInput,
   GameItem,
   GameTransition,
   ListGameItemsResponse,
