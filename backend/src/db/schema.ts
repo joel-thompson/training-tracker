@@ -30,6 +30,13 @@ export const itemTypeEnum = pgEnum("item_type", [
   "question",
 ]);
 
+export const goalCategoryEnum = pgEnum("goal_category", [
+  "bottom",
+  "top",
+  "submission",
+  "escape",
+]);
+
 export const trainingSessions = pgTable("training_sessions", {
   id: uuid("id").defaultRandom().primaryKey(),
   userId: text("user_id").notNull(),
@@ -57,6 +64,8 @@ export const trainingGoals = pgTable("training_goals", {
   id: uuid("id").defaultRandom().primaryKey(),
   userId: text("user_id").notNull(),
   goalText: text("goal_text").notNull(),
+  category: goalCategoryEnum("category"),
+  notes: text("notes"),
   isActive: boolean("is_active").notNull().default(true),
   createdAt: timestamp("created_at").defaultNow().notNull(),
   completedAt: timestamp("completed_at"),

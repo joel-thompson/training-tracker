@@ -28,6 +28,8 @@ export const getGoalHandler = async (c: Context) => {
     id: goal.id,
     userId: goal.userId,
     goalText: goal.goalText,
+    category: goal.category,
+    notes: goal.notes,
     isActive: goal.isActive,
     createdAt: goal.createdAt.toISOString(),
     completedAt: goal.completedAt?.toISOString() ?? null,

@@ -57,12 +57,22 @@ export const listGoalsHandler = async (c: Context) => {
     }
   }
 
-  // Fetch goals
+  // Fetch goals with category-based sorting
+  // Order: bottom, top, submission, escape, then null (uncategorized)
   const goals = await db
     .select()
     .from(trainingGoals)
     .where(and(...conditions))
-    .orderBy(desc(trainingGoals.createdAt))
+    .orderBy(
+      sql`CASE 
+        WHEN ${trainingGoals.category} = 'bottom' THEN 1
+        WHEN ${trainingGoals.category} = 'top' THEN 2
+        WHEN ${trainingGoals.category} = 'submission' THEN 3
+        WHEN ${trainingGoals.category} = 'escape' THEN 4
+        ELSE 5
+      END`,
+      desc(trainingGoals.createdAt)
+    )
     .limit(limit + 1);
 
   const hasMore = goals.length > limit;
@@ -76,6 +86,8 @@ export const listGoalsHandler = async (c: Context) => {
       id: goal.id,
       userId: goal.userId,
       goalText: goal.goalText,
+      category: goal.category,
+      notes: goal.notes,
       isActive: goal.isActive,
       createdAt: goal.createdAt.toISOString(),
       completedAt: goal.completedAt?.toISOString() ?? null,

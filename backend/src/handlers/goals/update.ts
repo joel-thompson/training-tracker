@@ -35,9 +35,22 @@ export const updateGoalHandler = async (c: Context) => {
     return c.json(errorResponse(ErrorCodes.NOT_FOUND, "Goal not found"), 404);
   }
 
+  const updateData: {
+    goalText: string;
+    category?: string | null;
+    notes?: string | null;
+  } = { goalText: parsed.data.goalText };
+
+  if (parsed.data.category !== undefined) {
+    updateData.category = parsed.data.category ?? null;
+  }
+  if (parsed.data.notes !== undefined) {
+    updateData.notes = parsed.data.notes ?? null;
+  }
+
   const [updated] = await db
     .update(trainingGoals)
-    .set({ goalText: parsed.data.goalText })
+    .set(updateData)
     .where(eq(trainingGoals.id, goalId))
     .returning();
 
@@ -45,6 +58,8 @@ export const updateGoalHandler = async (c: Context) => {
     id: updated.id,
     userId: updated.userId,
     goalText: updated.goalText,
+    category: updated.category,
+    notes: updated.notes,
     isActive: updated.isActive,
     createdAt: updated.createdAt.toISOString(),
     completedAt: updated.completedAt?.toISOString() ?? null,

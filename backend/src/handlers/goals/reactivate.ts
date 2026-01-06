@@ -35,6 +35,8 @@ export const reactivateGoalHandler = async (c: Context) => {
     id: updated.id,
     userId: updated.userId,
     goalText: updated.goalText,
+    category: updated.category,
+    notes: updated.notes,
     isActive: updated.isActive,
     createdAt: updated.createdAt.toISOString(),
     completedAt: updated.completedAt?.toISOString() ?? null,
