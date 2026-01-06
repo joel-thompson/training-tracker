@@ -22,13 +22,15 @@ export const createGoalHandler = async (c: Context) => {
     );
   }
 
-  const { goalText, isActive } = parsed.data;
+  const { goalText, category, notes, isActive } = parsed.data;
 
   const [goal] = await db
     .insert(trainingGoals)
     .values({
       userId,
       goalText,
+      category: category ?? null,
+      notes: notes ?? null,
       isActive: isActive ?? true,
     })
     .returning();
@@ -37,6 +39,8 @@ export const createGoalHandler = async (c: Context) => {
     id: goal.id,
     userId: goal.userId,
     goalText: goal.goalText,
+    category: goal.category,
+    notes: goal.notes,
     isActive: goal.isActive,
     createdAt: goal.createdAt.toISOString(),
     completedAt: goal.completedAt?.toISOString() ?? null,
