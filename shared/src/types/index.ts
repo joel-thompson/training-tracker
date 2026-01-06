@@ -28,6 +28,7 @@ export type {
   CreateGoalInput,
   UpdateGoalInput,
   ListGoalsQuery,
+  GoalCategory,
   Goal,
   ListGoalsResponse,
   ActiveGoalsResponse,

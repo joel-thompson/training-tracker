@@ -44,7 +44,16 @@ import {
 } from "@/components/ui/alert-dialog";
 import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
 import type { Goal } from "shared/types";
+
+type GoalCategory = "bottom" | "top" | "submission" | "escape";
 
 function GoalFormDialog({
   open,
@@ -56,19 +65,28 @@ function GoalFormDialog({
   open: boolean;
   onOpenChange: (open: boolean) => void;
   goal?: Goal;
-  onSubmit: (goalText: string) => void;
+  onSubmit: (
+    goalText: string,
+    category: GoalCategory | null,
+    notes: string | null
+  ) => void;
   isSubmitting: boolean;
 }) {
   const [goalText, setGoalText] = useState(goal?.goalText ?? "");
+  const [category, setCategory] = useState<GoalCategory | null>(
+    (goal?.category as GoalCategory | null) ?? null
+  );
+  const [notes, setNotes] = useState((goal?.notes as string | null) ?? "");
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
     if (goalText.trim().length > 0 && goalText.trim().length <= 500) {
-      onSubmit(goalText.trim());
+      onSubmit(goalText.trim(), category, notes.trim() ? notes.trim() : null);
     }
   };
 
   const remainingChars = 500 - goalText.length;
+  const remainingNotesChars = 1000 - notes.length;
 
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
@@ -96,6 +114,41 @@ function GoalFormDialog({
               />
               <p className="text-muted-foreground text-xs text-right">
                 {remainingChars} characters remaining
+              </p>
+            </div>
+            <div className="space-y-2">
+              <Label htmlFor="category">Category</Label>
+              <Select
+                value={category ?? "none"}
+                onValueChange={(value) =>
+                  setCategory(value === "none" ? null : (value as GoalCategory))
+                }
+              >
+                <SelectTrigger id="category" className="w-full">
+                  <SelectValue placeholder="Select a category (optional)" />
+                </SelectTrigger>
+                <SelectContent>
+                  <SelectItem value="none">None</SelectItem>
+                  <SelectItem value="bottom">Bottom</SelectItem>
+                  <SelectItem value="top">Top</SelectItem>
+                  <SelectItem value="submission">Submission</SelectItem>
+                  <SelectItem value="escape">Escape</SelectItem>
+                </SelectContent>
+              </Select>
+            </div>
+            <div className="space-y-2">
+              <Label htmlFor="notes">Notes</Label>
+              <Textarea
+                id="notes"
+                value={notes}
+                onChange={(e) => setNotes(e.target.value)}
+                placeholder="Add extra context or details..."
+                rows={3}
+                maxLength={1000}
+                className="resize-none"
+              />
+              <p className="text-muted-foreground text-xs text-right">
+                {remainingNotesChars} characters remaining
               </p>
             </div>
           </div>
@@ -140,6 +193,9 @@ function GoalCard({
         <div className="flex items-start justify-between gap-4">
           <div className="flex-1">
             <CardTitle className="text-lg">{goal.goalText}</CardTitle>
+            {goal.notes && (
+              <p className="text-muted-foreground text-sm mt-2">{goal.notes}</p>
+            )}
             <p className="text-muted-foreground text-sm mt-1">
               Created {format(parseISO(goal.createdAt), "PPP")}
               {goal.completedAt &&
@@ -207,9 +263,40 @@ export function GoalsPage() {
   const completedGoals =
     completedGoalsData?.pages.flatMap((page) => page.goals) ?? [];
 
-  const handleCreateGoal = (goalText: string) => {
+  const categoryLabels: Record<GoalCategory, string> = {
+    bottom: "Bottom",
+    top: "Top",
+    submission: "Submission",
+    escape: "Escape",
+  };
+
+  const categoryOrder: (GoalCategory | null)[] = [
+    "bottom",
+    "top",
+    "submission",
+    "escape",
+    null,
+  ];
+
+  const groupedActiveGoals = categoryOrder
+    .map((category) => ({
+      category,
+      goals: activeGoals.filter((goal) => goal.category === category),
+    }))
+    .filter((group) => group.goals.length > 0);
+
+  const handleCreateGoal = (
+    goalText: string,
+    category: GoalCategory | null,
+    notes: string | null
+  ) => {
     createGoal.mutate(
-      { goalText, isActive: true },
+      {
+        goalText,
+        category: category ?? undefined,
+        notes: notes ?? undefined,
+        isActive: true,
+      },
       {
         onSuccess: () => {
           setCreateDialogOpen(false);
@@ -223,10 +310,21 @@ export function GoalsPage() {
     setEditDialogOpen(true);
   };
 
-  const handleUpdateGoal = (goalText: string) => {
+  const handleUpdateGoal = (
+    goalText: string,
+    category: GoalCategory | null,
+    notes: string | null
+  ) => {
     if (editingGoal) {
       updateGoal.mutate(
-        { id: editingGoal.id, input: { goalText } },
+        {
+          id: editingGoal.id,
+          input: {
+            goalText,
+            category: category ?? undefined,
+            notes: notes ?? undefined,
+          },
+        },
         {
           onSuccess: () => {
             setEditDialogOpen(false);
@@ -309,15 +407,27 @@ export function GoalsPage() {
             </Card>
           )}
           {!activeGoalsLoading && activeGoals.length > 0 && (
-            <div className="space-y-4">
-              {activeGoals.map((goal) => (
-                <GoalCard
-                  key={goal.id}
-                  goal={goal}
-                  onComplete={() => handleCompleteGoal(goal)}
-                  onEdit={() => handleEditGoal(goal)}
-                  onDelete={() => handleDeleteClick(goal)}
-                />
+            <div className="space-y-6">
+              {groupedActiveGoals.map((group) => (
+                <div
+                  key={group.category ?? "uncategorized"}
+                  className="space-y-4"
+                >
+                  <h3 className="text-lg font-semibold">
+                    {group.category
+                      ? categoryLabels[group.category]
+                      : "Uncategorized"}
+                  </h3>
+                  {group.goals.map((goal) => (
+                    <GoalCard
+                      key={goal.id}
+                      goal={goal}
+                      onComplete={() => handleCompleteGoal(goal)}
+                      onEdit={() => handleEditGoal(goal)}
+                      onDelete={() => handleDeleteClick(goal)}
+                    />
+                  ))}
+                </div>
               ))}
             </div>
           )}

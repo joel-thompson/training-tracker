@@ -11,11 +11,16 @@ export type CreateGoalInput = z.infer<typeof createGoalSchema>;
 export type UpdateGoalInput = z.infer<typeof updateGoalSchema>;
 export type ListGoalsQuery = z.infer<typeof listGoalsQuerySchema>;
 
+// Goal category type
+export type GoalCategory = "bottom" | "top" | "submission" | "escape";
+
 // Goal as it appears in API responses
 export interface Goal {
   id: string;
   userId: string;
   goalText: string;
+  category: GoalCategory | null;
+  notes: string | null;
   isActive: boolean;
   createdAt: string;
   completedAt: string | null;
