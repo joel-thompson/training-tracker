@@ -21,9 +21,7 @@ Hono API server running on Bun.
 
 ## API Structure
 
-- `/health` - Health check (no auth)
-- `/api/*` - Protected routes (Clerk auth required)
-- `/api/v1/sessions` - Training session endpoints
+See `backend/src/index.ts` for the API structure.
 
 ## Route Organization
 
@@ -124,8 +122,6 @@ export const myHandler = async (c: Context) => {
 ## Database Schema
 
 Tables are defined in `src/db/schema.ts`:
-- `trainingSessions` - Training session records
-- `sessionItems` - Items (successes, problems, questions) within sessions
 
 ## Environment Variables
 

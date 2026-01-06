@@ -40,6 +40,7 @@ src/components/
 
 Custom hooks for API data fetching are in `src/hooks/`. Hooks are organized by feature in subdirectories:
 
+Example:
 ```
 src/hooks/
 └── sessions/                # Session API hooks
@@ -56,70 +57,7 @@ src/hooks/
     └── useDeleteSessionItem.ts # Delete session item
 ```
 
-### Session Hooks
-
-**Query Hooks:**
-- `useListSessions(params?)` - Uses `useInfiniteQuery` for paginated session lists. Returns `fetchNextPage()`, `hasNextPage`, and all sessions via `data.pages.flatMap(p => p.sessions)`
-- `useSession(id)` - Fetch single session by ID
-- `useSessionDates()` - Fetch all training dates
-
-**Mutation Hooks:**
-- `useCreateSession()` - Create new session (invalidates list + dates)
-- `useUpdateSession()` - Update session (invalidates detail + list)
-- `useDeleteSession()` - Soft delete session (invalidates all)
-- `useRestoreSession()` - Restore deleted session (invalidates all)
-- `useAddSessionItem()` - Add item to session (invalidates detail)
-- `useUpdateSessionItem()` - Update session item (invalidates detail)
-- `useDeleteSessionItem()` - Delete session item (invalidates detail)
-
-**Query Key Factory:**
-Use `sessionKeys` from `sessions/sessionKeys.ts` for manual cache invalidation:
-```typescript
-import { sessionKeys } from "@/hooks/sessions/sessionKeys";
-
-// Invalidate all session data
-queryClient.invalidateQueries({ queryKey: sessionKeys.all });
-
-// Invalidate all list queries
-queryClient.invalidateQueries({ queryKey: sessionKeys.allLists() });
-
-// Invalidate all by-ID queries
-queryClient.invalidateQueries({ queryKey: sessionKeys.allById() });
-
-// Invalidate specific session by ID
-queryClient.invalidateQueries({ queryKey: sessionKeys.byId(id) });
-```
-
-**Usage Example:**
-```typescript
-import { useListSessions } from "@/hooks/sessions/useListSessions";
-import { useCreateSession } from "@/hooks/sessions/useCreateSession";
-
-function SessionsPage() {
-  const { data, fetchNextPage, hasNextPage } = useListSessions({
-    classType: "gi",
-    weekStartDate: "2025-12-08",
-  });
-  
-  const createSession = useCreateSession();
-  
-  // Get all loaded sessions
-  const allSessions = data?.pages.flatMap(p => p.sessions) ?? [];
-  
-  // Load more pages
-  if (hasNextPage) {
-    fetchNextPage();
-  }
-  
-  // Create session
-  const handleCreate = () => {
-    createSession.mutate({
-      sessionDate: "2025-12-08",
-      classType: "gi",
-    });
-  };
-}
-```
+When creating a new hook, follow the pattern above.
 
 ### Component Conventions
 
@@ -127,27 +65,6 @@ function SessionsPage() {
 - Route files (`src/routes/`) should be minimal - they only configure routing and import page components
 - For routes with params/search, pass them as props from the route component
 - Use named exports for page components (e.g., `export function HomePage()`)
-
-### Session Pages
-
-**New Session (`/sessions/new`):**
-- Form to create sessions with 3-2-1 reflection items
-- Items submitted inline with session creation (`items: { success: [...], problem: [...], question: [...] }`)
-- Uses `useCreateSession()` hook
-- Navigates to `/history` on success
-
-**Edit Session (`/sessions/:id/edit`):**
-- Fetches session with `useSession(id)`
-- Updates session metadata via `useUpdateSession()`
-- Items managed separately: `useAddSessionItem()`, `useUpdateSessionItem()`, `useDeleteSessionItem()`
-- Delete confirmation dialog using `AlertDialog`
-- Navigates to `/history` on save/delete
-
-**History (`/history`):**
-- Lists all sessions using `useListSessions()` with infinite scroll
-- Expandable session cards using `Collapsible` component
-- Edit button links to `/sessions/:id/edit`
-- Load more button when `hasNextPage` is true
 
 ## Routing (TanStack Router)
 
@@ -195,23 +112,6 @@ function EditSessionPageWrapper() {
 ## Environment Variables
 
 See `src/utils/env.ts` for the list of environment variables.
-
-## Navigation Layout
-
-**AppLayout** (`components/layout/AppLayout.tsx`):
-- Desktop: Horizontal navigation bar in header with all links visible
-- Mobile: Fixed bottom tab bar with 4 items:
-  - **Home** - Links to `/`
-  - **New** - Links to `/sessions/new`
-  - **History** - Links to `/history`
-  - **More** - Popover menu containing Week, Goals, Stats, Settings
-- Main content has bottom padding on mobile to account for tab bar
-- Active route highlighting based on current pathname
-
-**HomePage** (`components/home/HomePage.tsx`):
-- Simple welcome card with two action buttons:
-  - "New Session" button linking to `/sessions/new`
-  - "View History" button linking to `/history`
 
 ## Code Style
 

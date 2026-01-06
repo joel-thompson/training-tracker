@@ -28,4 +28,5 @@ BJJ (Brazilian Jiu-Jitsu) training tracker - monorepo using Bun workspaces.
 
 - Import shared code via `shared/types`, `shared/utils`, `shared/constants`
 - Always use shared types when available - avoid duplicating type definitions (e.g., use `ItemType` from `shared/types` instead of `"success" | "problem" | "question"`)
+- Business logic should be in the backend, not the frontend. Complexity should be moved to the backend when possible.
 

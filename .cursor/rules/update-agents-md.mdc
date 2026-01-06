@@ -2,7 +2,7 @@
 alwaysApply: true
 ---
 
-update the appropriate AGENTS.md files to reflect important changes, code style, and other important information. ask the user if they want to update the AGENTS.md file.
+update the appropriate AGENTS.md files to reflect important changes, code style, and other important information. ask the user if they want to update the AGENTS.md file after making changes.
 
 examples:
 when updating the frontend project, update the frontend/AGENTS.md file.
