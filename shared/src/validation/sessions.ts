@@ -1,13 +1,6 @@
 import { z } from "zod";
 
-export const classTypeSchema = z.enum([
-  "gi",
-  "nogi",
-  "open_mat",
-  "private",
-  "competition",
-  "other",
-]);
+export const classTypeSchema = z.enum(["gi", "nogi"]);
 
 export const itemTypeSchema = z.enum(["success", "problem", "question"]);
 
