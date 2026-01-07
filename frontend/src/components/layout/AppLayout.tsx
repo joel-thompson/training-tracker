@@ -54,12 +54,13 @@ export function AppLayout() {
             >
               History
             </Link>
-            <Link
+            {/* Game isn't that useful yet, so we'll hide it for now */}
+            {/* <Link
               to="/game"
               className="text-sm font-medium transition-colors hover:text-foreground/80 text-foreground/60"
             >
               Game
-            </Link>
+            </Link> */}
             <Link
               to="/week"
               search={{}}
@@ -146,12 +147,13 @@ export function AppLayout() {
             </PopoverTrigger>
             <PopoverContent side="top" className="mb-2 w-48 p-2">
               <div className="flex flex-col gap-1">
-                <Link
+                {/* Game isn't that useful yet, so we'll hide it for now */}
+                {/* <Link
                   to="/game"
                   className="rounded-md px-3 py-2 text-sm transition-colors hover:bg-accent hover:text-accent-foreground"
                 >
                   Game
-                </Link>
+                </Link> */}
                 <Link
                   to="/week"
                   search={{}}
