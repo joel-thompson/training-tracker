@@ -15,14 +15,7 @@ export const testTable = pgTable("test_table", {
   name: text("name").notNull(),
 });
 
-export const classTypeEnum = pgEnum("class_type", [
-  "gi",
-  "nogi",
-  "open_mat",
-  "private",
-  "competition",
-  "other",
-]);
+export const classTypeEnum = pgEnum("class_type", ["gi", "nogi"]);
 
 export const itemTypeEnum = pgEnum("item_type", [
   "success",
