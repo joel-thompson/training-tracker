@@ -51,9 +51,7 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
-import type { Goal } from "shared/types";
-
-type GoalCategory = "bottom" | "top" | "submission" | "escape";
+import type { Goal, GoalCategory } from "shared/types";
 
 const categoryLabels: Record<GoalCategory, string> = {
   bottom: "Bottom",
