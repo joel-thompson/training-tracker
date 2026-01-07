@@ -55,6 +55,21 @@ import type { Goal } from "shared/types";
 
 type GoalCategory = "bottom" | "top" | "submission" | "escape";
 
+const categoryLabels: Record<GoalCategory, string> = {
+  bottom: "Bottom",
+  top: "Top",
+  submission: "Submission",
+  escape: "Escape",
+};
+
+const categoryOrder: (GoalCategory | null)[] = [
+  "bottom",
+  "top",
+  "submission",
+  "escape",
+  null,
+];
+
 function GoalFormDialog({
   open,
   onOpenChange,
@@ -234,6 +249,213 @@ function GoalCard({
   );
 }
 
+function GoalsPageHeader({ onNewGoal }: { onNewGoal: () => void }) {
+  return (
+    <div className="flex items-center justify-between">
+      <div>
+        <h1 className="text-3xl font-bold">Goals</h1>
+        <p className="text-muted-foreground text-lg">
+          Manage your training goals
+        </p>
+      </div>
+      <Button onClick={onNewGoal}>
+        <Plus className="mr-2 h-4 w-4" />
+        New Goal
+      </Button>
+    </div>
+  );
+}
+
+function ActiveGoalsSection({
+  isLoading,
+  goals,
+  onComplete,
+  onEdit,
+  onDelete,
+  onCreateGoal,
+}: {
+  isLoading: boolean;
+  goals: Goal[];
+  onComplete: (goal: Goal) => void;
+  onEdit: (goal: Goal) => void;
+  onDelete: (goal: Goal) => void;
+  onCreateGoal: () => void;
+}) {
+  const groupedActiveGoals = categoryOrder
+    .map((category) => ({
+      category,
+      goals: goals.filter((goal) => goal.category === category),
+    }))
+    .filter((group) => group.goals.length > 0);
+
+  return (
+    <div>
+      <h2 className="text-xl font-semibold mb-4">Active Goals</h2>
+      {isLoading && (
+        <div className="space-y-4">
+          {[1, 2].map((i) => (
+            <Card key={i}>
+              <CardHeader>
+                <Skeleton className="h-6 w-48" />
+                <Skeleton className="h-4 w-64 mt-2" />
+              </CardHeader>
+            </Card>
+          ))}
+        </div>
+      )}
+      {!isLoading && goals.length === 0 && (
+        <Card>
+          <CardContent className="py-12 text-center">
+            <p className="text-muted-foreground">
+              No active goals.{" "}
+              <Button
+                variant="link"
+                className="p-0 h-auto"
+                onClick={onCreateGoal}
+              >
+                Create your first goal
+              </Button>
+              .
+            </p>
+          </CardContent>
+        </Card>
+      )}
+      {!isLoading && goals.length > 0 && (
+        <div className="space-y-6">
+          {groupedActiveGoals.map((group) => (
+            <div key={group.category ?? "uncategorized"} className="space-y-4">
+              <h3 className="text-lg font-semibold">
+                {group.category
+                  ? categoryLabels[group.category]
+                  : "Uncategorized"}
+              </h3>
+              {group.goals.map((goal) => (
+                <GoalCard
+                  key={goal.id}
+                  goal={goal}
+                  onComplete={() => onComplete(goal)}
+                  onEdit={() => onEdit(goal)}
+                  onDelete={() => onDelete(goal)}
+                />
+              ))}
+            </div>
+          ))}
+        </div>
+      )}
+    </div>
+  );
+}
+
+function CompletedGoalsSection({
+  isLoading,
+  goals,
+  isOpen,
+  onOpenChange,
+  onReactivate,
+  onDelete,
+}: {
+  isLoading: boolean;
+  goals: Goal[];
+  isOpen: boolean;
+  onOpenChange: (open: boolean) => void;
+  onReactivate: (goal: Goal) => void;
+  onDelete: (goal: Goal) => void;
+}) {
+  if (goals.length === 0) {
+    return null;
+  }
+
+  return (
+    <div>
+      <Collapsible open={isOpen} onOpenChange={onOpenChange}>
+        <CollapsibleTrigger asChild>
+          <Button
+            variant="ghost"
+            className="w-full justify-between p-0 h-auto mb-4"
+          >
+            <h2 className="text-xl font-semibold">Completed Goals</h2>
+            {isOpen ? (
+              <ChevronUp className="h-4 w-4" />
+            ) : (
+              <ChevronDown className="h-4 w-4" />
+            )}
+          </Button>
+        </CollapsibleTrigger>
+        <CollapsibleContent>
+          {isLoading && (
+            <div className="space-y-4">
+              {[1, 2].map((i) => (
+                <Card key={i}>
+                  <CardHeader>
+                    <Skeleton className="h-6 w-48" />
+                    <Skeleton className="h-4 w-64 mt-2" />
+                  </CardHeader>
+                </Card>
+              ))}
+            </div>
+          )}
+          {!isLoading && (
+            <div className="space-y-4">
+              {goals.map((goal) => (
+                <GoalCard
+                  key={goal.id}
+                  goal={goal}
+                  onComplete={() => {
+                    // Completed goals don't need complete action
+                  }}
+                  onEdit={() => {
+                    // Completed goals can't be edited
+                  }}
+                  onDelete={() => onDelete(goal)}
+                  onReactivate={() => onReactivate(goal)}
+                />
+              ))}
+            </div>
+          )}
+        </CollapsibleContent>
+      </Collapsible>
+    </div>
+  );
+}
+
+function DeleteGoalDialog({
+  open,
+  onOpenChange,
+  onConfirm,
+  isDeleting,
+}: {
+  open: boolean;
+  onOpenChange: (open: boolean) => void;
+  onConfirm: () => void;
+  isDeleting: boolean;
+}) {
+  return (
+    <AlertDialog open={open} onOpenChange={onOpenChange}>
+      <AlertDialogContent>
+        <AlertDialogHeader>
+          <AlertDialogTitle>Delete Goal</AlertDialogTitle>
+          <AlertDialogDescription>
+            Are you sure you want to delete this goal? This action cannot be
+            undone.
+          </AlertDialogDescription>
+        </AlertDialogHeader>
+        <AlertDialogFooter>
+          <AlertDialogCancel onClick={() => onOpenChange(false)}>
+            Cancel
+          </AlertDialogCancel>
+          <AlertDialogAction
+            onClick={onConfirm}
+            disabled={isDeleting}
+            className="bg-destructive text-destructive-foreground hover:bg-destructive/90"
+          >
+            {isDeleting ? "Deleting..." : "Delete"}
+          </AlertDialogAction>
+        </AlertDialogFooter>
+      </AlertDialogContent>
+    </AlertDialog>
+  );
+}
+
 export function GoalsPage() {
   const [createDialogOpen, setCreateDialogOpen] = useState(false);
   const [createDialogKey, setCreateDialogKey] = useState(0);
@@ -262,28 +484,6 @@ export function GoalsPage() {
   const activeGoals = activeGoalsData?.goals ?? [];
   const completedGoals =
     completedGoalsData?.pages.flatMap((page) => page.goals) ?? [];
-
-  const categoryLabels: Record<GoalCategory, string> = {
-    bottom: "Bottom",
-    top: "Top",
-    submission: "Submission",
-    escape: "Escape",
-  };
-
-  const categoryOrder: (GoalCategory | null)[] = [
-    "bottom",
-    "top",
-    "submission",
-    "escape",
-    null,
-  ];
-
-  const groupedActiveGoals = categoryOrder
-    .map((category) => ({
-      category,
-      goals: activeGoals.filter((goal) => goal.category === category),
-    }))
-    .filter((group) => group.goals.length > 0);
 
   const handleCreateGoal = (
     goalText: string,
@@ -361,132 +561,26 @@ export function GoalsPage() {
 
   return (
     <div className="space-y-6">
-      <div className="flex items-center justify-between">
-        <div>
-          <h1 className="text-3xl font-bold">Goals</h1>
-          <p className="text-muted-foreground text-lg">
-            Manage your training goals
-          </p>
-        </div>
-        <Button onClick={openCreateDialog}>
-          <Plus className="mr-2 h-4 w-4" />
-          New Goal
-        </Button>
-      </div>
+      <GoalsPageHeader onNewGoal={openCreateDialog} />
 
       <div className="space-y-4">
-        <div>
-          <h2 className="text-xl font-semibold mb-4">Active Goals</h2>
-          {activeGoalsLoading && (
-            <div className="space-y-4">
-              {[1, 2].map((i) => (
-                <Card key={i}>
-                  <CardHeader>
-                    <Skeleton className="h-6 w-48" />
-                    <Skeleton className="h-4 w-64 mt-2" />
-                  </CardHeader>
-                </Card>
-              ))}
-            </div>
-          )}
-          {!activeGoalsLoading && activeGoals.length === 0 && (
-            <Card>
-              <CardContent className="py-12 text-center">
-                <p className="text-muted-foreground">
-                  No active goals.{" "}
-                  <Button
-                    variant="link"
-                    className="p-0 h-auto"
-                    onClick={openCreateDialog}
-                  >
-                    Create your first goal
-                  </Button>
-                  .
-                </p>
-              </CardContent>
-            </Card>
-          )}
-          {!activeGoalsLoading && activeGoals.length > 0 && (
-            <div className="space-y-6">
-              {groupedActiveGoals.map((group) => (
-                <div
-                  key={group.category ?? "uncategorized"}
-                  className="space-y-4"
-                >
-                  <h3 className="text-lg font-semibold">
-                    {group.category
-                      ? categoryLabels[group.category]
-                      : "Uncategorized"}
-                  </h3>
-                  {group.goals.map((goal) => (
-                    <GoalCard
-                      key={goal.id}
-                      goal={goal}
-                      onComplete={() => handleCompleteGoal(goal)}
-                      onEdit={() => handleEditGoal(goal)}
-                      onDelete={() => handleDeleteClick(goal)}
-                    />
-                  ))}
-                </div>
-              ))}
-            </div>
-          )}
-        </div>
+        <ActiveGoalsSection
+          isLoading={activeGoalsLoading}
+          goals={activeGoals}
+          onComplete={handleCompleteGoal}
+          onEdit={handleEditGoal}
+          onDelete={handleDeleteClick}
+          onCreateGoal={openCreateDialog}
+        />
 
-        {completedGoals.length > 0 && (
-          <div>
-            <Collapsible
-              open={completedGoalsOpen}
-              onOpenChange={setCompletedGoalsOpen}
-            >
-              <CollapsibleTrigger asChild>
-                <Button
-                  variant="ghost"
-                  className="w-full justify-between p-0 h-auto mb-4"
-                >
-                  <h2 className="text-xl font-semibold">Completed Goals</h2>
-                  {completedGoalsOpen ? (
-                    <ChevronUp className="h-4 w-4" />
-                  ) : (
-                    <ChevronDown className="h-4 w-4" />
-                  )}
-                </Button>
-              </CollapsibleTrigger>
-              <CollapsibleContent>
-                {completedGoalsLoading && (
-                  <div className="space-y-4">
-                    {[1, 2].map((i) => (
-                      <Card key={i}>
-                        <CardHeader>
-                          <Skeleton className="h-6 w-48" />
-                          <Skeleton className="h-4 w-64 mt-2" />
-                        </CardHeader>
-                      </Card>
-                    ))}
-                  </div>
-                )}
-                {!completedGoalsLoading && (
-                  <div className="space-y-4">
-                    {completedGoals.map((goal) => (
-                      <GoalCard
-                        key={goal.id}
-                        goal={goal}
-                        onComplete={() => {
-                          // Completed goals don't need complete action
-                        }}
-                        onEdit={() => {
-                          // Completed goals can't be edited
-                        }}
-                        onDelete={() => handleDeleteClick(goal)}
-                        onReactivate={() => handleReactivateGoal(goal)}
-                      />
-                    ))}
-                  </div>
-                )}
-              </CollapsibleContent>
-            </Collapsible>
-          </div>
-        )}
+        <CompletedGoalsSection
+          isLoading={completedGoalsLoading}
+          goals={completedGoals}
+          isOpen={completedGoalsOpen}
+          onOpenChange={setCompletedGoalsOpen}
+          onReactivate={handleReactivateGoal}
+          onDelete={handleDeleteClick}
+        />
       </div>
 
       <GoalFormDialog
@@ -506,34 +600,17 @@ export function GoalsPage() {
         isSubmitting={updateGoal.isPending}
       />
 
-      <AlertDialog open={deleteDialogOpen} onOpenChange={setDeleteDialogOpen}>
-        <AlertDialogContent>
-          <AlertDialogHeader>
-            <AlertDialogTitle>Delete Goal</AlertDialogTitle>
-            <AlertDialogDescription>
-              Are you sure you want to delete this goal? This action cannot be
-              undone.
-            </AlertDialogDescription>
-          </AlertDialogHeader>
-          <AlertDialogFooter>
-            <AlertDialogCancel
-              onClick={() => {
-                setDeleteDialogOpen(false);
-                setDeletingGoal(null);
-              }}
-            >
-              Cancel
-            </AlertDialogCancel>
-            <AlertDialogAction
-              onClick={handleDeleteConfirm}
-              disabled={deleteGoal.isPending}
-              className="bg-destructive text-destructive-foreground hover:bg-destructive/90"
-            >
-              {deleteGoal.isPending ? "Deleting..." : "Delete"}
-            </AlertDialogAction>
-          </AlertDialogFooter>
-        </AlertDialogContent>
-      </AlertDialog>
+      <DeleteGoalDialog
+        open={deleteDialogOpen}
+        onOpenChange={(open) => {
+          setDeleteDialogOpen(open);
+          if (!open) {
+            setDeletingGoal(null);
+          }
+        }}
+        onConfirm={handleDeleteConfirm}
+        isDeleting={deleteGoal.isPending}
+      />
     </div>
   );
 }
