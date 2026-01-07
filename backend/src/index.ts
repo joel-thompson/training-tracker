@@ -9,6 +9,7 @@ import { apiTestHandler } from "./handlers/apiTest";
 import { sessions } from "./routes/sessions";
 import { goals } from "./routes/goals";
 import { game } from "./routes/game";
+import { stats } from "./routes/stats";
 import { getEnvRequired } from "./utils/env";
 
 const app = new Hono();
@@ -40,5 +41,6 @@ app.get("/api/db/test", dbTestHandler);
 app.route("/api/v1/sessions", sessions);
 app.route("/api/v1/goals", goals);
 app.route("/api/v1/game", game);
+app.route("/api/v1/stats", stats);
 
 export default app;

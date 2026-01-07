@@ -50,5 +50,14 @@ export type {
   DeleteGameTransitionResponse,
 } from "./game";
 
+// Stats types
+export type {
+  StreakResponse,
+  MonthlySessionsResponse,
+  ClassTypeSplitResponse,
+  HeatmapActivity,
+  HeatmapResponse,
+} from "./stats";
+
 // Testing types
 export type { TestType, DbTestType } from "./testing";

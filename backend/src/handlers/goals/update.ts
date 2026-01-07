@@ -8,7 +8,7 @@ import {
   errorResponse,
   ErrorCodes,
 } from "../../utils/response";
-import type { Goal } from "shared/types";
+import type { Goal, GoalCategory } from "shared/types";
 import { eq, and } from "drizzle-orm";
 
 export const updateGoalHandler = async (c: Context) => {
@@ -37,12 +37,12 @@ export const updateGoalHandler = async (c: Context) => {
 
   const updateData: {
     goalText: string;
-    category?: string | null;
+    category?: GoalCategory | null;
     notes?: string | null;
   } = { goalText: parsed.data.goalText };
 
   if (parsed.data.category !== undefined) {
-    updateData.category = parsed.data.category ?? null;
+    updateData.category = (parsed.data.category as GoalCategory | null) ?? null;
   }
   if (parsed.data.notes !== undefined) {
     updateData.notes = parsed.data.notes ?? null;
