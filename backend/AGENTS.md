@@ -2,6 +2,16 @@
 
 Hono API server running on Bun.
 
+## How to deal with database schema changes
+
+1. Update the schema in `src/db/schema.ts`
+2. Update the types in `shared/types` if needed
+3. Update the validation schemas in `shared/validation` if needed
+4. Run `bun run db:generate` to generate a new migration
+5. Run `bun run db:migrate` to apply the migration
+
+IMPORTANT: Do not run the migration automatically. Ask me to review the migration, and tell me the commands to run the migration.
+
 ## Tech Stack
  
 - Framework: Hono
