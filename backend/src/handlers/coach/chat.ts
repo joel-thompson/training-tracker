@@ -3,7 +3,7 @@ import { streamText } from "ai";
 import { createOpenAI } from "@ai-sdk/openai";
 import { db } from "../../db";
 import { trainingSessions, sessionItems, trainingGoals } from "../../db/schema";
-import { requireUserId } from "../../utils/auth";
+import { requireUserId, requireAiAccess } from "../../utils/auth";
 import { errorResponse, ErrorCodes } from "../../utils/response";
 import { getEnvRequired } from "../../utils/env";
 import { eq, and, isNull, desc, gte, sql } from "drizzle-orm";
@@ -11,6 +11,7 @@ import { chatRequestSchema } from "shared/validation";
 
 export const chatHandler = async (c: Context) => {
   const userId = requireUserId(c);
+  await requireAiAccess(userId);
 
   const body: unknown = await c.req.json();
   const parsed = chatRequestSchema.safeParse(body);

@@ -7,6 +7,12 @@ export interface UIMessage extends ChatMessage {
   id: string;
 }
 
+function getErrorMessage(error: unknown): string {
+  return error instanceof Error
+    ? error.message
+    : "Sorry, I encountered an error. Please try again.";
+}
+
 export function useChat() {
   const { getToken } = useAuth();
   const [messages, setMessages] = useState<UIMessage[]>([]);
@@ -24,6 +30,21 @@ export function useChat() {
       });
 
       if (!response.ok) {
+        if (response.status === 403) {
+          let errorMessage = "AI coaching is not available for your account.";
+          try {
+            const errorData = (await response.json()) as {
+              success: false;
+              error: { code: string; message: string };
+            };
+            if (errorData.error?.message) {
+              errorMessage = errorData.error.message;
+            }
+          } catch {
+            // Use default message if parsing fails
+          }
+          throw new Error(errorMessage);
+        }
         throw new Error("Failed to get response");
       }
 
@@ -56,15 +77,14 @@ export function useChat() {
     [getToken]
   );
 
-  const handleSubmit = useCallback(
-    async (e: React.FormEvent) => {
-      e.preventDefault();
-      if (!input.trim() || isLoading) return;
+  const sendMessage = useCallback(
+    async (content: string) => {
+      if (!content.trim() || isLoading) return;
 
       const userMessage: UIMessage = {
         id: crypto.randomUUID(),
         role: "user",
-        content: input.trim(),
+        content: content.trim(),
       };
 
       const chatMessages = [...messages, userMessage].map((m) => ({
@@ -73,7 +93,6 @@ export function useChat() {
       }));
 
       setMessages((prev) => [...prev, userMessage]);
-      setInput("");
       setIsLoading(true);
 
       try {
@@ -85,46 +104,30 @@ export function useChat() {
           {
             id: crypto.randomUUID(),
             role: "assistant",
-            content: "Sorry, I encountered an error. Please try again.",
+            content: getErrorMessage(error),
           },
         ]);
       } finally {
         setIsLoading(false);
       }
     },
-    [input, isLoading, messages, sendChatMessage]
+    [isLoading, messages, sendChatMessage]
+  );
+
+  const handleSubmit = useCallback(
+    async (e: React.FormEvent) => {
+      e.preventDefault();
+      const content = input.trim();
+      if (!content) return;
+      setInput("");
+      await sendMessage(content);
+    },
+    [input, sendMessage]
   );
 
   const handlePromptClick = useCallback(
-    async (prompt: string) => {
-      if (isLoading) return;
-
-      const userMessage: UIMessage = {
-        id: crypto.randomUUID(),
-        role: "user",
-        content: prompt,
-      };
-
-      setMessages((prev) => [...prev, userMessage]);
-      setIsLoading(true);
-
-      try {
-        await sendChatMessage([{ role: "user", content: prompt }]);
-      } catch (error) {
-        console.error("Chat error:", error);
-        setMessages((prev) => [
-          ...prev,
-          {
-            id: crypto.randomUUID(),
-            role: "assistant",
-            content: "Sorry, I encountered an error. Please try again.",
-          },
-        ]);
-      } finally {
-        setIsLoading(false);
-      }
-    },
-    [isLoading, sendChatMessage]
+    (prompt: string) => sendMessage(prompt),
+    [sendMessage]
   );
 
   const resetChat = useCallback(() => {
