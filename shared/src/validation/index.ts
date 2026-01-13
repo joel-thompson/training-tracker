@@ -21,3 +21,5 @@ export {
   updateGameTransitionSchema,
   reorderGameItemSchema,
 } from "./game";
+
+export { chatMessageSchema, chatRequestSchema } from "./coach";

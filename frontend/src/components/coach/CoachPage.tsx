@@ -5,16 +5,16 @@ import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { api } from "@/utils/api";
+import type { ChatMessage } from "shared/types";
 
-interface Message {
+// UI message extends ChatMessage with id for React state
+interface UIMessage extends ChatMessage {
   id: string;
-  role: "user" | "assistant";
-  content: string;
 }
 
 export function CoachPage() {
   const { getToken } = useAuth();
-  const [messages, setMessages] = useState<Message[]>([]);
+  const [messages, setMessages] = useState<UIMessage[]>([]);
   const [input, setInput] = useState("");
   const [isLoading, setIsLoading] = useState(false);
   const messagesEndRef = useRef<HTMLDivElement>(null);
@@ -29,7 +29,7 @@ export function CoachPage() {
   }, [messages]);
 
   const sendChatMessage = useCallback(
-    async (chatMessages: { role: string; content: string }[]) => {
+    async (chatMessages: ChatMessage[]) => {
       const token = await getToken();
       const response = await api("/api/v1/coach/chat", {
         method: "POST",
@@ -74,7 +74,7 @@ export function CoachPage() {
     e.preventDefault();
     if (!input.trim() || isLoading) return;
 
-    const userMessage: Message = {
+    const userMessage: UIMessage = {
       id: crypto.randomUUID(),
       role: "user",
       content: input.trim(),
@@ -129,7 +129,7 @@ export function CoachPage() {
   const handlePromptClick = (prompt: string) => {
     if (isLoading) return;
 
-    const userMessage: Message = {
+    const userMessage: UIMessage = {
       id: crypto.randomUUID(),
       role: "user",
       content: prompt,
@@ -175,7 +175,7 @@ export function CoachPage() {
       </div>
 
       <Card className="flex-1 flex flex-col min-h-0">
-        <CardHeader className="pb-3 flex-shrink-0">
+        <CardHeader className="pb-3 shrink-0">
           <CardTitle className="text-base font-medium flex items-center gap-2">
             <Bot className="h-5 w-5" />
             Training Coach
@@ -187,7 +187,7 @@ export function CoachPage() {
               {messages.length === 0 ? (
                 <div className="space-y-4">
                   <div className="flex gap-3">
-                    <div className="flex-shrink-0 w-8 h-8 rounded-full bg-primary/10 flex items-center justify-center">
+                    <div className="shrink-0 w-8 h-8 rounded-full bg-primary/10 flex items-center justify-center">
                       <Bot className="h-4 w-4 text-primary" />
                     </div>
                     <div className="flex-1 space-y-3">
@@ -222,7 +222,7 @@ export function CoachPage() {
                 messages.map((message) => (
                   <div key={message.id} className="flex gap-3">
                     <div
-                      className={`flex-shrink-0 w-8 h-8 rounded-full flex items-center justify-center ${
+                      className={`shrink-0 w-8 h-8 rounded-full flex items-center justify-center ${
                         message.role === "assistant"
                           ? "bg-primary/10"
                           : "bg-muted"
@@ -235,7 +235,7 @@ export function CoachPage() {
                       )}
                     </div>
                     <div className="flex-1 min-w-0">
-                      <p className="text-sm leading-relaxed whitespace-pre-wrap break-words">
+                      <p className="text-sm leading-relaxed whitespace-pre-wrap break-all">
                         {message.content}
                       </p>
                     </div>
@@ -244,7 +244,7 @@ export function CoachPage() {
               )}
               {isLoading && messages[messages.length - 1]?.role === "user" && (
                 <div className="flex gap-3">
-                  <div className="flex-shrink-0 w-8 h-8 rounded-full bg-primary/10 flex items-center justify-center">
+                  <div className="shrink-0 w-8 h-8 rounded-full bg-primary/10 flex items-center justify-center">
                     <Bot className="h-4 w-4 text-primary" />
                   </div>
                   <div className="flex items-center gap-2 text-muted-foreground">
@@ -259,7 +259,7 @@ export function CoachPage() {
 
           <form
             onSubmit={(e) => void handleSubmit(e)}
-            className="flex gap-2 mt-4 pt-4 border-t flex-shrink-0"
+            className="flex gap-2 mt-4 pt-4 border-t shrink-0"
           >
             <textarea
               ref={inputRef}
@@ -275,7 +275,7 @@ export function CoachPage() {
               type="submit"
               size="icon"
               disabled={!input.trim() || isLoading}
-              className="h-[44px] w-[44px] flex-shrink-0"
+              className="h-[44px] w-[44px] shrink-0"
             >
               {isLoading ? (
                 <Loader2 className="h-4 w-4 animate-spin" />

@@ -7,33 +7,22 @@ import { requireUserId } from "../../utils/auth";
 import { errorResponse, ErrorCodes } from "../../utils/response";
 import { getEnvRequired } from "../../utils/env";
 import { eq, and, isNull, desc, gte, sql } from "drizzle-orm";
-
-interface Message {
-  role: "user" | "assistant";
-  content: string;
-}
-
-interface ChatRequest {
-  messages: Message[];
-}
+import { chatRequestSchema } from "shared/validation";
 
 export const chatHandler = async (c: Context) => {
   const userId = requireUserId(c);
 
   const body: unknown = await c.req.json();
-  if (
-    !body ||
-    typeof body !== "object" ||
-    !("messages" in body) ||
-    !Array.isArray((body as ChatRequest).messages)
-  ) {
+  const parsed = chatRequestSchema.safeParse(body);
+
+  if (!parsed.success) {
     return c.json(
-      errorResponse(ErrorCodes.VALIDATION_ERROR, "messages array is required"),
+      errorResponse(ErrorCodes.VALIDATION_ERROR, parsed.error.message),
       400
     );
   }
 
-  const { messages } = body as ChatRequest;
+  const { messages } = parsed.data;
 
   // Fetch user's training context
   const context = await fetchUserContext(userId);
