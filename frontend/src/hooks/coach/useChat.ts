@@ -1,4 +1,4 @@
-import { useState, useCallback, useRef } from "react";
+import { useState, useCallback } from "react";
 import { useAuth } from "@clerk/clerk-react";
 import { api } from "@/utils/api";
 import type { ChatMessage } from "shared/types";
@@ -18,7 +18,6 @@ export function useChat() {
   const [messages, setMessages] = useState<UIMessage[]>([]);
   const [input, setInput] = useState("");
   const [isLoading, setIsLoading] = useState(false);
-  const inputRef = useRef<HTMLTextAreaElement>(null);
 
   const sendChatMessage = useCallback(
     async (chatMessages: ChatMessage[]) => {
@@ -133,14 +132,12 @@ export function useChat() {
   const resetChat = useCallback(() => {
     setMessages([]);
     setInput("");
-    inputRef.current?.focus();
   }, []);
 
   return {
     messages,
     input,
     isLoading,
-    inputRef,
     setInput,
     handleSubmit,
     handlePromptClick,

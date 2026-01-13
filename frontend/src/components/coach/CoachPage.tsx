@@ -14,7 +14,6 @@ export function CoachPage() {
     messages,
     input,
     isLoading,
-    inputRef,
     setInput,
     handleSubmit,
     handlePromptClick,
@@ -77,7 +76,6 @@ export function CoachPage() {
           <ChatInput
             input={input}
             isLoading={isLoading}
-            inputRef={inputRef}
             onInputChange={setInput}
             onSubmit={(e) => {
               void handleSubmit(e);
