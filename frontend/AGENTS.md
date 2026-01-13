@@ -115,6 +115,22 @@ See `src/utils/env.ts` for the list of environment variables.
 
 ## Code Style
 
+### API Requests
+
+Use the `api` utility from `src/utils/api.ts` for all backend requests. It handles base URL and auth headers:
+
+```typescript
+import { api } from "@/utils/api";
+
+const response = await api("/api/v1/goals", {
+  method: "POST",
+  token,  // Pass Clerk token for auth
+  body: JSON.stringify(data),
+});
+```
+
+Do not use raw `fetch` with manual URL construction.
+
 ### Hook Conventions
 
 For TanStack Query hooks (`useQuery`, `useMutation`, `useInfiniteQuery`), always define the `queryFn`/`mutationFn` logic as a separate async function above the hook:

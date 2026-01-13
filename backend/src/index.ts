@@ -10,6 +10,7 @@ import { sessions } from "./routes/sessions";
 import { goals } from "./routes/goals";
 import { game } from "./routes/game";
 import { stats } from "./routes/stats";
+import { coach } from "./routes/coach";
 import { getEnvRequired } from "./utils/env";
 
 const app = new Hono();
@@ -42,5 +43,6 @@ app.route("/api/v1/sessions", sessions);
 app.route("/api/v1/goals", goals);
 app.route("/api/v1/game", game);
 app.route("/api/v1/stats", stats);
+app.route("/api/v1/coach", coach);
 
 export default app;

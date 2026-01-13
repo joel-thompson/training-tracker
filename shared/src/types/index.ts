@@ -61,3 +61,6 @@ export type {
 
 // Testing types
 export type { TestType, DbTestType } from "./testing";
+
+// Coach types
+export type { ChatMessageRole, ChatMessage, ChatRequest } from "./coach";

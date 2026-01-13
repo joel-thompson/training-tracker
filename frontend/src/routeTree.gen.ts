@@ -20,6 +20,7 @@ import { Route as AppSettingsRouteImport } from './routes/_app/settings'
 import { Route as AppHistoryRouteImport } from './routes/_app/history'
 import { Route as AppGoalsRouteImport } from './routes/_app/goals'
 import { Route as AppGameRouteImport } from './routes/_app/game'
+import { Route as AppCoachRouteImport } from './routes/_app/coach'
 import { Route as AppSessionsNewRouteImport } from './routes/_app/sessions.new'
 import { Route as AppReviewsNewRouteImport } from './routes/_app/reviews.new'
 import { Route as AppSessionsIdEditRouteImport } from './routes/_app/sessions.$id.edit'
@@ -78,6 +79,11 @@ const AppGameRoute = AppGameRouteImport.update({
   path: '/game',
   getParentRoute: () => AppRoute,
 } as any)
+const AppCoachRoute = AppCoachRouteImport.update({
+  id: '/coach',
+  path: '/coach',
+  getParentRoute: () => AppRoute,
+} as any)
 const AppSessionsNewRoute = AppSessionsNewRouteImport.update({
   id: '/sessions/new',
   path: '/sessions/new',
@@ -97,6 +103,7 @@ const AppSessionsIdEditRoute = AppSessionsIdEditRouteImport.update({
 export interface FileRoutesByFullPath {
   '/about': typeof AboutRoute
   '/sign-in': typeof SignInRoute
+  '/coach': typeof AppCoachRoute
   '/game': typeof AppGameRoute
   '/goals': typeof AppGoalsRoute
   '/history': typeof AppHistoryRoute
@@ -112,6 +119,7 @@ export interface FileRoutesByFullPath {
 export interface FileRoutesByTo {
   '/about': typeof AboutRoute
   '/sign-in': typeof SignInRoute
+  '/coach': typeof AppCoachRoute
   '/game': typeof AppGameRoute
   '/goals': typeof AppGoalsRoute
   '/history': typeof AppHistoryRoute
@@ -129,6 +137,7 @@ export interface FileRoutesById {
   '/_app': typeof AppRouteWithChildren
   '/about': typeof AboutRoute
   '/sign-in': typeof SignInRoute
+  '/_app/coach': typeof AppCoachRoute
   '/_app/game': typeof AppGameRoute
   '/_app/goals': typeof AppGoalsRoute
   '/_app/history': typeof AppHistoryRoute
@@ -146,6 +155,7 @@ export interface FileRouteTypes {
   fullPaths:
     | '/about'
     | '/sign-in'
+    | '/coach'
     | '/game'
     | '/goals'
     | '/history'
@@ -161,6 +171,7 @@ export interface FileRouteTypes {
   to:
     | '/about'
     | '/sign-in'
+    | '/coach'
     | '/game'
     | '/goals'
     | '/history'
@@ -177,6 +188,7 @@ export interface FileRouteTypes {
     | '/_app'
     | '/about'
     | '/sign-in'
+    | '/_app/coach'
     | '/_app/game'
     | '/_app/goals'
     | '/_app/history'
@@ -275,6 +287,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AppGameRouteImport
       parentRoute: typeof AppRoute
     }
+    '/_app/coach': {
+      id: '/_app/coach'
+      path: '/coach'
+      fullPath: '/coach'
+      preLoaderRoute: typeof AppCoachRouteImport
+      parentRoute: typeof AppRoute
+    }
     '/_app/sessions/new': {
       id: '/_app/sessions/new'
       path: '/sessions/new'
@@ -300,6 +319,7 @@ declare module '@tanstack/react-router' {
 }
 
 interface AppRouteChildren {
+  AppCoachRoute: typeof AppCoachRoute
   AppGameRoute: typeof AppGameRoute
   AppGoalsRoute: typeof AppGoalsRoute
   AppHistoryRoute: typeof AppHistoryRoute
@@ -314,6 +334,7 @@ interface AppRouteChildren {
 }
 
 const AppRouteChildren: AppRouteChildren = {
+  AppCoachRoute: AppCoachRoute,
   AppGameRoute: AppGameRoute,
   AppGoalsRoute: AppGoalsRoute,
   AppHistoryRoute: AppHistoryRoute,

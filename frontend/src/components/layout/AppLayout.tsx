@@ -1,6 +1,6 @@
 import { Outlet, Link, useLocation, Navigate } from "@tanstack/react-router";
 import { useAuth, UserButton } from "@clerk/clerk-react";
-import { Home, Plus, Clock, MoreHorizontal, Loader2 } from "lucide-react";
+import { Home, Plus, Clock, MoreHorizontal, Loader2, Bot } from "lucide-react";
 import {
   Popover,
   PopoverContent,
@@ -81,6 +81,12 @@ export function AppLayout() {
               Stats
             </Link>
             <Link
+              to="/coach"
+              className="text-sm font-medium transition-colors hover:text-foreground/80 text-foreground/60"
+            >
+              Coach
+            </Link>
+            <Link
               to="/settings"
               className="text-sm font-medium transition-colors hover:text-foreground/80 text-foreground/60"
             >
@@ -92,7 +98,7 @@ export function AppLayout() {
           </div>
         </div>
       </header>
-      <main className="container mx-auto max-w-4xl px-4 py-8 pb-20 md:pb-8">
+      <main className="container mx-auto max-w-4xl px-4 py-8 pb-20 md:pb-8 flex flex-col h-[calc(100vh-4rem-1px)] md:h-[calc(100vh-4rem-1px)] min-h-0 overflow-hidden">
         <Outlet />
       </main>
       <nav className="fixed bottom-0 left-0 right-0 z-50 border-t bg-background md:hidden">
@@ -129,6 +135,17 @@ export function AppLayout() {
           >
             <Clock className="h-5 w-5" />
             <span className="text-xs font-medium">History</span>
+          </Link>
+          <Link
+            to="/coach"
+            className={`flex flex-col items-center justify-center gap-1 flex-1 h-full transition-colors ${
+              isActive("/coach")
+                ? "text-foreground"
+                : "text-foreground/60 hover:text-foreground/80"
+            }`}
+          >
+            <Bot className="h-5 w-5" />
+            <span className="text-xs font-medium">Coach</span>
           </Link>
           <Popover>
             <PopoverTrigger
