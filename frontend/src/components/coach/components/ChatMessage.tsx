@@ -23,7 +23,7 @@ export const ChatMessage = memo(function ChatMessage({
         )}
       </div>
       <div className="flex-1 min-w-0">
-        <p className="text-sm leading-relaxed whitespace-pre-wrap break-all">
+        <p className="text-sm leading-relaxed whitespace-pre-wrap wrap-break-word">
           {message.content}
         </p>
       </div>
