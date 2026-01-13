@@ -31,7 +31,7 @@ export function CoachPage() {
     isLoading && messages[messages.length - 1]?.role === "user";
 
   return (
-    <div className="flex flex-col h-[calc(100vh-8rem)] md:h-[calc(100vh-6rem)] overflow-hidden">
+    <div className="flex flex-col h-full overflow-hidden">
       <div className="flex items-center justify-between mb-4 shrink-0">
         <div>
           <h1 className="text-3xl font-bold">AI Coach</h1>

@@ -98,7 +98,7 @@ export function AppLayout() {
           </div>
         </div>
       </header>
-      <main className="container mx-auto max-w-4xl px-4 py-8 pb-20 md:pb-8">
+      <main className="container mx-auto max-w-4xl px-4 py-8 pb-20 md:pb-8 flex flex-col h-[calc(100vh-4rem-1px)] md:h-[calc(100vh-4rem-1px)] min-h-0 overflow-hidden">
         <Outlet />
       </main>
       <nav className="fixed bottom-0 left-0 right-0 z-50 border-t bg-background md:hidden">
