@@ -30,28 +30,30 @@ export function CoachPage() {
     isLoading && messages[messages.length - 1]?.role === "user";
 
   return (
-    <div className="flex flex-col h-full overflow-hidden">
-      <div className="flex items-center justify-between mb-4 shrink-0">
+    <div className="flex flex-col h-full overflow-hidden md:mt-0 md:mb-0">
+      <div className="hidden md:flex items-center justify-between mb-4 shrink-0">
         <div>
           <h1 className="text-3xl font-bold">AI Coach</h1>
           <p className="text-muted-foreground text-lg">
             Ask questions about your training
           </p>
         </div>
-        {messages.length > 0 && (
-          <Button variant="outline" size="sm" onClick={resetChat}>
-            <RotateCcw className="h-4 w-4 mr-2" />
-            New Chat
-          </Button>
-        )}
       </div>
 
-      <Card className="flex flex-col flex-1 min-h-0 overflow-hidden">
+      <Card className="flex flex-col flex-1 min-h-0 overflow-hidden ">
         <CardHeader className="pb-3 shrink-0">
-          <CardTitle className="text-base font-medium flex items-center gap-2">
-            <Bot className="h-5 w-5" />
-            Training Coach
-          </CardTitle>
+          <div className="flex items-center justify-between">
+            <CardTitle className="text-base font-medium flex items-center gap-2">
+              <Bot className="h-5 w-5" />
+              Training Coach
+            </CardTitle>
+            {messages.length > 0 && (
+              <Button variant="outline" size="sm" onClick={resetChat}>
+                <RotateCcw className="h-4 w-4 mr-2" />
+                New Chat
+              </Button>
+            )}
+          </div>
         </CardHeader>
         <CardContent className="flex flex-col flex-1 min-h-0 pb-4">
           <ScrollArea className="flex-1 min-h-0 pr-4">
