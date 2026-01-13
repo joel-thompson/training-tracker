@@ -1,6 +1,6 @@
 import { Outlet, Link, useLocation, Navigate } from "@tanstack/react-router";
 import { useAuth, UserButton } from "@clerk/clerk-react";
-import { Home, Plus, Clock, MoreHorizontal, Loader2 } from "lucide-react";
+import { Home, Plus, Clock, MoreHorizontal, Loader2, Bot } from "lucide-react";
 import {
   Popover,
   PopoverContent,
@@ -81,6 +81,12 @@ export function AppLayout() {
               Stats
             </Link>
             <Link
+              to="/coach"
+              className="text-sm font-medium transition-colors hover:text-foreground/80 text-foreground/60"
+            >
+              Coach
+            </Link>
+            <Link
               to="/settings"
               className="text-sm font-medium transition-colors hover:text-foreground/80 text-foreground/60"
             >
@@ -129,6 +135,17 @@ export function AppLayout() {
           >
             <Clock className="h-5 w-5" />
             <span className="text-xs font-medium">History</span>
+          </Link>
+          <Link
+            to="/coach"
+            className={`flex flex-col items-center justify-center gap-1 flex-1 h-full transition-colors ${
+              isActive("/coach")
+                ? "text-foreground"
+                : "text-foreground/60 hover:text-foreground/80"
+            }`}
+          >
+            <Bot className="h-5 w-5" />
+            <span className="text-xs font-medium">Coach</span>
           </Link>
           <Popover>
             <PopoverTrigger

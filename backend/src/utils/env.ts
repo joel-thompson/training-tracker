@@ -4,7 +4,8 @@ type BackendEnvKey =
   | "FRONTEND_URL" // Frontend origin for CORS (default: http://localhost:5173)
   | "CLERK_SECRET_KEY" // Clerk secret key for authentication
   | "CLERK_PUBLISHABLE_KEY" // Clerk publishable key for authentication
-  | "DATABASE_URL"; // PostgreSQL connection string
+  | "DATABASE_URL" // PostgreSQL connection string
+  | "OPENAI_API_KEY"; // OpenAI API key for AI coach
 
 export function getEnv(key: BackendEnvKey) {
   const value = process.env[key];
