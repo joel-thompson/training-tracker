@@ -8,6 +8,7 @@ import { errorResponse, ErrorCodes } from "../../utils/response";
 import { getEnvRequired } from "../../utils/env";
 import { eq, and, isNull, desc, gte, sql } from "drizzle-orm";
 import { chatRequestSchema } from "shared/validation";
+import type { ClassType, ItemType, GoalCategory } from "shared/types";
 
 export const chatHandler = async (c: Context) => {
   const userId = requireUserId(c);
@@ -46,18 +47,18 @@ export const chatHandler = async (c: Context) => {
 interface SessionWithItems {
   id: string;
   sessionDate: string;
-  classType: "gi" | "nogi";
+  classType: ClassType;
   techniqueCovered: string | null;
   generalNotes: string | null;
   items: {
-    type: "success" | "problem" | "question";
+    type: ItemType;
     content: string;
   }[];
 }
 
 interface Goal {
   goalText: string;
-  category: string | null;
+  category: GoalCategory | null;
   notes: string | null;
   isActive: boolean;
   completedAt: string | null;
@@ -110,7 +111,7 @@ async function fetchUserContext(userId: string): Promise<UserContext> {
   // Group items by session
   const itemsBySession = new Map<
     string,
-    { type: "success" | "problem" | "question"; content: string }[]
+    { type: ItemType; content: string }[]
   >();
   for (const item of items) {
     const existing = itemsBySession.get(item.sessionId) ?? [];
