@@ -8,7 +8,8 @@ import { errorResponse, ErrorCodes } from "../../utils/response";
 import { getEnvRequired } from "../../utils/env";
 import { eq, and, isNull, desc, gte, sql } from "drizzle-orm";
 import { chatRequestSchema } from "shared/validation";
-import type { ClassType, ItemType, GoalCategory } from "shared/types";
+import type { ClassType, ItemType } from "shared/types";
+import { buildSystemPrompt, type UserContext } from "../../llm-context/bjj";
 
 export const chatHandler = async (c: Context) => {
   const userId = requireUserId(c);
@@ -54,24 +55,6 @@ interface SessionWithItems {
     type: ItemType;
     content: string;
   }[];
-}
-
-interface Goal {
-  goalText: string;
-  category: GoalCategory | null;
-  notes: string | null;
-  isActive: boolean;
-  completedAt: string | null;
-}
-
-interface UserContext {
-  sessions: SessionWithItems[];
-  goals: Goal[];
-  stats: {
-    totalSessions: number;
-    giCount: number;
-    nogiCount: number;
-  };
 }
 
 async function fetchUserContext(userId: string): Promise<UserContext> {
@@ -154,96 +137,4 @@ async function fetchUserContext(userId: string): Promise<UserContext> {
       nogiCount,
     },
   };
-}
-
-function buildSystemPrompt(context: UserContext): string {
-  const today = new Date().toISOString().split("T")[0];
-
-  const sessionsText =
-    context.sessions.length > 0
-      ? context.sessions
-          .map((s) => {
-            const lines = [`- ${s.sessionDate} (${s.classType})`];
-            if (s.techniqueCovered) {
-              lines.push(`  Technique: ${s.techniqueCovered}`);
-            }
-            if (s.items.length > 0) {
-              const successes = s.items
-                .filter((i) => i.type === "success")
-                .map((i) => i.content);
-              const problems = s.items
-                .filter((i) => i.type === "problem")
-                .map((i) => i.content);
-              const questions = s.items
-                .filter((i) => i.type === "question")
-                .map((i) => i.content);
-
-              if (successes.length > 0)
-                lines.push(`  Successes: ${successes.join("; ")}`);
-              if (problems.length > 0)
-                lines.push(`  Problems: ${problems.join("; ")}`);
-              if (questions.length > 0)
-                lines.push(`  Questions: ${questions.join("; ")}`);
-            }
-            if (s.generalNotes) {
-              lines.push(`  Notes: ${s.generalNotes}`);
-            }
-            return lines.join("\n");
-          })
-          .join("\n\n")
-      : "No recent sessions logged.";
-
-  const activeGoals = context.goals.filter((g) => g.isActive);
-  const completedGoals = context.goals.filter((g) => !g.isActive);
-
-  const goalsText =
-    activeGoals.length > 0
-      ? activeGoals
-          .map((g) => {
-            let line = `- ${g.goalText}`;
-            if (g.category) line += ` (${g.category})`;
-            if (g.notes) line += ` — ${g.notes}`;
-            return line;
-          })
-          .join("\n")
-      : "No active goals set.";
-
-  const completedGoalsText =
-    completedGoals.length > 0
-      ? completedGoals
-          .slice(0, 5)
-          .map(
-            (g) => `- ${g.goalText} (completed ${g.completedAt ?? "unknown"})`
-          )
-          .join("\n")
-      : "No completed goals yet.";
-
-  return `You are a supportive BJJ (Brazilian Jiu-Jitsu) training coach helping a practitioner reflect on and improve their training.
-
-## User's Training Context
-
-### Training Stats (Last 90 Days)
-- Total sessions: ${context.stats.totalSessions}
-- Gi sessions: ${context.stats.giCount}
-- No-Gi sessions: ${context.stats.nogiCount}
-
-### Recent Training Sessions
-${sessionsText}
-
-### Active Goals
-${goalsText}
-
-### Recently Completed Goals
-${completedGoalsText}
-
-## Guidelines
-- Be encouraging but honest
-- Reference specific sessions, dates, and details when relevant
-- Keep responses concise (2-3 paragraphs max unless the user asks for more detail)
-- Use BJJ terminology naturally (positions, submissions, sweeps, etc.)
-- If asked about something not in the training data, say so honestly
-- When identifying patterns, be specific about dates and occurrences
-- Suggest actionable next steps when appropriate
-
-Today's date is: ${today}`;
 }
