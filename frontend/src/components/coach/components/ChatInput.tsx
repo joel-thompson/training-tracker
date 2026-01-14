@@ -29,7 +29,7 @@ export const ChatInput = memo(function ChatInput({
         e.preventDefault();
         void onSubmit(e);
       }}
-      className="flex gap-2 mt-4 pt-4 border-t shrink-0"
+      className="flex gap-2 shrink-0"
     >
       <Textarea
         value={input}
