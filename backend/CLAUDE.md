@@ -1,37 +1,28 @@
-# Backend
+# CLAUDE.md
 
-Hono API server running on Bun.
+This file provides guidance to Claude Code (claude.ai/code) when working with code in this repository.
 
-## How to deal with database schema changes
-
-1. Update the schema in `src/db/schema.ts`
-2. Update the types in `shared/types` if needed
-3. Update the validation schemas in `shared/validation` if needed
-4. Run `bun run db:generate` to generate a new migration
-5. Run `bun run db:migrate` to apply the migration
-
-IMPORTANT: Do not run the migration automatically. Ask me to review the migration, and tell me the commands to run the migration.
-
-## Tech Stack
- 
-- Framework: Hono
-- Auth: Clerk (`@hono/clerk-auth`)
-- Database: PostgreSQL with Drizzle ORM
-- Validation: Zod (via `shared/validation`)
+Hono API server running on Bun. See root `CLAUDE.md` for monorepo-level guidance.
 
 ## Commands
 
 - `bun run dev` - Start with hot reload (port 3000)
 - `bun run lint` - Run ESLint
+- `bun run typecheck` - Type-check
 - `bun run db:generate` - Generate migrations from schema
 - `bun run db:migrate` - Apply migrations
 - `bun run db:studio` - Open Drizzle Studio
 - `bun run db:start` - Start PostgreSQL container
 - `bun run db:stop` - Stop PostgreSQL container
 
-## API Structure
+## Database Schema Changes
 
-See `backend/src/index.ts` for the API structure.
+1. Update the schema in `src/db/schema.ts`
+2. Update types in `shared/types` if needed
+3. Update validation schemas in `shared/validation` if needed
+4. Run `bun run db:generate` to generate a migration
+
+**IMPORTANT: Do not run the migration automatically. Show the generated migration and ask the user to review before running `bun run db:migrate`.**
 
 ## Route Organization
 
@@ -42,7 +33,6 @@ Routes are grouped using Hono's route method:
 const sessions = new Hono();
 sessions.post("/", createSessionHandler);
 sessions.get("/", listSessionsHandler);
-// ...
 
 // index.ts
 app.route("/api/v1/sessions", sessions);
@@ -73,35 +63,45 @@ import type { MyResponseType } from "shared/types";
 
 export const myHandler = async (c: Context) => {
   const userId = requireUserId(c);
-  
+
   // 1. Parse input as unknown, then validate with Zod
   const body: unknown = await c.req.json();
   const parsed = mySchema.safeParse(body);
-  
+
   if (!parsed.success) {
     return c.json(
       errorResponse(ErrorCodes.VALIDATION_ERROR, parsed.error.message),
       400
     );
   }
-  
+
   // 2. Do work...
-  
+
   // 3. Create typed response data, then return
   const responseData: MyResponseType = { ... };
   return c.json(successResponse(responseData));
 };
 ```
 
-### Key Patterns
+Key patterns:
+1. Assert request body as `unknown`, then use `safeParse`
+2. Use `parsed.error.message` for validation errors
+3. Create a typed `responseData` variable before returning
 
-1. **Input validation**: Assert request body as `unknown`, then use `safeParse`
-2. **Error messages**: Use `parsed.error.message` for validation errors
-3. **Response typing**: Create a typed `responseData` variable before returning
+## Auth Pattern
+
+Routes under `/api/*` use Clerk middleware. `requireUserId` throws an `HTTPException` that Hono converts to a 401 automatically — no try/catch needed for auth:
+
+```typescript
+export const myHandler = async (c: Context) => {
+  const userId = requireUserId(c);
+  // Handle authenticated request
+};
+```
 
 ## Response Format
 
-All API responses use a consistent format:
+All API responses use:
 
 ```typescript
 // Success
@@ -111,28 +111,11 @@ All API responses use a consistent format:
 { "success": false, "error": { "code": "...", "message": "..." } }
 ```
 
-Use helpers from `src/utils/response.ts`:
-- `successResponse(data)` - Wrap data in success format
-- `errorResponse(code, message)` - Create error response
-- `ErrorCodes` - Standard error codes (VALIDATION_ERROR, UNAUTHORIZED, NOT_FOUND, INTERNAL_ERROR)
-
-## Auth Pattern
-
-Routes under `/api/*` use Clerk middleware. The `requireUserId` helper throws an `HTTPException` that Hono automatically converts to a 401 response:
-
-```typescript
-import { requireUserId } from "../utils/auth";
-
-export const myHandler = async (c: Context) => {
-  const userId = requireUserId(c);  // Throws HTTPException(401) if not authenticated
-  // Handle authenticated request - no try/catch needed for auth
-};
-```
-
-## Database Schema
-
-Tables are defined in `src/db/schema.ts`:
+Helpers from `src/utils/response.ts`:
+- `successResponse(data)`
+- `errorResponse(code, message)`
+- `ErrorCodes` — `VALIDATION_ERROR`, `UNAUTHORIZED`, `NOT_FOUND`, `INTERNAL_ERROR`
 
 ## Environment Variables
 
-See `src/utils/env.ts` for the list of environment variables.
+See `src/utils/env.ts` for all required environment variables.

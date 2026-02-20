@@ -24,7 +24,7 @@ training-tracker/
 └── shared/       # Shared types, validation, utilities
 ```
 
-Each package has an `AGENTS.md` with detailed documentation on commands, patterns, and conventions.
+Each package has a `CLAUDE.md` with detailed documentation on commands, patterns, and conventions.
 
 ## Quick Start
 
@@ -47,4 +47,4 @@ bun run lint         # Lint all packages
 bun run typecheck    # Type check all packages
 ```
 
-Database commands are in `backend/`. See `backend/AGENTS.md` for details.
+Database commands are in `backend/`. See `backend/CLAUDE.md` for details.
