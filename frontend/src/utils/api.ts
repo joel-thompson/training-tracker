@@ -1,4 +1,4 @@
-import { getEnvRequired } from "@/utils/env";
+import { getEnvWithDefault } from "@/utils/env";
 
 type FetchOptions = RequestInit & {
   token?: string | null;
@@ -7,7 +7,7 @@ type FetchOptions = RequestInit & {
 export async function api(path: string, options: FetchOptions = {}) {
   const { token, headers, ...rest } = options;
 
-  const baseURL = getEnvRequired("VITE_API_URL");
+  const baseURL = getEnvWithDefault("VITE_API_URL", "http://localhost:3000");
 
   return fetch(`${baseURL}${path}`, {
     ...rest,

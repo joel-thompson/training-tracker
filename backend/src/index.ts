@@ -11,7 +11,7 @@ import { goals } from "./routes/goals";
 import { game } from "./routes/game";
 import { stats } from "./routes/stats";
 import { coach } from "./routes/coach";
-import { getEnvRequired } from "./utils/env";
+import { getEnvRequired, getEnvWithDefault } from "./utils/env";
 
 const app = new Hono();
 
@@ -26,7 +26,7 @@ app.use("*", secureHeaders());
 app.use(
   "*",
   cors({
-    origin: [getEnvRequired("FRONTEND_URL")],
+    origin: [getEnvWithDefault("FRONTEND_URL", "http://localhost:5173")],
     allowMethods: ["GET", "POST", "PATCH", "DELETE", "OPTIONS"],
     allowHeaders: ["Content-Type", "Authorization"],
     credentials: true,

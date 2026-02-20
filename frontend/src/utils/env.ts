@@ -12,6 +12,10 @@ export function getEnv(key: FrontendEnvKey) {
   return value;
 }
 
+export function getEnvWithDefault(key: FrontendEnvKey, defaultValue: string) {
+  return getEnv(key) ?? defaultValue;
+}
+
 export function getEnvRequired(key: FrontendEnvKey) {
   const value = getEnv(key);
   if (value === undefined) {
