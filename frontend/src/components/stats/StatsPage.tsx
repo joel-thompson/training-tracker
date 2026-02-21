@@ -20,7 +20,7 @@ import {
   ChartTooltip,
   ChartTooltipContent,
 } from "@/components/ui/chart";
-import { CLASS_TYPE_LABELS } from "@/components/sessions/components/constants";
+import { CLASS_TYPE_LABELS } from "shared/constants";
 
 function StreakCard() {
   const { data, isLoading } = useWeeklyStreak();

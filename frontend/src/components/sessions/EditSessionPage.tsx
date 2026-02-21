@@ -29,7 +29,7 @@ import { SessionDatePicker } from "./components/SessionDatePicker";
 import { ClassTypeSelect } from "./components/ClassTypeSelect";
 import { CharCountTextarea } from "./components/CharCountTextarea";
 import { ItemInputRow } from "./components/ItemInputRow";
-import { ITEM_TYPE_LABELS } from "./components/constants";
+import { ITEM_TYPE_LABELS } from "shared/constants";
 
 interface EditSessionPageProps {
   sessionId: string;

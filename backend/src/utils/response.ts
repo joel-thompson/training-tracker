@@ -1,4 +1,5 @@
 import type { ApiSuccessResponse, ApiErrorResponse } from "shared/types";
+export { ErrorCodes } from "shared/constants";
 
 export function successResponse<T>(data: T): ApiSuccessResponse<T> {
   return {
@@ -17,10 +18,3 @@ export function errorResponse(code: string, message: string): ApiErrorResponse {
   };
 }
 
-export const ErrorCodes = {
-  VALIDATION_ERROR: "VALIDATION_ERROR",
-  UNAUTHORIZED: "UNAUTHORIZED",
-  NOT_FOUND: "NOT_FOUND",
-  INTERNAL_ERROR: "INTERNAL_ERROR",
-  AI_ACCESS_DENIED: "AI_ACCESS_DENIED",
-} as const;

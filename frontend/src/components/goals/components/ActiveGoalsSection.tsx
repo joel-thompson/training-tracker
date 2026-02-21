@@ -2,7 +2,7 @@ import { Card, CardContent, CardHeader } from "@/components/ui/card";
 import { Skeleton } from "@/components/ui/skeleton";
 import { Button } from "@/components/ui/button";
 import { GoalCard } from "./GoalCard";
-import { categoryLabels, categoryOrder } from "./goalConstants";
+import { GOAL_CATEGORY_LABELS, GOAL_CATEGORY_ORDER } from "shared/constants";
 import type { Goal } from "shared/types";
 
 export function ActiveGoalsSection({
@@ -20,7 +20,7 @@ export function ActiveGoalsSection({
   onDelete: (goal: Goal) => void;
   onCreateGoal: () => void;
 }) {
-  const groupedActiveGoals = categoryOrder
+  const groupedActiveGoals = GOAL_CATEGORY_ORDER
     .map((category) => ({
       category,
       goals: goals.filter((goal) => goal.category === category),
@@ -65,7 +65,7 @@ export function ActiveGoalsSection({
             <div key={group.category ?? "uncategorized"} className="space-y-4">
               <h3 className="text-lg font-semibold">
                 {group.category
-                  ? categoryLabels[group.category]
+                  ? GOAL_CATEGORY_LABELS[group.category]
                   : "Uncategorized"}
               </h3>
               {group.goals.map((goal) => (

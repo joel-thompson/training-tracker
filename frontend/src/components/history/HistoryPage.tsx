@@ -12,7 +12,7 @@ import {
 } from "@/components/ui/collapsible";
 import { Badge } from "@/components/ui/badge";
 import { Skeleton } from "@/components/ui/skeleton";
-import { CLASS_TYPE_LABELS } from "@/components/sessions/components/constants";
+import { CLASS_TYPE_LABELS } from "shared/constants";
 import type { Session } from "shared/types";
 
 function SessionCard({ session }: { session: Session }) {
@@ -35,7 +35,7 @@ function SessionCard({ session }: { session: Session }) {
                   {format(parseISO(session.sessionDate), "PPP")}
                 </h3>
                 <Badge variant="outline">
-                  {CLASS_TYPE_LABELS[session.classType] || session.classType}
+                  {CLASS_TYPE_LABELS[session.classType] ?? session.classType}
                 </Badge>
               </div>
               <div className="flex items-center gap-2">

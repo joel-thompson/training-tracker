@@ -9,6 +9,7 @@ import {
   ErrorCodes,
 } from "../../utils/response";
 import type { ItemType } from "shared/types";
+import { ITEM_TYPES } from "shared/constants";
 import { toSessionResponse } from "../../utils/transforms";
 
 export const createSessionHandler = async (c: Context) => {
@@ -48,7 +49,6 @@ export const createSessionHandler = async (c: Context) => {
         order: number;
       }[] = [];
 
-      const ITEM_TYPES = ["success", "problem", "question"] as const;
       for (const type of ITEM_TYPES) {
         items[type]?.forEach((content, index) => {
           itemsToInsert.push({ sessionId: session.id, type, content, order: index });
