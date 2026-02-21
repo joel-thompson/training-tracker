@@ -11,7 +11,7 @@ import { goals } from "./routes/goals";
 import { game } from "./routes/game";
 import { stats } from "./routes/stats";
 import { coach } from "./routes/coach";
-import { getEnvRequired, getEnvWithDefault } from "./utils/env";
+import { getEnvWithDefault } from "./utils/env";
 
 const app = new Hono();
 

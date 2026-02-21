@@ -9,6 +9,7 @@ import {
   ErrorCodes,
 } from "../../utils/response";
 import type { ListGoalsResponse } from "shared/types";
+import { toGoalResponse, goalCategorySortOrder } from "../../utils/transforms";
 import { eq, and, desc, sql, count } from "drizzle-orm";
 
 export const listGoalsHandler = async (c: Context) => {
@@ -63,16 +64,7 @@ export const listGoalsHandler = async (c: Context) => {
     .select()
     .from(trainingGoals)
     .where(and(...conditions))
-    .orderBy(
-      sql`CASE 
-        WHEN ${trainingGoals.category} = 'bottom' THEN 1
-        WHEN ${trainingGoals.category} = 'top' THEN 2
-        WHEN ${trainingGoals.category} = 'submission' THEN 3
-        WHEN ${trainingGoals.category} = 'escape' THEN 4
-        ELSE 5
-      END`,
-      desc(trainingGoals.createdAt)
-    )
+    .orderBy(goalCategorySortOrder, desc(trainingGoals.createdAt))
     .limit(limit + 1);
 
   const hasMore = goals.length > limit;
@@ -82,16 +74,7 @@ export const listGoalsHandler = async (c: Context) => {
     : null;
 
   const responseData: ListGoalsResponse = {
-    goals: resultGoals.map((goal) => ({
-      id: goal.id,
-      userId: goal.userId,
-      goalText: goal.goalText,
-      category: goal.category,
-      notes: goal.notes,
-      isActive: goal.isActive,
-      createdAt: goal.createdAt.toISOString(),
-      completedAt: goal.completedAt?.toISOString() ?? null,
-    })),
+    goals: resultGoals.map(toGoalResponse),
     pagination: {
       nextCursor,
       hasMore,

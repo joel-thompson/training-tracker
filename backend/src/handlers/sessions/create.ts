@@ -8,7 +8,8 @@ import {
   errorResponse,
   ErrorCodes,
 } from "../../utils/response";
-import type { ItemType, Session } from "shared/types";
+import type { ItemType } from "shared/types";
+import { toSessionResponse } from "../../utils/transforms";
 
 export const createSessionHandler = async (c: Context) => {
   const userId = requireUserId(c);
@@ -47,36 +48,10 @@ export const createSessionHandler = async (c: Context) => {
         order: number;
       }[] = [];
 
-      if (items.success) {
-        items.success.forEach((content, index) => {
-          itemsToInsert.push({
-            sessionId: session.id,
-            type: "success",
-            content,
-            order: index,
-          });
-        });
-      }
-
-      if (items.problem) {
-        items.problem.forEach((content, index) => {
-          itemsToInsert.push({
-            sessionId: session.id,
-            type: "problem",
-            content,
-            order: index,
-          });
-        });
-      }
-
-      if (items.question) {
-        items.question.forEach((content, index) => {
-          itemsToInsert.push({
-            sessionId: session.id,
-            type: "question",
-            content,
-            order: index,
-          });
+      const ITEM_TYPES = ["success", "problem", "question"] as const;
+      for (const type of ITEM_TYPES) {
+        items[type]?.forEach((content, index) => {
+          itemsToInsert.push({ sessionId: session.id, type, content, order: index });
         });
       }
 
@@ -92,24 +67,7 @@ export const createSessionHandler = async (c: Context) => {
     return { session, items: insertedItems };
   });
 
-  const responseData: Session = {
-    id: result.session.id,
-    userId: result.session.userId,
-    sessionDate: result.session.sessionDate,
-    classType: result.session.classType,
-    techniqueCovered: result.session.techniqueCovered,
-    generalNotes: result.session.generalNotes,
-    createdAt: result.session.createdAt.toISOString(),
-    updatedAt: result.session.updatedAt.toISOString(),
-    items: result.items.map((item) => ({
-      id: item.id,
-      sessionId: item.sessionId,
-      type: item.type,
-      content: item.content,
-      order: item.order,
-      createdAt: item.createdAt.toISOString(),
-    })),
-  };
+  const responseData = toSessionResponse(result.session, result.items);
 
   return c.json(successResponse(responseData), 201);
 };

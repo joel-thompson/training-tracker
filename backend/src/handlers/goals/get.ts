@@ -7,7 +7,7 @@ import {
   errorResponse,
   ErrorCodes,
 } from "../../utils/response";
-import type { Goal } from "shared/types";
+import { toGoalResponse } from "../../utils/transforms";
 import { eq, and } from "drizzle-orm";
 
 export const getGoalHandler = async (c: Context) => {
@@ -24,16 +24,7 @@ export const getGoalHandler = async (c: Context) => {
     return c.json(errorResponse(ErrorCodes.NOT_FOUND, "Goal not found"), 404);
   }
 
-  const responseData: Goal = {
-    id: goal.id,
-    userId: goal.userId,
-    goalText: goal.goalText,
-    category: goal.category,
-    notes: goal.notes,
-    isActive: goal.isActive,
-    createdAt: goal.createdAt.toISOString(),
-    completedAt: goal.completedAt?.toISOString() ?? null,
-  };
+  const responseData = toGoalResponse(goal);
 
   return c.json(successResponse(responseData));
 };

@@ -8,7 +8,8 @@ import {
   errorResponse,
   ErrorCodes,
 } from "../../utils/response";
-import type { Session, SessionItem, ListSessionsResponse } from "shared/types";
+import type { SessionItem, ListSessionsResponse } from "shared/types";
+import { toSessionItemResponse } from "../../utils/transforms";
 import { eq, and, isNull, desc, gte, lte, sql, count } from "drizzle-orm";
 
 export const listSessionsHandler = async (c: Context) => {
@@ -105,21 +106,14 @@ export const listSessionsHandler = async (c: Context) => {
 
     for (const item of items) {
       const existing = itemsMap.get(item.sessionId) ?? [];
-      existing.push({
-        id: item.id,
-        sessionId: item.sessionId,
-        type: item.type,
-        content: item.content,
-        order: item.order,
-        createdAt: item.createdAt.toISOString(),
-      });
+      existing.push(toSessionItemResponse(item));
       itemsMap.set(item.sessionId, existing);
     }
   }
 
   const responseData: ListSessionsResponse = {
     sessions: resultSessions.map((session) => {
-      const base: Session = {
+      const base = {
         id: session.id,
         userId: session.userId,
         sessionDate: session.sessionDate,
@@ -128,11 +122,8 @@ export const listSessionsHandler = async (c: Context) => {
         generalNotes: session.generalNotes,
         createdAt: session.createdAt.toISOString(),
         updatedAt: session.updatedAt.toISOString(),
+        ...(!excludeItems && { items: itemsMap.get(session.id) ?? [] }),
       };
-
-      if (!excludeItems) {
-        base.items = itemsMap.get(session.id) ?? [];
-      }
 
       return base;
     }),

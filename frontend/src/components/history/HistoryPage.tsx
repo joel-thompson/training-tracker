@@ -12,16 +12,8 @@ import {
 } from "@/components/ui/collapsible";
 import { Badge } from "@/components/ui/badge";
 import { Skeleton } from "@/components/ui/skeleton";
+import { CLASS_TYPE_LABELS } from "@/components/sessions/components/constants";
 import type { Session } from "shared/types";
-
-const CLASS_TYPE_LABELS: Record<string, string> = {
-  gi: "Gi",
-  nogi: "No-Gi",
-  open_mat: "Open Mat",
-  private: "Private",
-  competition: "Competition",
-  other: "Other",
-};
 
 function SessionCard({ session }: { session: Session }) {
   const [isOpen, setIsOpen] = useState(false);

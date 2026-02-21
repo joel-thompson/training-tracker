@@ -20,6 +20,7 @@ import {
   ChartTooltip,
   ChartTooltipContent,
 } from "@/components/ui/chart";
+import { CLASS_TYPE_LABELS } from "@/components/sessions/components/constants";
 
 function StreakCard() {
   const { data, isLoading } = useWeeklyStreak();
@@ -110,18 +111,18 @@ function ClassTypeSplitCard() {
 
   const chartData = data
     ? [
-        { name: "Gi", value: data.gi, fill: giColor },
-        { name: "No-Gi", value: data.nogi, fill: nogiColor },
+        { name: CLASS_TYPE_LABELS.gi, value: data.gi, fill: giColor },
+        { name: CLASS_TYPE_LABELS.nogi, value: data.nogi, fill: nogiColor },
       ]
     : [];
 
   const chartConfig = {
     gi: {
-      label: "Gi",
+      label: CLASS_TYPE_LABELS.gi,
       color: giColor,
     },
     nogi: {
-      label: "No-Gi",
+      label: CLASS_TYPE_LABELS.nogi,
       color: nogiColor,
     },
   };
@@ -162,7 +163,7 @@ function ClassTypeSplitCard() {
                   style={{ backgroundColor: giColor }}
                 />
                 <span className="text-muted-foreground">
-                  Gi: {data.gi} ({Math.round((data.gi / data.total) * 100)}%)
+                  {CLASS_TYPE_LABELS.gi}: {data.gi} ({Math.round((data.gi / data.total) * 100)}%)
                 </span>
               </div>
               <div className="flex items-center gap-2">
@@ -171,7 +172,7 @@ function ClassTypeSplitCard() {
                   style={{ backgroundColor: nogiColor }}
                 />
                 <span className="text-muted-foreground">
-                  No-Gi: {data.nogi} (
+                  {CLASS_TYPE_LABELS.nogi}: {data.nogi} (
                   {Math.round((data.nogi / data.total) * 100)}%)
                 </span>
               </div>

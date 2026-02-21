@@ -8,7 +8,7 @@ import {
   errorResponse,
   ErrorCodes,
 } from "../../utils/response";
-import type { Session } from "shared/types";
+import { toSessionResponse } from "../../utils/transforms";
 import { eq, and, isNull } from "drizzle-orm";
 
 export const updateSessionHandler = async (c: Context) => {
@@ -73,24 +73,7 @@ export const updateSessionHandler = async (c: Context) => {
     .where(eq(sessionItems.sessionId, sessionId))
     .orderBy(sessionItems.type, sessionItems.order);
 
-  const responseData: Session = {
-    id: updated.id,
-    userId: updated.userId,
-    sessionDate: updated.sessionDate,
-    classType: updated.classType,
-    techniqueCovered: updated.techniqueCovered,
-    generalNotes: updated.generalNotes,
-    createdAt: updated.createdAt.toISOString(),
-    updatedAt: updated.updatedAt.toISOString(),
-    items: items.map((item) => ({
-      id: item.id,
-      sessionId: item.sessionId,
-      type: item.type,
-      content: item.content,
-      order: item.order,
-      createdAt: item.createdAt.toISOString(),
-    })),
-  };
+  const responseData = toSessionResponse(updated, items);
 
   return c.json(successResponse(responseData));
 };

@@ -8,7 +8,7 @@ import {
   errorResponse,
   ErrorCodes,
 } from "../../utils/response";
-import type { Goal } from "shared/types";
+import { toGoalResponse } from "../../utils/transforms";
 
 export const createGoalHandler = async (c: Context) => {
   const userId = requireUserId(c);
@@ -35,16 +35,7 @@ export const createGoalHandler = async (c: Context) => {
     })
     .returning();
 
-  const responseData: Goal = {
-    id: goal.id,
-    userId: goal.userId,
-    goalText: goal.goalText,
-    category: goal.category,
-    notes: goal.notes,
-    isActive: goal.isActive,
-    createdAt: goal.createdAt.toISOString(),
-    completedAt: goal.completedAt?.toISOString() ?? null,
-  };
+  const responseData = toGoalResponse(goal);
 
   return c.json(successResponse(responseData), 201);
 };
