@@ -8,6 +8,8 @@ Shared types, utilities, constants, and validation schemas consumed by both `fro
 
 - `bun run lint` - Run ESLint
 - `bun run typecheck` - Type-check
+- `bun run test` - Run all tests
+- `bun run test src/path/to/file.test.ts` - Run a single test file (use `bun run test`, NOT `bun test`)
 
 ## Package Exports
 

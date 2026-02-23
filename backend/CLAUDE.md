@@ -9,6 +9,8 @@ Hono API server running on Bun. See root `CLAUDE.md` for monorepo-level guidance
 - `bun run dev` - Start with hot reload (port 3000)
 - `bun run lint` - Run ESLint
 - `bun run typecheck` - Type-check
+- `bun run test` - Run all tests
+- `bun run test src/path/to/file.test.ts` - Run a single test file (use `bun run test`, NOT `bun test`)
 - `bun run db:generate` - Generate migrations from schema
 - `bun run db:migrate` - Apply migrations
 - `bun run db:studio` - Open Drizzle Studio

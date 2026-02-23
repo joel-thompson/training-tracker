@@ -48,3 +48,34 @@ bun run typecheck    # Type check all packages
 ```
 
 Database commands are in `backend/`. See `backend/CLAUDE.md` for details.
+
+## Testing
+
+Tests use [Vitest](https://vitest.dev/). Always use `bun run test` — not `bun test` (Bun's built-in runner doesn't process Vitest mocks).
+
+**All packages at once (from root):**
+
+```bash
+bun run test
+```
+
+**Single package (from root):**
+
+```bash
+bun run --filter backend test
+bun run --filter frontend test
+bun run --filter shared test
+```
+
+**Single package (after cd):**
+
+```bash
+cd backend && bun run test
+```
+
+**Single file (after cd into the package):**
+
+```bash
+cd backend && bun run test src/handlers/goals/create.test.ts
+cd frontend && bun run test src/utils/api.test.ts
+```

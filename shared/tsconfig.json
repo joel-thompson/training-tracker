@@ -10,5 +10,5 @@
     "resolveJsonModule": true, // ADD: For importing JSON files
     "isolatedModules": true // ADD: Required for Bun/Vite
   },
-  "include": ["src/**/*"]
+  "include": ["src/**/*", "vitest.config.ts"]
 }

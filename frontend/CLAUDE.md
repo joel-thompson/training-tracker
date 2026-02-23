@@ -10,6 +10,8 @@ React 19 + Vite application with TanStack Router. See root `CLAUDE.md` for monor
 - `bun run build` - Type-check and build
 - `bun run lint` - Run ESLint
 - `bun run typecheck` - Type-check without building
+- `bun run test` - Run all tests
+- `bun run test src/path/to/file.test.ts` - Run a single test file (use `bun run test`, NOT `bun test`)
 
 ## Routing (TanStack Router)
 
