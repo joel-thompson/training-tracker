@@ -19,7 +19,7 @@ export const createGameItemHandler = async (c: Context) => {
   if (!parsed.success) {
     return c.json(
       errorResponse(ErrorCodes.VALIDATION_ERROR, parsed.error.message),
-      400
+      400,
     );
   }
 
@@ -30,15 +30,15 @@ export const createGameItemHandler = async (c: Context) => {
       .where(
         and(
           eq(gameItems.id, parsed.data.parentId),
-          eq(gameItems.userId, userId)
-        )
+          eq(gameItems.userId, userId),
+        ),
       )
       .limit(1);
 
     if (!parent) {
       return c.json(
         errorResponse(ErrorCodes.NOT_FOUND, "Parent item not found"),
-        404
+        404,
       );
     }
   }

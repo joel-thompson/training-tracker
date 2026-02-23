@@ -20,12 +20,10 @@ export function ActiveGoalsSection({
   onDelete: (goal: Goal) => void;
   onCreateGoal: () => void;
 }) {
-  const groupedActiveGoals = GOAL_CATEGORY_ORDER
-    .map((category) => ({
-      category,
-      goals: goals.filter((goal) => goal.category === category),
-    }))
-    .filter((group) => group.goals.length > 0);
+  const groupedActiveGoals = GOAL_CATEGORY_ORDER.map((category) => ({
+    category,
+    goals: goals.filter((goal) => goal.category === category),
+  })).filter((group) => group.goals.length > 0);
 
   return (
     <div>
