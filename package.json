@@ -17,6 +17,11 @@
     "db:start": "bun run --filter backend db:start",
     "db:generate": "bun run --filter backend db:generate",
     "db:migrate": "bun run --filter backend db:migrate",
-    "db:studio": "bun run --filter backend db:studio"
+    "db:studio": "bun run --filter backend db:studio",
+    "prettier:check": "prettier --check .",
+    "prettier:write": "prettier --write ."
+  },
+  "devDependencies": {
+    "prettier": "^3.8.1"
   }
 }
