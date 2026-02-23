@@ -54,10 +54,7 @@ export function useChat() {
       let assistantContent = "";
       const assistantId = crypto.randomUUID();
 
-      setMessages((prev) => [
-        ...prev,
-        { id: assistantId, role: "assistant", content: "" },
-      ]);
+      setMessages((prev) => [...prev, { id: assistantId, role: "assistant", content: "" }]);
 
       while (true) {
         const { done, value } = await reader.read();
@@ -67,9 +64,7 @@ export function useChat() {
         assistantContent += chunk;
 
         setMessages((prev) =>
-          prev.map((m) =>
-            m.id === assistantId ? { ...m, content: assistantContent } : m
-          )
+          prev.map((m) => (m.id === assistantId ? { ...m, content: assistantContent } : m))
         );
       }
     },
@@ -124,10 +119,7 @@ export function useChat() {
     [input, sendMessage]
   );
 
-  const handlePromptClick = useCallback(
-    (prompt: string) => sendMessage(prompt),
-    [sendMessage]
-  );
+  const handlePromptClick = useCallback((prompt: string) => sendMessage(prompt), [sendMessage]);
 
   const resetChat = useCallback(() => {
     setMessages([]);

@@ -1,18 +1,11 @@
 import { Link } from "@tanstack/react-router";
 import { Button } from "@/components/ui/button";
-import {
-  Card,
-  CardContent,
-  CardDescription,
-  CardHeader,
-  CardTitle,
-} from "@/components/ui/card";
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Skeleton } from "@/components/ui/skeleton";
 import { useActiveGoals } from "@/hooks/goals/useActiveGoals";
 
 export function HomePage() {
-  const { data: activeGoalsData, isLoading: activeGoalsLoading } =
-    useActiveGoals();
+  const { data: activeGoalsData, isLoading: activeGoalsLoading } = useActiveGoals();
 
   const activeGoals = activeGoalsData?.goals ?? [];
 
@@ -31,9 +24,7 @@ export function HomePage() {
         <Card>
           <CardHeader>
             <div className="flex items-center justify-between">
-              <CardTitle className="text-xl font-semibold">
-                Current Goals
-              </CardTitle>
+              <CardTitle className="text-xl font-semibold">Current Goals</CardTitle>
               <Link to="/goals">
                 <Button variant="ghost" size="sm">
                   Manage
@@ -55,10 +46,7 @@ export function HomePage() {
             ) : (
               <div className="space-y-2">
                 {activeGoals.map((goal) => (
-                  <div
-                    key={goal.id}
-                    className="text-sm p-3 rounded-md bg-muted/50"
-                  >
+                  <div key={goal.id} className="text-sm p-3 rounded-md bg-muted/50">
                     {goal.goalText}
                   </div>
                 ))}
@@ -71,9 +59,7 @@ export function HomePage() {
       <Card>
         <CardHeader>
           <CardTitle className="text-2xl font-bold">Welcome</CardTitle>
-          <CardDescription>
-            Track your BJJ training sessions and progress
-          </CardDescription>
+          <CardDescription>Track your BJJ training sessions and progress</CardDescription>
         </CardHeader>
         <CardContent className="flex flex-col gap-4">
           <Link to="/sessions/new">

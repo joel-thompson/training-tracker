@@ -4,10 +4,7 @@ import type { Session, ApiResponse } from "shared/types";
 import { api } from "@/utils/api";
 import { sessionKeys } from "./sessionKeys";
 
-async function fetchSession(
-  id: string,
-  token: string | null
-): Promise<Session> {
+async function fetchSession(id: string, token: string | null): Promise<Session> {
   const response = await api(`/api/v1/sessions/${id}`, { token });
 
   const result = (await response.json()) as ApiResponse<Session>;

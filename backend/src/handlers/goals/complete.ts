@@ -2,12 +2,8 @@ import type { Context } from "hono";
 import { db } from "../../db";
 import { trainingGoals } from "../../db/schema";
 import { requireUserId } from "../../utils/auth";
-import {
-  successResponse,
-  errorResponse,
-  ErrorCodes,
-} from "../../utils/response";
-import type { Goal } from "shared/types";
+import { successResponse, errorResponse, ErrorCodes } from "../../utils/response";
+import { toGoalResponse } from "../../utils/transforms";
 import { eq, and } from "drizzle-orm";
 
 export const completeGoalHandler = async (c: Context) => {
@@ -32,16 +28,7 @@ export const completeGoalHandler = async (c: Context) => {
     .where(eq(trainingGoals.id, goalId))
     .returning();
 
-  const responseData: Goal = {
-    id: updated.id,
-    userId: updated.userId,
-    goalText: updated.goalText,
-    category: updated.category,
-    notes: updated.notes,
-    isActive: updated.isActive,
-    createdAt: updated.createdAt.toISOString(),
-    completedAt: updated.completedAt?.toISOString() ?? null,
-  };
+  const responseData = toGoalResponse(updated);
 
   return c.json(successResponse(responseData));
 };

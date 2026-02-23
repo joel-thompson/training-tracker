@@ -11,8 +11,7 @@ export const goalKeys = {
   allById: () => [...goalKeys.all, "byId"] as const,
 
   // Query keys (specific)
-  list: (filters: ListGoalsParams) =>
-    [...goalKeys.allLists(), filters] as const,
+  list: (filters: ListGoalsParams) => [...goalKeys.allLists(), filters] as const,
   byId: (id: string) => [...goalKeys.allById(), id] as const,
   active: () => [...goalKeys.all, "active"] as const,
 };

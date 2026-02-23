@@ -9,6 +9,7 @@ The AI Training Coach is a chat interface where users can have conversations abo
 ## Problem Statement
 
 BJJ practitioners train frequently (often 3-5x per week) and log detailed session notes, but:
+
 - Patterns across sessions are hard to spot manually
 - Recurring problems may go unnoticed for weeks
 - Rich reflection data (successes, problems, questions) is underutilized
@@ -65,12 +66,12 @@ BJJ practitioners train frequently (often 3-5x per week) and log detailed sessio
 
 The AI should have access to:
 
-| Data | Fields | Notes |
-|------|--------|-------|
-| Sessions | date, classType, techniqueCovered, generalNotes | Core session info |
-| Session Items | type (success/problem/question), content | User reflections |
-| Goals | goalText, category, notes, isActive, completedAt | Training objectives |
-| Stats | streak, monthly count, gi/nogi split | Aggregated metrics |
+| Data          | Fields                                           | Notes               |
+| ------------- | ------------------------------------------------ | ------------------- |
+| Sessions      | date, classType, techniqueCovered, generalNotes  | Core session info   |
+| Session Items | type (success/problem/question), content         | User reflections    |
+| Goals         | goalText, category, notes, isActive, completedAt | Training objectives |
+| Stats         | streak, monthly count, gi/nogi split             | Aggregated metrics  |
 
 ### Out of Scope (for v1)
 
@@ -117,11 +118,10 @@ The AI should have access to:
 Streaming endpoint for chat messages.
 
 **Request:**
+
 ```json
 {
-  "messages": [
-    { "role": "user", "content": "What have I been working on?" }
-  ]
+  "messages": [{ "role": "user", "content": "What have I been working on?" }]
 }
 ```
 
@@ -130,12 +130,14 @@ Streaming endpoint for chat messages.
 ### System Prompt Strategy
 
 The system prompt will:
+
 1. Define the AI's role as a supportive BJJ training coach
 2. Inject the user's recent training context (sessions, goals, stats)
 3. Set guidelines for response style (concise, encouraging, BJJ-aware)
 4. Include current date for temporal awareness
 
 Example structure:
+
 ```
 You are a supportive BJJ training coach helping a practitioner reflect on their training.
 
@@ -165,6 +167,7 @@ Today's date is: [DATE]
 ### Context Window Management
 
 To avoid exceeding context limits:
+
 - Default to last 90 days of sessions
 - Summarize older sessions if needed
 - Limit session items to most recent N per session
@@ -210,6 +213,7 @@ New route: `/coach` - accessible from main navigation
 ### Suggested Prompts
 
 Show starter prompts for new conversations:
+
 - "What have I been working on lately?"
 - "How am I progressing on my goals?"
 - "What patterns do you see in my training?"
@@ -218,6 +222,7 @@ Show starter prompts for new conversations:
 ## Implementation Phases
 
 ### Phase 1: Foundation (MVP)
+
 - [ ] Set up Vercel AI SDK in backend
 - [ ] Create `/api/v1/coach/chat` streaming endpoint
 - [ ] Build basic chat UI component
@@ -226,10 +231,12 @@ Show starter prompts for new conversations:
 - [ ] Add route and navigation
 
 ### Phase 2: Enhanced Context
+
 - [ ] Add goals to context
 - [ ] Add training stats to context
 
 ### Phase 3: Polish
+
 - [ ] Loading states and error handling
 - [ ] Mobile optimization
 - [ ] Add suggested prompts UI

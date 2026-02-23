@@ -67,12 +67,8 @@
           "name": "game_items_parent_id_game_items_id_fk",
           "tableFrom": "game_items",
           "tableTo": "game_items",
-          "columnsFrom": [
-            "parent_id"
-          ],
-          "columnsTo": [
-            "id"
-          ],
+          "columnsFrom": ["parent_id"],
+          "columnsTo": ["id"],
           "onDelete": "cascade",
           "onUpdate": "no action"
         }
@@ -132,12 +128,8 @@
           "name": "game_transitions_from_item_id_game_items_id_fk",
           "tableFrom": "game_transitions",
           "tableTo": "game_items",
-          "columnsFrom": [
-            "from_item_id"
-          ],
-          "columnsTo": [
-            "id"
-          ],
+          "columnsFrom": ["from_item_id"],
+          "columnsTo": ["id"],
           "onDelete": "cascade",
           "onUpdate": "no action"
         },
@@ -145,12 +137,8 @@
           "name": "game_transitions_to_item_id_game_items_id_fk",
           "tableFrom": "game_transitions",
           "tableTo": "game_items",
-          "columnsFrom": [
-            "to_item_id"
-          ],
-          "columnsTo": [
-            "id"
-          ],
+          "columnsFrom": ["to_item_id"],
+          "columnsTo": ["id"],
           "onDelete": "cascade",
           "onUpdate": "no action"
         }
@@ -211,12 +199,8 @@
           "name": "session_items_session_id_training_sessions_id_fk",
           "tableFrom": "session_items",
           "tableTo": "training_sessions",
-          "columnsFrom": [
-            "session_id"
-          ],
-          "columnsTo": [
-            "id"
-          ],
+          "columnsFrom": ["session_id"],
+          "columnsTo": ["id"],
           "onDelete": "cascade",
           "onUpdate": "no action"
         }
@@ -404,29 +388,17 @@
     "public.class_type": {
       "name": "class_type",
       "schema": "public",
-      "values": [
-        "gi",
-        "nogi"
-      ]
+      "values": ["gi", "nogi"]
     },
     "public.goal_category": {
       "name": "goal_category",
       "schema": "public",
-      "values": [
-        "bottom",
-        "top",
-        "submission",
-        "escape"
-      ]
+      "values": ["bottom", "top", "submission", "escape"]
     },
     "public.item_type": {
       "name": "item_type",
       "schema": "public",
-      "values": [
-        "success",
-        "problem",
-        "question"
-      ]
+      "values": ["success", "problem", "question"]
     }
   },
   "schemas": {},

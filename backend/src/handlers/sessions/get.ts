@@ -2,12 +2,8 @@ import type { Context } from "hono";
 import { db } from "../../db";
 import { trainingSessions, sessionItems } from "../../db/schema";
 import { requireUserId } from "../../utils/auth";
-import {
-  successResponse,
-  errorResponse,
-  ErrorCodes,
-} from "../../utils/response";
-import type { Session } from "shared/types";
+import { successResponse, errorResponse, ErrorCodes } from "../../utils/response";
+import { toSessionResponse } from "../../utils/transforms";
 import { eq, and, isNull } from "drizzle-orm";
 
 export const getSessionHandler = async (c: Context) => {
@@ -27,10 +23,7 @@ export const getSessionHandler = async (c: Context) => {
     .limit(1);
 
   if (!session) {
-    return c.json(
-      errorResponse(ErrorCodes.NOT_FOUND, "Session not found"),
-      404
-    );
+    return c.json(errorResponse(ErrorCodes.NOT_FOUND, "Session not found"), 404);
   }
 
   const items = await db
@@ -39,24 +32,7 @@ export const getSessionHandler = async (c: Context) => {
     .where(eq(sessionItems.sessionId, sessionId))
     .orderBy(sessionItems.type, sessionItems.order);
 
-  const responseData: Session = {
-    id: session.id,
-    userId: session.userId,
-    sessionDate: session.sessionDate,
-    classType: session.classType,
-    techniqueCovered: session.techniqueCovered,
-    generalNotes: session.generalNotes,
-    createdAt: session.createdAt.toISOString(),
-    updatedAt: session.updatedAt.toISOString(),
-    items: items.map((item) => ({
-      id: item.id,
-      sessionId: item.sessionId,
-      type: item.type,
-      content: item.content,
-      order: item.order,
-      createdAt: item.createdAt.toISOString(),
-    })),
-  };
+  const responseData = toSessionResponse(session, items);
 
   return c.json(successResponse(responseData));
 };

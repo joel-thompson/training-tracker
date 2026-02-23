@@ -28,13 +28,7 @@ export function useUpdateSession() {
   const queryClient = useQueryClient();
 
   return useMutation({
-    mutationFn: async ({
-      id,
-      input,
-    }: {
-      id: string;
-      input: UpdateSessionInput;
-    }) => {
+    mutationFn: async ({ id, input }: { id: string; input: UpdateSessionInput }) => {
       const token = await getToken();
       return updateSession(id, input, token);
     },

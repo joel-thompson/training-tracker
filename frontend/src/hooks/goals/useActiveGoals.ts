@@ -4,9 +4,7 @@ import type { ActiveGoalsResponse, ApiResponse } from "shared/types";
 import { api } from "@/utils/api";
 import { goalKeys } from "./goalKeys";
 
-async function fetchActiveGoals(
-  token: string | null
-): Promise<ActiveGoalsResponse> {
+async function fetchActiveGoals(token: string | null): Promise<ActiveGoalsResponse> {
   const response = await api("/api/v1/goals/active", { token });
 
   const result = (await response.json()) as ApiResponse<ActiveGoalsResponse>;

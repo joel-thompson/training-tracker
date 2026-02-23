@@ -15,8 +15,7 @@ export const sessionKeys = {
   allById: () => [...sessionKeys.all, "byId"] as const,
 
   // Query keys (specific)
-  list: (filters: ListSessionsParams) =>
-    [...sessionKeys.allLists(), filters] as const,
+  list: (filters: ListSessionsParams) => [...sessionKeys.allLists(), filters] as const,
   byId: (id: string) => [...sessionKeys.allById(), id] as const,
   dates: () => [...sessionKeys.all, "dates"] as const,
 };

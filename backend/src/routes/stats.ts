@@ -14,4 +14,3 @@ stats.get("/class-types", getClassTypeSplitHandler);
 stats.get("/heatmap", getHeatmapHandler);
 
 export { stats };
-

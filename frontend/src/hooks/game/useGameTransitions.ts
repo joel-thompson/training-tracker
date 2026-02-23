@@ -4,13 +4,10 @@ import type { ListGameTransitionsResponse, ApiResponse } from "shared/types";
 import { api } from "@/utils/api";
 import { gameKeys } from "./gameKeys";
 
-async function fetchGameTransitions(
-  token: string | null
-): Promise<ListGameTransitionsResponse> {
+async function fetchGameTransitions(token: string | null): Promise<ListGameTransitionsResponse> {
   const response = await api("/api/v1/game/transitions", { token });
 
-  const result =
-    (await response.json()) as ApiResponse<ListGameTransitionsResponse>;
+  const result = (await response.json()) as ApiResponse<ListGameTransitionsResponse>;
   if (!result.success) {
     throw new Error(result.error.message);
   }

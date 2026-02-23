@@ -26,14 +26,11 @@ export const WelcomeMessage = memo(function WelcomeMessage({
         </div>
         <div className="flex-1 space-y-3">
           <p className="text-sm leading-relaxed">
-            Hey! I'm your AI training coach. I have access to your training
-            sessions, goals, and stats from the last 90 days. Ask me anything
-            about your BJJ journey!
+            Hey! I'm your AI training coach. I have access to your training sessions, goals, and
+            stats from the last 90 days. Ask me anything about your BJJ journey!
           </p>
           <div className="space-y-2">
-            <p className="text-xs text-muted-foreground font-medium">
-              Try asking:
-            </p>
+            <p className="text-xs text-muted-foreground font-medium">Try asking:</p>
             <div className="flex flex-wrap gap-2">
               {SUGGESTED_PROMPTS.map((prompt) => (
                 <Button

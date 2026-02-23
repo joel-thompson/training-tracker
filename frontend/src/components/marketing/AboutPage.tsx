@@ -10,8 +10,8 @@ export function AboutPage() {
         <div className="space-y-4 text-center">
           <h1 className="text-4xl font-bold">BJJ Training Tracker</h1>
           <p className="text-muted-foreground text-xl max-w-2xl mx-auto">
-            Capture and review your training efficiently. Log meaningful notes
-            in 5-10 minutes post-class, right from your phone.
+            Capture and review your training efficiently. Log meaningful notes in 5-10 minutes
+            post-class, right from your phone.
           </p>
           <div className="pt-4">
             <Link to="/sign-in">
@@ -29,8 +29,8 @@ export function AboutPage() {
               </CardTitle>
             </CardHeader>
             <CardContent className="text-muted-foreground">
-              Use the 3-2-1 method: capture 3 things that went well, 2 problems
-              to work on, and 1 question to explore. Flexible and fast.
+              Use the 3-2-1 method: capture 3 things that went well, 2 problems to work on, and 1
+              question to explore. Flexible and fast.
             </CardContent>
           </Card>
 
@@ -42,8 +42,8 @@ export function AboutPage() {
               </CardTitle>
             </CardHeader>
             <CardContent className="text-muted-foreground">
-              Set and track your current training goals. Stay focused on what
-              you're working to improve and mark them complete when achieved.
+              Set and track your current training goals. Stay focused on what you're working to
+              improve and mark them complete when achieved.
             </CardContent>
           </Card>
 
@@ -55,8 +55,8 @@ export function AboutPage() {
               </CardTitle>
             </CardHeader>
             <CardContent className="text-muted-foreground">
-              See your week at a glance. Review all problems, questions, and
-              wins aggregated together to spot patterns in your training.
+              See your week at a glance. Review all problems, questions, and wins aggregated
+              together to spot patterns in your training.
             </CardContent>
           </Card>
 
@@ -68,8 +68,8 @@ export function AboutPage() {
               </CardTitle>
             </CardHeader>
             <CardContent className="text-muted-foreground">
-              Track your training frequency, class type distribution, and
-              session trends over time with simple analytics.
+              Track your training frequency, class type distribution, and session trends over time
+              with simple analytics.
             </CardContent>
           </Card>
         </div>

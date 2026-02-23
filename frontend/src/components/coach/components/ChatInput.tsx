@@ -46,11 +46,7 @@ export const ChatInput = memo(function ChatInput({
         disabled={!input.trim() || isLoading}
         className="h-[44px] w-[44px] shrink-0"
       >
-        {isLoading ? (
-          <Loader2 className="h-4 w-4 animate-spin" />
-        ) : (
-          <Send className="h-4 w-4" />
-        )}
+        {isLoading ? <Loader2 className="h-4 w-4 animate-spin" /> : <Send className="h-4 w-4" />}
       </Button>
     </form>
   );

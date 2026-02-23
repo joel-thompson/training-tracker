@@ -20,9 +20,7 @@ export function getEnvRequired(key: FrontendEnvKey) {
   const value = getEnv(key);
   if (value === undefined) {
     console.error(`Frontend is missing required environment variable: ${key}`);
-    throw new Error(
-      `Frontend is missing required environment variable: ${key}`
-    );
+    throw new Error(`Frontend is missing required environment variable: ${key}`);
   }
   return value;
 }

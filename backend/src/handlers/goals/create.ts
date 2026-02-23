@@ -3,12 +3,8 @@ import { db } from "../../db";
 import { trainingGoals } from "../../db/schema";
 import { createGoalSchema } from "shared/validation";
 import { requireUserId } from "../../utils/auth";
-import {
-  successResponse,
-  errorResponse,
-  ErrorCodes,
-} from "../../utils/response";
-import type { Goal } from "shared/types";
+import { successResponse, errorResponse, ErrorCodes } from "../../utils/response";
+import { toGoalResponse } from "../../utils/transforms";
 
 export const createGoalHandler = async (c: Context) => {
   const userId = requireUserId(c);
@@ -16,10 +12,7 @@ export const createGoalHandler = async (c: Context) => {
   const parsed = createGoalSchema.safeParse(body);
 
   if (!parsed.success) {
-    return c.json(
-      errorResponse(ErrorCodes.VALIDATION_ERROR, parsed.error.message),
-      400
-    );
+    return c.json(errorResponse(ErrorCodes.VALIDATION_ERROR, parsed.error.message), 400);
   }
 
   const { goalText, category, notes, isActive } = parsed.data;
@@ -35,16 +28,7 @@ export const createGoalHandler = async (c: Context) => {
     })
     .returning();
 
-  const responseData: Goal = {
-    id: goal.id,
-    userId: goal.userId,
-    goalText: goal.goalText,
-    category: goal.category,
-    notes: goal.notes,
-    isActive: goal.isActive,
-    createdAt: goal.createdAt.toISOString(),
-    completedAt: goal.completedAt?.toISOString() ?? null,
-  };
+  const responseData = toGoalResponse(goal);
 
   return c.json(successResponse(responseData), 201);
 };

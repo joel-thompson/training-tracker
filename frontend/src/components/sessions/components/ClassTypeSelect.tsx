@@ -5,7 +5,7 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
-import { CLASS_TYPE_LABELS } from "./constants";
+import { CLASS_TYPE_LABELS } from "shared/constants";
 import type { ClassType } from "shared/types";
 
 interface ClassTypeSelectProps {
@@ -29,4 +29,3 @@ export function ClassTypeSelect({ value, onChange }: ClassTypeSelectProps) {
     </Select>
   );
 }
-

@@ -35,10 +35,7 @@ export default [
       ...reactX.configs["recommended-typescript"].rules,
       ...reactDom.configs.recommended.rules,
       ...tanstackQuery.configs.recommended.rules,
-      "react-refresh/only-export-components": [
-        "warn",
-        { allowConstantExport: true },
-      ],
+      "react-refresh/only-export-components": ["warn", { allowConstantExport: true }],
     },
   },
   {

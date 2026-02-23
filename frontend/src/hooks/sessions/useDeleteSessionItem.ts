@@ -27,13 +27,7 @@ export function useDeleteSessionItem() {
   const queryClient = useQueryClient();
 
   return useMutation({
-    mutationFn: async ({
-      sessionId,
-      itemId,
-    }: {
-      sessionId: string;
-      itemId: string;
-    }) => {
+    mutationFn: async ({ sessionId, itemId }: { sessionId: string; itemId: string }) => {
       const token = await getToken();
       return deleteSessionItem(sessionId, itemId, token);
     },

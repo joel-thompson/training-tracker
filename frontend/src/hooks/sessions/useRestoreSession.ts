@@ -4,10 +4,7 @@ import type { ApiResponse, RestoreSessionResponse } from "shared/types";
 import { api } from "@/utils/api";
 import { sessionKeys } from "./sessionKeys";
 
-async function restoreSession(
-  id: string,
-  token: string | null
-): Promise<RestoreSessionResponse> {
+async function restoreSession(id: string, token: string | null): Promise<RestoreSessionResponse> {
   const response = await api(`/api/v1/sessions/${id}/restore`, {
     method: "POST",
     token,

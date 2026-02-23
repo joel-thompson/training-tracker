@@ -5,9 +5,4 @@ export { getSessionHandler } from "./get";
 export { updateSessionHandler } from "./update";
 export { deleteSessionHandler } from "./delete";
 export { restoreSessionHandler } from "./restore";
-export {
-  addSessionItemHandler,
-  updateSessionItemHandler,
-  deleteSessionItemHandler,
-} from "./items";
-
+export { addSessionItemHandler, updateSessionItemHandler, deleteSessionItemHandler } from "./items";

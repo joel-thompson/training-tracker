@@ -1,11 +1,7 @@
 import { Outlet, Link, useLocation, Navigate } from "@tanstack/react-router";
 import { useAuth, UserButton } from "@clerk/clerk-react";
 import { Home, Plus, Clock, MoreHorizontal, Loader2, Bot } from "lucide-react";
-import {
-  Popover,
-  PopoverContent,
-  PopoverTrigger,
-} from "@/components/ui/popover";
+import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
 
 export function AppLayout() {
   const { isSignedIn, isLoaded } = useAuth();
@@ -106,9 +102,7 @@ export function AppLayout() {
           <Link
             to="/"
             className={`flex flex-col items-center justify-center gap-1 flex-1 h-full transition-colors ${
-              isActive("/")
-                ? "text-foreground"
-                : "text-foreground/60 hover:text-foreground/80"
+              isActive("/") ? "text-foreground" : "text-foreground/60 hover:text-foreground/80"
             }`}
           >
             <Home className="h-5 w-5" />
@@ -139,9 +133,7 @@ export function AppLayout() {
           <Link
             to="/coach"
             className={`flex flex-col items-center justify-center gap-1 flex-1 h-full transition-colors ${
-              isActive("/coach")
-                ? "text-foreground"
-                : "text-foreground/60 hover:text-foreground/80"
+              isActive("/coach") ? "text-foreground" : "text-foreground/60 hover:text-foreground/80"
             }`}
           >
             <Bot className="h-5 w-5" />

@@ -28,13 +28,7 @@ export function useReorderGameItem() {
   const queryClient = useQueryClient();
 
   return useMutation({
-    mutationFn: async ({
-      id,
-      direction,
-    }: {
-      id: string;
-      direction: "up" | "down";
-    }) => {
+    mutationFn: async ({ id, direction }: { id: string; direction: "up" | "down" }) => {
       const token = await getToken();
       return reorderGameItem(id, { direction }, token);
     },

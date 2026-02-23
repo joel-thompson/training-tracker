@@ -1,9 +1,5 @@
 import type { z } from "zod";
-import type {
-  createGoalSchema,
-  updateGoalSchema,
-  listGoalsQuerySchema,
-} from "../validation/goals";
+import type { createGoalSchema, updateGoalSchema, listGoalsQuerySchema } from "../validation/goals";
 import type { PaginationInfo } from "./api";
 
 // Input types inferred from Zod schemas

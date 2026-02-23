@@ -29,7 +29,7 @@ import { SessionDatePicker } from "./components/SessionDatePicker";
 import { ClassTypeSelect } from "./components/ClassTypeSelect";
 import { CharCountTextarea } from "./components/CharCountTextarea";
 import { ItemInputRow } from "./components/ItemInputRow";
-import { ITEM_TYPE_LABELS } from "./components/constants";
+import { ITEM_TYPE_LABELS } from "shared/constants";
 
 interface EditSessionPageProps {
   sessionId: string;
@@ -70,15 +70,9 @@ export function EditSessionPage({ sessionId }: EditSessionPageProps) {
   const [localSessionDate, setLocalSessionDate] = useState<Date | undefined>(
     initialFormState.sessionDate
   );
-  const [classType, setClassType] = useState<ClassType | "">(
-    initialFormState.classType
-  );
-  const [techniqueCovered, setTechniqueCovered] = useState(
-    initialFormState.techniqueCovered
-  );
-  const [generalNotes, setGeneralNotes] = useState(
-    initialFormState.generalNotes
-  );
+  const [classType, setClassType] = useState<ClassType | "">(initialFormState.classType);
+  const [techniqueCovered, setTechniqueCovered] = useState(initialFormState.techniqueCovered);
+  const [generalNotes, setGeneralNotes] = useState(initialFormState.generalNotes);
   const [editingItems, setEditingItems] = useState<Record<string, string>>(
     initialFormState.editingItems
   );
@@ -92,13 +86,10 @@ export function EditSessionPage({ sessionId }: EditSessionPageProps) {
   // Key prop ensures component remounts when sessionId changes
   const formSessionDate = localSessionDate ?? initialFormState.sessionDate;
   const formClassType = classType || initialFormState.classType;
-  const formTechniqueCovered =
-    techniqueCovered || initialFormState.techniqueCovered;
+  const formTechniqueCovered = techniqueCovered || initialFormState.techniqueCovered;
   const formGeneralNotes = generalNotes || initialFormState.generalNotes;
   const formEditingItems =
-    Object.keys(editingItems).length > 0
-      ? editingItems
-      : initialFormState.editingItems;
+    Object.keys(editingItems).length > 0 ? editingItems : initialFormState.editingItems;
 
   const handleUpdateSession = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -204,9 +195,7 @@ export function EditSessionPage({ sessionId }: EditSessionPageProps) {
     return (
       <div className="space-y-4">
         <h1 className="text-3xl font-bold">Session Not Found</h1>
-        <p className="text-muted-foreground">
-          The session you're looking for doesn't exist.
-        </p>
+        <p className="text-muted-foreground">The session you're looking for doesn't exist.</p>
         <Button
           onClick={() => {
             void navigate({ to: "/history" });
@@ -238,8 +227,7 @@ export function EditSessionPage({ sessionId }: EditSessionPageProps) {
             <AlertDialogHeader>
               <AlertDialogTitle>Delete Session</AlertDialogTitle>
               <AlertDialogDescription>
-                Are you sure you want to delete this session? This action cannot
-                be undone.
+                Are you sure you want to delete this session? This action cannot be undone.
               </AlertDialogDescription>
             </AlertDialogHeader>
             <AlertDialogFooter>
@@ -339,9 +327,7 @@ export function EditSessionPage({ sessionId }: EditSessionPageProps) {
                           [type]: e.target.value,
                         })
                       }
-                      placeholder={`Add new ${ITEM_TYPE_LABELS[
-                        type
-                      ].toLowerCase()}`}
+                      placeholder={`Add new ${ITEM_TYPE_LABELS[type].toLowerCase()}`}
                       maxLength={1000}
                       onKeyDown={(e) => {
                         if (e.key === "Enter") {
@@ -357,9 +343,7 @@ export function EditSessionPage({ sessionId }: EditSessionPageProps) {
                       onClick={() => {
                         handleAddItem(type);
                       }}
-                      disabled={
-                        !newItemContent[type].trim() || addItem.isPending
-                      }
+                      disabled={!newItemContent[type].trim() || addItem.isPending}
                     >
                       <Plus className="h-4 w-4" />
                     </Button>
@@ -405,9 +389,7 @@ export function EditSessionPage({ sessionId }: EditSessionPageProps) {
               deleteSession.isPending
             }
           >
-            {addItem.isPending || updateSession.isPending
-              ? "Saving..."
-              : "Save Changes"}
+            {addItem.isPending || updateSession.isPending ? "Saving..." : "Save Changes"}
           </Button>
         </div>
       </form>

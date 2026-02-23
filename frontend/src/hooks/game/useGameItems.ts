@@ -4,9 +4,7 @@ import type { ListGameItemsResponse, ApiResponse } from "shared/types";
 import { api } from "@/utils/api";
 import { gameKeys } from "./gameKeys";
 
-async function fetchGameItems(
-  token: string | null
-): Promise<ListGameItemsResponse> {
+async function fetchGameItems(token: string | null): Promise<ListGameItemsResponse> {
   const response = await api("/api/v1/game/items", { token });
 
   const result = (await response.json()) as ApiResponse<ListGameItemsResponse>;

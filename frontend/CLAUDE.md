@@ -14,6 +14,7 @@ React 19 + Vite application with TanStack Router. See root `CLAUDE.md` for monor
 ## Routing (TanStack Router)
 
 File-based routing in `src/routes/`:
+
 - `__root.tsx` - Root layout
 - `_app.tsx` - Authenticated app layout (uses `AppLayout` component)
 - `_app/` - Authenticated routes (get app layout automatically)
@@ -22,6 +23,7 @@ File-based routing in `src/routes/`:
 ### Route File Pattern
 
 Simple route (no params/search):
+
 ```tsx
 import { createFileRoute } from "@tanstack/react-router";
 import { GoalsPage } from "@/components/goals/GoalsPage";
@@ -32,6 +34,7 @@ export const Route = createFileRoute("/_app/goals")({
 ```
 
 Route with params/search — use a named wrapper to satisfy React hooks linting:
+
 ```tsx
 import { createFileRoute } from "@tanstack/react-router";
 import { EditSessionPage } from "@/components/sessions/EditSessionPage";
@@ -99,6 +102,7 @@ export function useGoal(id: string) {
 ```
 
 Rules:
+
 - API function accepts all arguments including `token: string | null` as last parameter
 - Hook's `queryFn`/`mutationFn` only calls `getToken()` and invokes the API function
 

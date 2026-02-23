@@ -5,4 +5,3 @@ export const statsKeys = {
   classTypes: () => [...statsKeys.all, "classTypes"] as const,
   heatmap: () => [...statsKeys.all, "heatmap"] as const,
 };
-

@@ -8,11 +8,7 @@ import { useActiveGoals } from "@/hooks/goals/useActiveGoals";
 import { Button } from "@/components/ui/button";
 import { Label } from "@/components/ui/label";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import {
-  Collapsible,
-  CollapsibleContent,
-  CollapsibleTrigger,
-} from "@/components/ui/collapsible";
+import { Collapsible, CollapsibleContent, CollapsibleTrigger } from "@/components/ui/collapsible";
 import { Skeleton } from "@/components/ui/skeleton";
 import type { ClassType } from "shared/types";
 import { SessionDatePicker } from "./components/SessionDatePicker";
@@ -23,8 +19,7 @@ import { ItemInputRow } from "./components/ItemInputRow";
 export function NewSessionPage() {
   const navigate = useNavigate();
   const createSession = useCreateSession();
-  const { data: activeGoalsData, isLoading: activeGoalsLoading } =
-    useActiveGoals();
+  const { data: activeGoalsData, isLoading: activeGoalsLoading } = useActiveGoals();
   const [goalsOpen, setGoalsOpen] = useState(true);
 
   const activeGoals = activeGoalsData?.goals ?? [];
@@ -37,10 +32,7 @@ export function NewSessionPage() {
   const [problems, setProblems] = useState<string[]>(["", ""]);
   const [questions, setQuestions] = useState<string[]>([""]);
 
-  const handleAddItem = (
-    items: string[],
-    setItems: (items: string[]) => void
-  ) => {
+  const handleAddItem = (items: string[], setItems: (items: string[]) => void) => {
     setItems([...items, ""]);
   };
 
@@ -106,9 +98,7 @@ export function NewSessionPage() {
     <div className="space-y-6">
       <div>
         <h1 className="text-3xl font-bold">New Session</h1>
-        <p className="text-muted-foreground text-lg">
-          Log a new training session
-        </p>
+        <p className="text-muted-foreground text-lg">Log a new training session</p>
       </div>
 
       {activeGoalsLoading && (
@@ -126,9 +116,7 @@ export function NewSessionPage() {
             <CollapsibleTrigger asChild>
               <CardHeader className="cursor-pointer">
                 <div className="flex items-center justify-between">
-                  <CardTitle className="text-lg font-semibold">
-                    Current Goals
-                  </CardTitle>
+                  <CardTitle className="text-lg font-semibold">Current Goals</CardTitle>
                   <div className="flex items-center gap-2">
                     <Link
                       to="/goals"
@@ -150,10 +138,7 @@ export function NewSessionPage() {
               <CardContent>
                 <div className="space-y-2">
                   {activeGoals.map((goal) => (
-                    <div
-                      key={goal.id}
-                      className="text-sm p-3 rounded-md bg-muted/50"
-                    >
+                    <div key={goal.id} className="text-sm p-3 rounded-md bg-muted/50">
                       {goal.goalText}
                     </div>
                   ))}
@@ -172,10 +157,7 @@ export function NewSessionPage() {
           <CardContent className="space-y-4">
             <div className="space-y-2">
               <Label htmlFor="sessionDate">Date</Label>
-              <SessionDatePicker
-                value={sessionDate}
-                onChange={setSessionDate}
-              />
+              <SessionDatePicker value={sessionDate} onChange={setSessionDate} />
             </div>
 
             <div className="space-y-2">
@@ -210,9 +192,7 @@ export function NewSessionPage() {
                 <ItemInputRow
                   key={`success-${index}`}
                   value={success}
-                  onChange={(value) =>
-                    handleItemChange(index, value, successes, setSuccesses)
-                  }
+                  onChange={(value) => handleItemChange(index, value, successes, setSuccesses)}
                   onRemove={
                     successes.length > 1
                       ? () => handleRemoveItem(index, successes, setSuccesses)
@@ -241,9 +221,7 @@ export function NewSessionPage() {
                 <ItemInputRow
                   key={`problem-${index}`}
                   value={problem}
-                  onChange={(value) =>
-                    handleItemChange(index, value, problems, setProblems)
-                  }
+                  onChange={(value) => handleItemChange(index, value, problems, setProblems)}
                   onRemove={
                     problems.length > 1
                       ? () => handleRemoveItem(index, problems, setProblems)
@@ -272,9 +250,7 @@ export function NewSessionPage() {
                 <ItemInputRow
                   key={`question-${index}`}
                   value={question}
-                  onChange={(value) =>
-                    handleItemChange(index, value, questions, setQuestions)
-                  }
+                  onChange={(value) => handleItemChange(index, value, questions, setQuestions)}
                   onRemove={
                     questions.length > 1
                       ? () => handleRemoveItem(index, questions, setQuestions)
@@ -322,10 +298,7 @@ export function NewSessionPage() {
           >
             Cancel
           </Button>
-          <Button
-            type="submit"
-            disabled={!classType || createSession.isPending}
-          >
+          <Button type="submit" disabled={!classType || createSession.isPending}>
             {createSession.isPending ? "Saving..." : "Save Session"}
           </Button>
         </div>

@@ -15,12 +15,7 @@ export const getClassTypeSplitHandler = async (c: Context) => {
       count: sql<number>`count(*)::int`,
     })
     .from(trainingSessions)
-    .where(
-      and(
-        eq(trainingSessions.userId, userId),
-        isNull(trainingSessions.deletedAt)
-      )
-    )
+    .where(and(eq(trainingSessions.userId, userId), isNull(trainingSessions.deletedAt)))
     .groupBy(trainingSessions.classType);
 
   let gi = 0;
@@ -42,4 +37,3 @@ export const getClassTypeSplitHandler = async (c: Context) => {
 
   return c.json(successResponse(responseData));
 };
-
