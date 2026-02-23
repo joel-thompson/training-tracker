@@ -15,11 +15,7 @@ import {
 import { useGamePageState } from "@/hooks/game/useGamePageState";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import {
-  Collapsible,
-  CollapsibleContent,
-  CollapsibleTrigger,
-} from "@/components/ui/collapsible";
+import { Collapsible, CollapsibleContent, CollapsibleTrigger } from "@/components/ui/collapsible";
 import { Skeleton } from "@/components/ui/skeleton";
 import {
   Dialog,
@@ -45,11 +41,7 @@ import {
   DropdownMenuItem,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
-import {
-  Popover,
-  PopoverContent,
-  PopoverTrigger,
-} from "@/components/ui/popover";
+import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
 import { Label } from "@/components/ui/label";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
@@ -57,16 +49,7 @@ import { ScrollArea } from "@/components/ui/scroll-area";
 import type { GameItem, GameTransition } from "shared/types";
 
 // Tailwind padding classes for tree indentation (level * 0.5rem + base)
-const ITEM_PADDING = [
-  "pl-2",
-  "pl-4",
-  "pl-6",
-  "pl-8",
-  "pl-10",
-  "pl-12",
-  "pl-14",
-  "pl-16",
-] as const;
+const ITEM_PADDING = ["pl-2", "pl-4", "pl-6", "pl-8", "pl-10", "pl-12", "pl-14", "pl-16"] as const;
 const CONTENT_PADDING = [
   "pl-6",
   "pl-8",
@@ -77,16 +60,7 @@ const CONTENT_PADDING = [
   "pl-18",
   "pl-20",
 ] as const;
-const NESTED_PADDING = [
-  "pl-0",
-  "pl-2",
-  "pl-4",
-  "pl-6",
-  "pl-8",
-  "pl-10",
-  "pl-12",
-  "pl-14",
-] as const;
+const NESTED_PADDING = ["pl-0", "pl-2", "pl-4", "pl-6", "pl-8", "pl-10", "pl-12", "pl-14"] as const;
 
 function getItemPadding(level: number) {
   return ITEM_PADDING[Math.min(level, ITEM_PADDING.length - 1)];
@@ -139,12 +113,9 @@ function GameItemRow({
 }) {
   const [isOpen, setIsOpen] = useState(false);
   const hasChildren = (item.children?.length ?? 0) > 0;
-  const outgoingTransitions = transitions.filter(
-    (t) => t.fromItemId === item.id
-  );
+  const outgoingTransitions = transitions.filter((t) => t.fromItemId === item.id);
   const incomingTransitions = transitions.filter((t) => t.toItemId === item.id);
-  const hasTransitions =
-    outgoingTransitions.length > 0 || incomingTransitions.length > 0;
+  const hasTransitions = outgoingTransitions.length > 0 || incomingTransitions.length > 0;
   const shouldShowChevron = hasChildren || (showTransitions && hasTransitions);
 
   return (
@@ -174,15 +145,12 @@ function GameItemRow({
             <span className="font-medium truncate">{item.name}</span>
             {showTransitions && hasTransitions && (
               <span className="text-muted-foreground text-xs whitespace-nowrap">
-                {outgoingTransitions.length} to · {incomingTransitions.length}{" "}
-                from
+                {outgoingTransitions.length} to · {incomingTransitions.length} from
               </span>
             )}
           </div>
           {item.notes && (
-            <p className="text-muted-foreground text-sm mt-0.5 truncate">
-              {item.notes}
-            </p>
+            <p className="text-muted-foreground text-sm mt-0.5 truncate">{item.notes}</p>
           )}
         </div>
         <div className="flex items-center gap-1 shrink-0">
@@ -209,17 +177,11 @@ function GameItemRow({
                 <FolderPlus className="mr-2 h-4 w-4" />
                 Move to...
               </DropdownMenuItem>
-              <DropdownMenuItem
-                onClick={() => onMoveUp(item)}
-                disabled={!canMoveUp}
-              >
+              <DropdownMenuItem onClick={() => onMoveUp(item)} disabled={!canMoveUp}>
                 <ChevronUp className="mr-2 h-4 w-4" />
                 Move Up
               </DropdownMenuItem>
-              <DropdownMenuItem
-                onClick={() => onMoveDown(item)}
-                disabled={!canMoveDown}
-              >
+              <DropdownMenuItem onClick={() => onMoveDown(item)} disabled={!canMoveDown}>
                 <ChevronDown className="mr-2 h-4 w-4" />
                 Move Down
               </DropdownMenuItem>
@@ -227,10 +189,7 @@ function GameItemRow({
                 <Edit className="mr-2 h-4 w-4" />
                 Edit
               </DropdownMenuItem>
-              <DropdownMenuItem
-                onClick={() => onDelete(item)}
-                className="text-destructive"
-              >
+              <DropdownMenuItem onClick={() => onDelete(item)} className="text-destructive">
                 <Trash2 className="mr-2 h-4 w-4" />
                 Delete
               </DropdownMenuItem>
@@ -252,17 +211,10 @@ function GameItemRow({
                       </div>
                       <div className="space-y-1.5 pl-4">
                         {outgoingTransitions.map((transition) => {
-                          const toItem = allItems.find(
-                            (item) => item.id === transition.toItemId
-                          );
+                          const toItem = allItems.find((item) => item.id === transition.toItemId);
                           return (
-                            <div
-                              key={transition.id}
-                              className="text-sm text-foreground"
-                            >
-                              <div className="font-medium">
-                                {toItem?.name ?? "Unknown"}
-                              </div>
+                            <div key={transition.id} className="text-sm text-foreground">
+                              <div className="font-medium">{toItem?.name ?? "Unknown"}</div>
                               {transition.notes && (
                                 <p className="text-muted-foreground text-xs mt-0.5">
                                   {transition.notes}
@@ -286,13 +238,8 @@ function GameItemRow({
                             (item) => item.id === transition.fromItemId
                           );
                           return (
-                            <div
-                              key={transition.id}
-                              className="text-sm text-foreground"
-                            >
-                              <div className="font-medium">
-                                {fromItem?.name ?? "Unknown"}
-                              </div>
+                            <div key={transition.id} className="text-sm text-foreground">
+                              <div className="font-medium">{fromItem?.name ?? "Unknown"}</div>
                               {transition.notes && (
                                 <p className="text-muted-foreground text-xs mt-0.5">
                                   {transition.notes}
@@ -313,9 +260,7 @@ function GameItemRow({
                     const sortedSiblings = [...siblings].sort(
                       (a, b) => a.displayOrder - b.displayOrder
                     );
-                    const currentIndex = sortedSiblings.findIndex(
-                      (s) => s.id === child.id
-                    );
+                    const currentIndex = sortedSiblings.findIndex((s) => s.id === child.id);
                     return (
                       <GameItemRow
                         key={child.id}
@@ -379,9 +324,7 @@ function ItemFormDialog({
           <DialogHeader>
             <DialogTitle>{item ? "Edit Item" : "New Item"}</DialogTitle>
             <DialogDescription>
-              {item
-                ? "Update this item"
-                : "Add a new position or technique to your game"}
+              {item ? "Update this item" : "Add a new position or technique to your game"}
             </DialogDescription>
           </DialogHeader>
           <div className="space-y-4 py-4">
@@ -417,10 +360,7 @@ function ItemFormDialog({
             >
               Cancel
             </Button>
-            <Button
-              type="submit"
-              disabled={isSubmitting || name.trim().length === 0}
-            >
+            <Button type="submit" disabled={isSubmitting || name.trim().length === 0}>
               {isSubmitting ? "Saving..." : item ? "Update" : "Create"}
             </Button>
           </DialogFooter>
@@ -449,15 +389,9 @@ function ViewItemDialog({
         {children.map((child) => (
           <div key={child.id} className="border-l-2 border-border pl-4 py-2">
             <div className="font-medium">{child.name}</div>
-            {child.notes && (
-              <p className="text-muted-foreground text-sm mt-1">
-                {child.notes}
-              </p>
-            )}
+            {child.notes && <p className="text-muted-foreground text-sm mt-1">{child.notes}</p>}
             {child.children && child.children.length > 0 && (
-              <div className="mt-2">
-                {renderChildren(child.children, level + 1)}
-              </div>
+              <div className="mt-2">{renderChildren(child.children, level + 1)}</div>
             )}
           </div>
         ))}
@@ -474,9 +408,7 @@ function ViewItemDialog({
         <div className="space-y-4 py-4">
           {item.notes && (
             <div>
-              <p className="text-muted-foreground whitespace-pre-wrap">
-                {item.notes}
-              </p>
+              <p className="text-muted-foreground whitespace-pre-wrap">{item.notes}</p>
             </div>
           )}
           {item.children && item.children.length > 0 && (
@@ -488,9 +420,7 @@ function ViewItemDialog({
           )}
           {(!item.notes || item.notes.trim().length === 0) &&
             (!item.children || item.children.length === 0) && (
-              <p className="text-muted-foreground text-sm">
-                No additional details available.
-              </p>
+              <p className="text-muted-foreground text-sm">No additional details available.</p>
             )}
         </div>
         <DialogFooter>
@@ -527,19 +457,13 @@ function TransitionDialog({
   const [toItemId, setToItemId] = useState("");
   const [notes, setNotes] = useState("");
   const [showPicker, setShowPicker] = useState(false);
-  const [editingTransitionId, setEditingTransitionId] = useState<string | null>(
-    null
-  );
+  const [editingTransitionId, setEditingTransitionId] = useState<string | null>(null);
   const [editNotes, setEditNotes] = useState("");
   const touchStartY = useRef(0);
 
   const fromItem = allItems.find((item) => item.id === fromItemId);
-  const outgoingTransitions = transitions.filter(
-    (t) => t.fromItemId === fromItemId
-  );
-  const incomingTransitions = transitions.filter(
-    (t) => t.toItemId === fromItemId
-  );
+  const outgoingTransitions = transitions.filter((t) => t.fromItemId === fromItemId);
+  const incomingTransitions = transitions.filter((t) => t.toItemId === fromItemId);
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
@@ -570,9 +494,7 @@ function TransitionDialog({
     <Dialog open={open} onOpenChange={onOpenChange}>
       <DialogContent className="max-w-2xl">
         <DialogHeader>
-          <DialogTitle>
-            Transitions {fromItem ? `from ${fromItem.name}` : ""}
-          </DialogTitle>
+          <DialogTitle>Transitions {fromItem ? `from ${fromItem.name}` : ""}</DialogTitle>
           <DialogDescription>
             Define when and how you move from this position to others
           </DialogDescription>
@@ -592,18 +514,14 @@ function TransitionDialog({
                 <ScrollArea
                   className={`${
                     editingTransitionId &&
-                    outgoingTransitions.some(
-                      (t) => t.id === editingTransitionId
-                    )
+                    outgoingTransitions.some((t) => t.id === editingTransitionId)
                       ? "h-64"
                       : "h-40"
                   } rounded-md border p-4`}
                 >
                   <div className="space-y-2">
                     {outgoingTransitions.map((transition) => {
-                      const toItem = allItems.find(
-                        (item) => item.id === transition.toItemId
-                      );
+                      const toItem = allItems.find((item) => item.id === transition.toItemId);
                       const isEditing = editingTransitionId === transition.id;
                       return (
                         <div
@@ -614,9 +532,7 @@ function TransitionDialog({
                             <div className="flex-1 space-y-2">
                               <div className="flex items-center gap-2">
                                 <ArrowRight className="h-4 w-4 shrink-0" />
-                                <span className="font-medium">
-                                  {toItem?.name ?? "Unknown"}
-                                </span>
+                                <span className="font-medium">{toItem?.name ?? "Unknown"}</span>
                               </div>
                               <Textarea
                                 value={editNotes}
@@ -627,17 +543,10 @@ function TransitionDialog({
                                 className="resize-none text-sm"
                               />
                               <div className="flex gap-2">
-                                <Button
-                                  size="sm"
-                                  onClick={() => handleSaveEdit(transition.id)}
-                                >
+                                <Button size="sm" onClick={() => handleSaveEdit(transition.id)}>
                                   Save
                                 </Button>
-                                <Button
-                                  size="sm"
-                                  variant="outline"
-                                  onClick={handleCancelEdit}
-                                >
+                                <Button size="sm" variant="outline" onClick={handleCancelEdit}>
                                   Cancel
                                 </Button>
                               </div>
@@ -647,9 +556,7 @@ function TransitionDialog({
                               <div className="flex-1">
                                 <div className="flex items-center gap-2">
                                   <ArrowRight className="h-4 w-4 shrink-0" />
-                                  <span className="font-medium">
-                                    {toItem?.name ?? "Unknown"}
-                                  </span>
+                                  <span className="font-medium">{toItem?.name ?? "Unknown"}</span>
                                 </div>
                                 {transition.notes && (
                                   <p className="text-muted-foreground text-sm mt-1 ml-6">
@@ -691,25 +598,19 @@ function TransitionDialog({
                 Incoming Transitions
               </Label>
               {incomingTransitions.length === 0 ? (
-                <p className="text-muted-foreground text-sm pl-6">
-                  No incoming transitions.
-                </p>
+                <p className="text-muted-foreground text-sm pl-6">No incoming transitions.</p>
               ) : (
                 <ScrollArea
                   className={`${
                     editingTransitionId &&
-                    incomingTransitions.some(
-                      (t) => t.id === editingTransitionId
-                    )
+                    incomingTransitions.some((t) => t.id === editingTransitionId)
                       ? "h-64"
                       : "h-40"
                   } rounded-md border p-4`}
                 >
                   <div className="space-y-2">
                     {incomingTransitions.map((transition) => {
-                      const fromItem = allItems.find(
-                        (item) => item.id === transition.fromItemId
-                      );
+                      const fromItem = allItems.find((item) => item.id === transition.fromItemId);
                       const isEditing = editingTransitionId === transition.id;
                       return (
                         <div
@@ -720,9 +621,7 @@ function TransitionDialog({
                             <div className="flex-1 space-y-2">
                               <div className="flex items-center gap-2">
                                 <ArrowLeft className="h-4 w-4 shrink-0" />
-                                <span className="font-medium">
-                                  {fromItem?.name ?? "Unknown"}
-                                </span>
+                                <span className="font-medium">{fromItem?.name ?? "Unknown"}</span>
                               </div>
                               <Textarea
                                 value={editNotes}
@@ -733,17 +632,10 @@ function TransitionDialog({
                                 className="resize-none text-sm"
                               />
                               <div className="flex gap-2">
-                                <Button
-                                  size="sm"
-                                  onClick={() => handleSaveEdit(transition.id)}
-                                >
+                                <Button size="sm" onClick={() => handleSaveEdit(transition.id)}>
                                   Save
                                 </Button>
-                                <Button
-                                  size="sm"
-                                  variant="outline"
-                                  onClick={handleCancelEdit}
-                                >
+                                <Button size="sm" variant="outline" onClick={handleCancelEdit}>
                                   Cancel
                                 </Button>
                               </div>
@@ -753,9 +645,7 @@ function TransitionDialog({
                               <div className="flex-1">
                                 <div className="flex items-center gap-2">
                                   <ArrowLeft className="h-4 w-4 shrink-0" />
-                                  <span className="font-medium">
-                                    {fromItem?.name ?? "Unknown"}
-                                  </span>
+                                  <span className="font-medium">{fromItem?.name ?? "Unknown"}</span>
                                 </div>
                                 {transition.notes && (
                                   <p className="text-muted-foreground text-sm mt-1 ml-6">
@@ -797,11 +687,7 @@ function TransitionDialog({
               <Label htmlFor="toItem">Add Outgoing Transition</Label>
               <Popover open={showPicker} onOpenChange={setShowPicker}>
                 <PopoverTrigger asChild>
-                  <Button
-                    variant="outline"
-                    className="w-full justify-start"
-                    type="button"
-                  >
+                  <Button variant="outline" className="w-full justify-start" type="button">
                     {toItemId
                       ? allItems.find((item) => item.id === toItemId)?.name
                       : "Select target position..."}
@@ -900,11 +786,7 @@ function MoveToDialog({
     (target) => !descendantIds.has(target.id) && target.id !== item.id
   );
 
-  function renderItemOption(
-    targetItem: GameItem,
-    level = 0,
-    onClick: () => void
-  ) {
+  function renderItemOption(targetItem: GameItem, level = 0, onClick: () => void) {
     return (
       <div key={targetItem.id}>
         <Button
@@ -929,9 +811,7 @@ function MoveToDialog({
     setSelectedParentId(null);
   };
 
-  const selectedItem = selectedParentId
-    ? allItems.find((i) => i.id === selectedParentId)
-    : null;
+  const selectedItem = selectedParentId ? allItems.find((i) => i.id === selectedParentId) : null;
 
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
@@ -939,8 +819,7 @@ function MoveToDialog({
         <DialogHeader>
           <DialogTitle>Move {item.name}</DialogTitle>
           <DialogDescription>
-            Select a new parent for this item. Choose "Move to root" to make it
-            a top-level item.
+            Select a new parent for this item. Choose "Move to root" to make it a top-level item.
           </DialogDescription>
         </DialogHeader>
         <div className="space-y-4 py-4">
@@ -948,16 +827,12 @@ function MoveToDialog({
             <Label>Target Position</Label>
             <Popover open={showPicker} onOpenChange={setShowPicker}>
               <PopoverTrigger asChild>
-                <Button
-                  variant="outline"
-                  className="w-full justify-start"
-                  type="button"
-                >
+                <Button variant="outline" className="w-full justify-start" type="button">
                   {selectedItem
                     ? selectedItem.name
                     : selectedParentId === null
-                    ? "Root (top level)"
-                    : "Select target position..."}
+                      ? "Root (top level)"
+                      : "Select target position..."}
                 </Button>
               </PopoverTrigger>
               <PopoverContent className="w-[400px] p-0">
@@ -1074,9 +949,7 @@ export function GamePage() {
       <div className="flex items-center justify-between">
         <div>
           <h1 className="text-3xl font-bold">My Game</h1>
-          <p className="text-muted-foreground text-lg">
-            Build and organize your BJJ system
-          </p>
+          <p className="text-muted-foreground text-lg">Build and organize your BJJ system</p>
         </div>
         <Button
           onClick={() => {
@@ -1094,10 +967,7 @@ export function GamePage() {
           <div className="flex items-center justify-between">
             <CardTitle>Positions & Techniques</CardTitle>
             <div className="flex items-center gap-2">
-              <Label
-                htmlFor="show-transitions"
-                className="text-sm font-normal cursor-pointer"
-              >
+              <Label htmlFor="show-transitions" className="text-sm font-normal cursor-pointer">
                 Show Transitions
               </Label>
               <button
@@ -1152,9 +1022,7 @@ export function GamePage() {
                 const sortedSiblings = [...siblings].sort(
                   (a, b) => a.displayOrder - b.displayOrder
                 );
-                const currentIndex = sortedSiblings.findIndex(
-                  (s) => s.id === item.id
-                );
+                const currentIndex = sortedSiblings.findIndex((s) => s.id === item.id);
                 return (
                   <GameItemRow
                     key={item.id}
@@ -1194,11 +1062,7 @@ export function GamePage() {
       />
 
       <ItemFormDialog
-        key={
-          editDialogOpen && editingItem
-            ? `edit-${editingItem.id}`
-            : "edit-closed"
-        }
+        key={editDialogOpen && editingItem ? `edit-${editingItem.id}` : "edit-closed"}
         open={editDialogOpen}
         onOpenChange={setEditDialogOpen}
         item={editingItem ?? undefined}
@@ -1248,8 +1112,8 @@ export function GamePage() {
           <AlertDialogHeader>
             <AlertDialogTitle>Delete Item</AlertDialogTitle>
             <AlertDialogDescription>
-              Are you sure you want to delete this item? All children and
-              transitions will also be deleted. This action cannot be undone.
+              Are you sure you want to delete this item? All children and transitions will also be
+              deleted. This action cannot be undone.
             </AlertDialogDescription>
           </AlertDialogHeader>
           <AlertDialogFooter>

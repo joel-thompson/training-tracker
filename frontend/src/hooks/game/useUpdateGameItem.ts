@@ -28,13 +28,7 @@ export function useUpdateGameItem() {
   const queryClient = useQueryClient();
 
   return useMutation({
-    mutationFn: async ({
-      id,
-      input,
-    }: {
-      id: string;
-      input: UpdateGameItemInput;
-    }) => {
+    mutationFn: async ({ id, input }: { id: string; input: UpdateGameItemInput }) => {
       const token = await getToken();
       return updateGameItem(id, input, token);
     },

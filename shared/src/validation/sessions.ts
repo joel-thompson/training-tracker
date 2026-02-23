@@ -13,9 +13,7 @@ const sessionItemsSchema = z
   .optional();
 
 export const createSessionSchema = z.object({
-  sessionDate: z
-    .string()
-    .regex(/^\d{4}-\d{2}-\d{2}$/, "Must be YYYY-MM-DD format"),
+  sessionDate: z.string().regex(/^\d{4}-\d{2}-\d{2}$/, "Must be YYYY-MM-DD format"),
   classType: classTypeSchema,
   techniqueCovered: z.string().max(1000).optional().nullable(),
   generalNotes: z.string().max(5000).optional().nullable(),

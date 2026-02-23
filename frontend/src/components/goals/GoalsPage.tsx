@@ -27,10 +27,10 @@ export function GoalsPage() {
     setCreateDialogOpen(true);
   };
 
-  const { data: activeGoalsData, isLoading: activeGoalsLoading } =
-    useActiveGoals();
-  const { data: completedGoalsData, isLoading: completedGoalsLoading } =
-    useListGoals({ active: false });
+  const { data: activeGoalsData, isLoading: activeGoalsLoading } = useActiveGoals();
+  const { data: completedGoalsData, isLoading: completedGoalsLoading } = useListGoals({
+    active: false,
+  });
 
   const createGoal = useCreateGoal();
   const updateGoal = useUpdateGoal();
@@ -39,8 +39,7 @@ export function GoalsPage() {
   const deleteGoal = useDeleteGoal();
 
   const activeGoals = activeGoalsData?.goals ?? [];
-  const completedGoals =
-    completedGoalsData?.pages.flatMap((page) => page.goals) ?? [];
+  const completedGoals = completedGoalsData?.pages.flatMap((page) => page.goals) ?? [];
 
   const handleCreateGoal = (
     goalText: string,

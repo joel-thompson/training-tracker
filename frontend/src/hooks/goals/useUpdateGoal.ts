@@ -4,11 +4,7 @@ import type { Goal, UpdateGoalInput, ApiResponse } from "shared/types";
 import { api } from "@/utils/api";
 import { goalKeys } from "./goalKeys";
 
-async function updateGoal(
-  id: string,
-  input: UpdateGoalInput,
-  token: string | null
-): Promise<Goal> {
+async function updateGoal(id: string, input: UpdateGoalInput, token: string | null): Promise<Goal> {
   const response = await api(`/api/v1/goals/${id}`, {
     method: "PATCH",
     body: JSON.stringify(input),
@@ -28,13 +24,7 @@ export function useUpdateGoal() {
   const queryClient = useQueryClient();
 
   return useMutation({
-    mutationFn: async ({
-      id,
-      input,
-    }: {
-      id: string;
-      input: UpdateGoalInput;
-    }) => {
+    mutationFn: async ({ id, input }: { id: string; input: UpdateGoalInput }) => {
       const token = await getToken();
       return updateGoal(id, input, token);
     },

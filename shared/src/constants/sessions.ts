@@ -11,8 +11,4 @@ export const ITEM_TYPE_LABELS: Record<ItemType, string> = {
   question: "Question",
 };
 
-export const ITEM_TYPES = [
-  "success",
-  "problem",
-  "question",
-] as const satisfies readonly ItemType[];
+export const ITEM_TYPES = ["success", "problem", "question"] as const satisfies readonly ItemType[];

@@ -3,11 +3,7 @@ import { db } from "../../db";
 import { trainingGoals } from "../../db/schema";
 import { updateGoalSchema } from "shared/validation";
 import { requireUserId } from "../../utils/auth";
-import {
-  successResponse,
-  errorResponse,
-  ErrorCodes,
-} from "../../utils/response";
+import { successResponse, errorResponse, ErrorCodes } from "../../utils/response";
 import type { GoalCategory } from "shared/types";
 import { toGoalResponse } from "../../utils/transforms";
 import { eq, and } from "drizzle-orm";
@@ -19,10 +15,7 @@ export const updateGoalHandler = async (c: Context) => {
   const parsed = updateGoalSchema.safeParse(body);
 
   if (!parsed.success) {
-    return c.json(
-      errorResponse(ErrorCodes.VALIDATION_ERROR, parsed.error.message),
-      400
-    );
+    return c.json(errorResponse(ErrorCodes.VALIDATION_ERROR, parsed.error.message), 400);
   }
 
   // Check goal exists and belongs to user

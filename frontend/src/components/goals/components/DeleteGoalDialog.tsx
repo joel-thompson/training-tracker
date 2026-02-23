@@ -26,14 +26,11 @@ export function DeleteGoalDialog({
         <AlertDialogHeader>
           <AlertDialogTitle>Delete Goal</AlertDialogTitle>
           <AlertDialogDescription>
-            Are you sure you want to delete this goal? This action cannot be
-            undone.
+            Are you sure you want to delete this goal? This action cannot be undone.
           </AlertDialogDescription>
         </AlertDialogHeader>
         <AlertDialogFooter>
-          <AlertDialogCancel onClick={() => onOpenChange(false)}>
-            Cancel
-          </AlertDialogCancel>
+          <AlertDialogCancel onClick={() => onOpenChange(false)}>Cancel</AlertDialogCancel>
           <AlertDialogAction
             onClick={onConfirm}
             disabled={isDeleting}

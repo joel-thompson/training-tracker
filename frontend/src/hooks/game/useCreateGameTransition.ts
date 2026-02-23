@@ -1,10 +1,6 @@
 import { useAuth } from "@clerk/clerk-react";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
-import type {
-  GameTransition,
-  CreateGameTransitionInput,
-  ApiResponse,
-} from "shared/types";
+import type { GameTransition, CreateGameTransitionInput, ApiResponse } from "shared/types";
 import { api } from "@/utils/api";
 import { gameKeys } from "./gameKeys";
 
@@ -31,9 +27,7 @@ export function useCreateGameTransition() {
   const queryClient = useQueryClient();
 
   return useMutation<GameTransition, Error, CreateGameTransitionInput>({
-    mutationFn: async (
-      input: CreateGameTransitionInput
-    ): Promise<GameTransition> => {
+    mutationFn: async (input: CreateGameTransitionInput): Promise<GameTransition> => {
       const token = await getToken();
       return createGameTransition(input, token);
     },

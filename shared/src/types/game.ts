@@ -10,12 +10,8 @@ import type {
 // Input types inferred from Zod schemas
 export type CreateGameItemInput = z.infer<typeof createGameItemSchema>;
 export type UpdateGameItemInput = z.infer<typeof updateGameItemSchema>;
-export type CreateGameTransitionInput = z.infer<
-  typeof createGameTransitionSchema
->;
-export type UpdateGameTransitionInput = z.infer<
-  typeof updateGameTransitionSchema
->;
+export type CreateGameTransitionInput = z.infer<typeof createGameTransitionSchema>;
+export type UpdateGameTransitionInput = z.infer<typeof updateGameTransitionSchema>;
 export type ReorderGameItemInput = z.infer<typeof reorderGameItemSchema>;
 
 // GameItem as it appears in API responses

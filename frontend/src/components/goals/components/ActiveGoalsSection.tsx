@@ -45,11 +45,7 @@ export function ActiveGoalsSection({
           <CardContent className="py-12 text-center">
             <p className="text-muted-foreground">
               No active goals.{" "}
-              <Button
-                variant="link"
-                className="p-0 h-auto"
-                onClick={onCreateGoal}
-              >
+              <Button variant="link" className="p-0 h-auto" onClick={onCreateGoal}>
                 Create your first goal
               </Button>
               .
@@ -62,9 +58,7 @@ export function ActiveGoalsSection({
           {groupedActiveGoals.map((group) => (
             <div key={group.category ?? "uncategorized"} className="space-y-4">
               <h3 className="text-lg font-semibold">
-                {group.category
-                  ? GOAL_CATEGORY_LABELS[group.category]
-                  : "Uncategorized"}
+                {group.category ? GOAL_CATEGORY_LABELS[group.category] : "Uncategorized"}
               </h3>
               {group.goals.map((goal) => (
                 <GoalCard

@@ -2,11 +2,7 @@ import type { Context } from "hono";
 import { db } from "../../db";
 import { trainingSessions, sessionItems } from "../../db/schema";
 import { requireUserId } from "../../utils/auth";
-import {
-  successResponse,
-  errorResponse,
-  ErrorCodes,
-} from "../../utils/response";
+import { successResponse, errorResponse, ErrorCodes } from "../../utils/response";
 import { toSessionResponse } from "../../utils/transforms";
 import { eq, and, isNull } from "drizzle-orm";
 
@@ -27,10 +23,7 @@ export const getSessionHandler = async (c: Context) => {
     .limit(1);
 
   if (!session) {
-    return c.json(
-      errorResponse(ErrorCodes.NOT_FOUND, "Session not found"),
-      404
-    );
+    return c.json(errorResponse(ErrorCodes.NOT_FOUND, "Session not found"), 404);
   }
 
   const items = await db

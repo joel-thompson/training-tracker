@@ -4,10 +4,7 @@ import type { Goal, CreateGoalInput, ApiResponse } from "shared/types";
 import { api } from "@/utils/api";
 import { goalKeys } from "./goalKeys";
 
-async function createGoal(
-  input: CreateGoalInput,
-  token: string | null
-): Promise<Goal> {
+async function createGoal(input: CreateGoalInput, token: string | null): Promise<Goal> {
   const response = await api("/api/v1/goals", {
     method: "POST",
     body: JSON.stringify(input),

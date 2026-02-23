@@ -8,15 +8,8 @@ import { WelcomeMessage } from "./components/WelcomeMessage";
 import { ThinkingIndicator } from "./components/ThinkingIndicator";
 
 export function CoachPage() {
-  const {
-    messages,
-    input,
-    isLoading,
-    setInput,
-    handleSubmit,
-    handlePromptClick,
-    resetChat,
-  } = useChat();
+  const { messages, input, isLoading, setInput, handleSubmit, handlePromptClick, resetChat } =
+    useChat();
 
   const messagesEndRef = useRef<HTMLDivElement>(null);
 
@@ -24,16 +17,13 @@ export function CoachPage() {
     messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
   }, [messages]);
 
-  const showThinking =
-    isLoading && messages[messages.length - 1]?.role === "user";
+  const showThinking = isLoading && messages[messages.length - 1]?.role === "user";
 
   return (
     <>
       <div className="hidden md:block mb-4">
         <h1 className="text-3xl font-bold">AI Coach</h1>
-        <p className="text-muted-foreground text-lg">
-          Ask questions about your training
-        </p>
+        <p className="text-muted-foreground text-lg">Ask questions about your training</p>
       </div>
 
       <div className="sticky top-16 z-40 bg-background/95 backdrop-blur supports-backdrop-filter:bg-background/60 border-b pt-2 pb-3 mb-4 -mx-4 px-4 md:mx-0 md:px-0">
@@ -60,9 +50,7 @@ export function CoachPage() {
             disabled={isLoading}
           />
         ) : (
-          messages.map((message) => (
-            <ChatMessage key={message.id} message={message} />
-          ))
+          messages.map((message) => <ChatMessage key={message.id} message={message} />)
         )}
         {showThinking && <ThinkingIndicator />}
         <div ref={messagesEndRef} />

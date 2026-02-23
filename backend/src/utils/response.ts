@@ -17,4 +17,3 @@ export function errorResponse(code: string, message: string): ApiErrorResponse {
     },
   };
 }
-

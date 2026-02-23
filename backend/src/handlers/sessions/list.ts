@@ -3,11 +3,7 @@ import { db } from "../../db";
 import { trainingSessions, sessionItems } from "../../db/schema";
 import { listSessionsQuerySchema } from "shared/validation";
 import { requireUserId } from "../../utils/auth";
-import {
-  successResponse,
-  errorResponse,
-  ErrorCodes,
-} from "../../utils/response";
+import { successResponse, errorResponse, ErrorCodes } from "../../utils/response";
 import type { SessionItem, ListSessionsResponse } from "shared/types";
 import { toSessionItemResponse } from "../../utils/transforms";
 import { eq, and, isNull, desc, gte, lte, sql, count } from "drizzle-orm";
@@ -18,19 +14,13 @@ export const listSessionsHandler = async (c: Context) => {
   const parsed = listSessionsQuerySchema.safeParse(query);
 
   if (!parsed.success) {
-    return c.json(
-      errorResponse(ErrorCodes.VALIDATION_ERROR, parsed.error.message),
-      400
-    );
+    return c.json(errorResponse(ErrorCodes.VALIDATION_ERROR, parsed.error.message), 400);
   }
 
   const { limit, cursor, classType, weekStartDate, excludeItems } = parsed.data;
 
   // Build where conditions
-  const conditions = [
-    eq(trainingSessions.userId, userId),
-    isNull(trainingSessions.deletedAt),
-  ];
+  const conditions = [eq(trainingSessions.userId, userId), isNull(trainingSessions.deletedAt)];
 
   if (classType) {
     conditions.push(eq(trainingSessions.classType, classType));
@@ -77,17 +67,12 @@ export const listSessionsHandler = async (c: Context) => {
     .select()
     .from(trainingSessions)
     .where(and(...conditions))
-    .orderBy(
-      desc(trainingSessions.sessionDate),
-      desc(trainingSessions.createdAt)
-    )
+    .orderBy(desc(trainingSessions.sessionDate), desc(trainingSessions.createdAt))
     .limit(limit + 1);
 
   const hasMore = sessions.length > limit;
   const resultSessions = hasMore ? sessions.slice(0, limit) : sessions;
-  const nextCursor = hasMore
-    ? resultSessions[resultSessions.length - 1]?.id ?? null
-    : null;
+  const nextCursor = hasMore ? (resultSessions[resultSessions.length - 1]?.id ?? null) : null;
 
   // Fetch items if not excluded
   const itemsMap = new Map<string, SessionItem[]>();

@@ -2,11 +2,7 @@ import type { Context } from "hono";
 import { db } from "../../db";
 import { trainingGoals } from "../../db/schema";
 import { requireUserId } from "../../utils/auth";
-import {
-  successResponse,
-  errorResponse,
-  ErrorCodes,
-} from "../../utils/response";
+import { successResponse, errorResponse, ErrorCodes } from "../../utils/response";
 import { toGoalResponse } from "../../utils/transforms";
 import { eq, and } from "drizzle-orm";
 

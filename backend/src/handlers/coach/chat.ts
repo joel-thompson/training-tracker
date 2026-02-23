@@ -19,10 +19,7 @@ export const chatHandler = async (c: Context) => {
   const parsed = chatRequestSchema.safeParse(body);
 
   if (!parsed.success) {
-    return c.json(
-      errorResponse(ErrorCodes.VALIDATION_ERROR, parsed.error.message),
-      400
-    );
+    return c.json(errorResponse(ErrorCodes.VALIDATION_ERROR, parsed.error.message), 400);
   }
 
   const { messages } = parsed.data;
@@ -92,10 +89,7 @@ async function fetchUserContext(userId: string): Promise<UserContext> {
       : [];
 
   // Group items by session
-  const itemsBySession = new Map<
-    string,
-    { type: ItemType; content: string }[]
-  >();
+  const itemsBySession = new Map<string, { type: ItemType; content: string }[]>();
   for (const item of items) {
     const existing = itemsBySession.get(item.sessionId) ?? [];
     existing.push({ type: item.type, content: item.content });

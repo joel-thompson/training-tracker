@@ -29,11 +29,7 @@ export function GoalFormDialog({
   open: boolean;
   onOpenChange: (open: boolean) => void;
   goal?: Goal;
-  onSubmit: (
-    goalText: string,
-    category: GoalCategory | null,
-    notes: string | null
-  ) => void;
+  onSubmit: (goalText: string, category: GoalCategory | null, notes: string | null) => void;
   isSubmitting: boolean;
 }) {
   const [goalText, setGoalText] = useState(goal?.goalText ?? "");
@@ -59,9 +55,7 @@ export function GoalFormDialog({
           <DialogHeader>
             <DialogTitle>{goal ? "Edit Goal" : "New Goal"}</DialogTitle>
             <DialogDescription>
-              {goal
-                ? "Update your training goal"
-                : "Set a new training goal to focus on"}
+              {goal ? "Update your training goal" : "Set a new training goal to focus on"}
             </DialogDescription>
           </DialogHeader>
           <div className="space-y-4 py-4">
@@ -125,10 +119,7 @@ export function GoalFormDialog({
             >
               Cancel
             </Button>
-            <Button
-              type="submit"
-              disabled={isSubmitting || goalText.trim().length === 0}
-            >
+            <Button type="submit" disabled={isSubmitting || goalText.trim().length === 0}>
               {isSubmitting ? "Saving..." : goal ? "Update" : "Create"}
             </Button>
           </DialogFooter>

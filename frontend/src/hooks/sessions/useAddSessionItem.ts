@@ -28,13 +28,7 @@ export function useAddSessionItem() {
   const queryClient = useQueryClient();
 
   return useMutation({
-    mutationFn: async ({
-      sessionId,
-      input,
-    }: {
-      sessionId: string;
-      input: CreateItemInput;
-    }) => {
+    mutationFn: async ({ sessionId, input }: { sessionId: string; input: CreateItemInput }) => {
       const token = await getToken();
       return addSessionItem(sessionId, input, token);
     },

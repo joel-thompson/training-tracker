@@ -1,11 +1,7 @@
 import { ChevronDown, ChevronUp } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Card, CardHeader } from "@/components/ui/card";
-import {
-  Collapsible,
-  CollapsibleContent,
-  CollapsibleTrigger,
-} from "@/components/ui/collapsible";
+import { Collapsible, CollapsibleContent, CollapsibleTrigger } from "@/components/ui/collapsible";
 import { Skeleton } from "@/components/ui/skeleton";
 import { GoalCard } from "./GoalCard";
 import type { Goal } from "shared/types";
@@ -33,16 +29,9 @@ export function CompletedGoalsSection({
     <div>
       <Collapsible open={isOpen} onOpenChange={onOpenChange}>
         <CollapsibleTrigger asChild>
-          <Button
-            variant="ghost"
-            className="w-full justify-between p-0 h-auto mb-4"
-          >
+          <Button variant="ghost" className="w-full justify-between p-0 h-auto mb-4">
             <h2 className="text-xl font-semibold">Completed Goals</h2>
-            {isOpen ? (
-              <ChevronUp className="h-4 w-4" />
-            ) : (
-              <ChevronDown className="h-4 w-4" />
-            )}
+            {isOpen ? <ChevronUp className="h-4 w-4" /> : <ChevronDown className="h-4 w-4" />}
           </Button>
         </CollapsibleTrigger>
         <CollapsibleContent>

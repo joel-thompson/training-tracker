@@ -1,11 +1,7 @@
 import { CalendarIcon } from "lucide-react";
 import { format } from "date-fns";
 import { Button } from "@/components/ui/button";
-import {
-  Popover,
-  PopoverContent,
-  PopoverTrigger,
-} from "@/components/ui/popover";
+import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
 import { Calendar } from "@/components/ui/calendar";
 
 interface SessionDatePickerProps {
@@ -14,11 +10,7 @@ interface SessionDatePickerProps {
   disabled?: boolean;
 }
 
-export function SessionDatePicker({
-  value,
-  onChange,
-  disabled = false,
-}: SessionDatePickerProps) {
+export function SessionDatePicker({ value, onChange, disabled = false }: SessionDatePickerProps) {
   return (
     <Popover>
       <PopoverTrigger asChild>
@@ -42,4 +34,3 @@ export function SessionDatePicker({
     </Popover>
   );
 }
-

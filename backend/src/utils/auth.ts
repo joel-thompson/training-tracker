@@ -34,7 +34,7 @@ export async function requireAiAccess(userId: string): Promise<void> {
   if (user.privateMetadata?.ai !== true) {
     const body = errorResponse(
       ErrorCodes.AI_ACCESS_DENIED,
-      "AI coaching is not available for your account",
+      "AI coaching is not available for your account"
     );
     throw new HTTPException(403, {
       message: "AI access denied",

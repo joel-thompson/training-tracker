@@ -2,9 +2,7 @@ import { sql } from "drizzle-orm";
 import { type sessionItems, type trainingSessions, trainingGoals } from "../db/schema";
 import type { Session, SessionItem, Goal } from "shared/types";
 
-export const toSessionItemResponse = (
-  item: typeof sessionItems.$inferSelect
-): SessionItem => ({
+export const toSessionItemResponse = (item: typeof sessionItems.$inferSelect): SessionItem => ({
   id: item.id,
   sessionId: item.sessionId,
   type: item.type,
@@ -28,9 +26,7 @@ export const toSessionResponse = (
   items: items.map(toSessionItemResponse),
 });
 
-export const toGoalResponse = (
-  goal: typeof trainingGoals.$inferSelect
-): Goal => ({
+export const toGoalResponse = (goal: typeof trainingGoals.$inferSelect): Goal => ({
   id: goal.id,
   userId: goal.userId,
   goalText: goal.goalText,

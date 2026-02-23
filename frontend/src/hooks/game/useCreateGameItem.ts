@@ -4,10 +4,7 @@ import type { GameItem, CreateGameItemInput, ApiResponse } from "shared/types";
 import { api } from "@/utils/api";
 import { gameKeys } from "./gameKeys";
 
-async function createGameItem(
-  input: CreateGameItemInput,
-  token: string | null
-): Promise<GameItem> {
+async function createGameItem(input: CreateGameItemInput, token: string | null): Promise<GameItem> {
   const response = await api("/api/v1/game/items", {
     method: "POST",
     body: JSON.stringify(input),

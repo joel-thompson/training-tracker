@@ -3,11 +3,7 @@ import { db } from "../../db";
 import { trainingGoals } from "../../db/schema";
 import { createGoalSchema } from "shared/validation";
 import { requireUserId } from "../../utils/auth";
-import {
-  successResponse,
-  errorResponse,
-  ErrorCodes,
-} from "../../utils/response";
+import { successResponse, errorResponse, ErrorCodes } from "../../utils/response";
 import { toGoalResponse } from "../../utils/transforms";
 
 export const createGoalHandler = async (c: Context) => {
@@ -16,10 +12,7 @@ export const createGoalHandler = async (c: Context) => {
   const parsed = createGoalSchema.safeParse(body);
 
   if (!parsed.success) {
-    return c.json(
-      errorResponse(ErrorCodes.VALIDATION_ERROR, parsed.error.message),
-      400
-    );
+    return c.json(errorResponse(ErrorCodes.VALIDATION_ERROR, parsed.error.message), 400);
   }
 
   const { goalText, category, notes, isActive } = parsed.data;

@@ -29,4 +29,3 @@ sessions.patch("/:id/items/:itemId", updateSessionItemHandler);
 sessions.delete("/:id/items/:itemId", deleteSessionItemHandler);
 
 export { sessions };
-

@@ -4,10 +4,7 @@ import type { ApiResponse, DeleteSessionResponse } from "shared/types";
 import { api } from "@/utils/api";
 import { sessionKeys } from "./sessionKeys";
 
-async function deleteSession(
-  id: string,
-  token: string | null
-): Promise<DeleteSessionResponse> {
+async function deleteSession(id: string, token: string | null): Promise<DeleteSessionResponse> {
   const response = await api(`/api/v1/sessions/${id}`, {
     method: "DELETE",
     token,

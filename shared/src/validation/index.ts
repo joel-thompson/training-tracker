@@ -8,11 +8,7 @@ export {
   updateItemSchema,
 } from "./sessions";
 
-export {
-  createGoalSchema,
-  updateGoalSchema,
-  listGoalsQuerySchema,
-} from "./goals";
+export { createGoalSchema, updateGoalSchema, listGoalsQuerySchema } from "./goals";
 
 export {
   createGameItemSchema,

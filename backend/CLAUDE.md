@@ -84,6 +84,7 @@ export const myHandler = async (c: Context) => {
 ```
 
 Key patterns:
+
 1. Assert request body as `unknown`, then use `safeParse`
 2. Use `parsed.error.message` for validation errors
 3. Create a typed `responseData` variable before returning
@@ -112,6 +113,7 @@ All API responses use:
 ```
 
 Helpers from `src/utils/response.ts`:
+
 - `successResponse(data)`
 - `errorResponse(code, message)`
 - `ErrorCodes` — `VALIDATION_ERROR`, `UNAUTHORIZED`, `NOT_FOUND`, `INTERNAL_ERROR`

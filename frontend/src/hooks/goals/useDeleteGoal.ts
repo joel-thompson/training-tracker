@@ -4,10 +4,7 @@ import type { ApiResponse, DeleteGoalResponse } from "shared/types";
 import { api } from "@/utils/api";
 import { goalKeys } from "./goalKeys";
 
-async function deleteGoal(
-  id: string,
-  token: string | null
-): Promise<DeleteGoalResponse> {
+async function deleteGoal(id: string, token: string | null): Promise<DeleteGoalResponse> {
   const response = await api(`/api/v1/goals/${id}`, {
     method: "DELETE",
     token,

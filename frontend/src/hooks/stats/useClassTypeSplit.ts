@@ -4,9 +4,7 @@ import type { ClassTypeSplitResponse, ApiResponse } from "shared/types";
 import { api } from "@/utils/api";
 import { statsKeys } from "./statsKeys";
 
-async function fetchClassTypeSplit(
-  token: string | null
-): Promise<ClassTypeSplitResponse> {
+async function fetchClassTypeSplit(token: string | null): Promise<ClassTypeSplitResponse> {
   const response = await api("/api/v1/stats/class-types", { token });
 
   const result = (await response.json()) as ApiResponse<ClassTypeSplitResponse>;
@@ -28,4 +26,3 @@ export function useClassTypeSplit() {
     },
   });
 }
-

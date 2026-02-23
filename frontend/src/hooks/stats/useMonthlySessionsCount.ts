@@ -4,9 +4,7 @@ import type { MonthlySessionsResponse, ApiResponse } from "shared/types";
 import { api } from "@/utils/api";
 import { statsKeys } from "./statsKeys";
 
-async function fetchMonthlySessions(
-  token: string | null
-): Promise<MonthlySessionsResponse> {
+async function fetchMonthlySessions(token: string | null): Promise<MonthlySessionsResponse> {
   const response = await api("/api/v1/stats/monthly", { token });
 
   const result = (await response.json()) as ApiResponse<MonthlySessionsResponse>;
@@ -28,4 +26,3 @@ export function useMonthlySessionsCount() {
     },
   });
 }
-

@@ -4,10 +4,7 @@ import type { Session, CreateSessionInput, ApiResponse } from "shared/types";
 import { api } from "@/utils/api";
 import { sessionKeys } from "./sessionKeys";
 
-async function createSession(
-  input: CreateSessionInput,
-  token: string | null
-): Promise<Session> {
+async function createSession(input: CreateSessionInput, token: string | null): Promise<Session> {
   const response = await api("/api/v1/sessions", {
     method: "POST",
     body: JSON.stringify(input),

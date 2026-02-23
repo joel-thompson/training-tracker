@@ -23,13 +23,10 @@ export function GoalCard({
         <div className="flex items-start justify-between gap-4">
           <div className="flex-1">
             <CardTitle className="text-lg">{goal.goalText}</CardTitle>
-            {goal.notes && (
-              <p className="text-muted-foreground text-sm mt-2">{goal.notes}</p>
-            )}
+            {goal.notes && <p className="text-muted-foreground text-sm mt-2">{goal.notes}</p>}
             <p className="text-muted-foreground text-sm mt-1">
               Created {format(parseISO(goal.createdAt), "PPP")}
-              {goal.completedAt &&
-                ` • Completed ${format(parseISO(goal.completedAt), "PPP")}`}
+              {goal.completedAt && ` • Completed ${format(parseISO(goal.completedAt), "PPP")}`}
             </p>
           </div>
           <div className="flex items-center gap-2">

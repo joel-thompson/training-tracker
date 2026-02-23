@@ -16,12 +16,7 @@ export const getStreakHandler = async (c: Context) => {
       yearWeek: sql<string>`TO_CHAR(${trainingSessions.sessionDate}, 'IYYY-IW')`,
     })
     .from(trainingSessions)
-    .where(
-      and(
-        eq(trainingSessions.userId, userId),
-        isNull(trainingSessions.deletedAt)
-      )
-    )
+    .where(and(eq(trainingSessions.userId, userId), isNull(trainingSessions.deletedAt)))
     .orderBy(sql`TO_CHAR(${trainingSessions.sessionDate}, 'IYYY-IW') DESC`);
 
   const weekStrings = weeks.map((w) => w.yearWeek);
@@ -108,4 +103,3 @@ function getPreviousWeek(yearWeek: string): string {
   }
   return `${year}-${String(week - 1).padStart(2, "0")}`;
 }
-

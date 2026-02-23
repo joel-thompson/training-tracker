@@ -13,9 +13,7 @@ export const getActiveGoalsHandler = async (c: Context) => {
   const goals = await db
     .select()
     .from(trainingGoals)
-    .where(
-      and(eq(trainingGoals.userId, userId), eq(trainingGoals.isActive, true))
-    )
+    .where(and(eq(trainingGoals.userId, userId), eq(trainingGoals.isActive, true)))
     .orderBy(goalCategorySortOrder, desc(trainingGoals.createdAt));
 
   const responseData: ActiveGoalsResponse = {

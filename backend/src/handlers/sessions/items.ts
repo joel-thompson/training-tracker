@@ -3,18 +3,11 @@ import { db } from "../../db";
 import { trainingSessions, sessionItems } from "../../db/schema";
 import { createItemSchema, updateItemSchema } from "shared/validation";
 import { requireUserId } from "../../utils/auth";
-import {
-  successResponse,
-  errorResponse,
-  ErrorCodes,
-} from "../../utils/response";
+import { successResponse, errorResponse, ErrorCodes } from "../../utils/response";
 import type { SessionItem, DeleteItemResponse } from "shared/types";
 import { eq, and, isNull, max } from "drizzle-orm";
 
-async function verifySessionOwnership(
-  sessionId: string,
-  userId: string
-): Promise<boolean> {
+async function verifySessionOwnership(sessionId: string, userId: string): Promise<boolean> {
   const [session] = await db
     .select({ id: trainingSessions.id })
     .from(trainingSessions)
@@ -36,30 +29,19 @@ export const addSessionItemHandler = async (c: Context) => {
   const parsed = createItemSchema.safeParse(body);
 
   if (!parsed.success) {
-    return c.json(
-      errorResponse(ErrorCodes.VALIDATION_ERROR, parsed.error.message),
-      400
-    );
+    return c.json(errorResponse(ErrorCodes.VALIDATION_ERROR, parsed.error.message), 400);
   }
 
   const ownsSession = await verifySessionOwnership(sessionId, userId);
   if (!ownsSession) {
-    return c.json(
-      errorResponse(ErrorCodes.NOT_FOUND, "Session not found"),
-      404
-    );
+    return c.json(errorResponse(ErrorCodes.NOT_FOUND, "Session not found"), 404);
   }
 
   // Get the next order number for this item type
   const [maxOrderResult] = await db
     .select({ maxOrder: max(sessionItems.order) })
     .from(sessionItems)
-    .where(
-      and(
-        eq(sessionItems.sessionId, sessionId),
-        eq(sessionItems.type, parsed.data.type)
-      )
-    );
+    .where(and(eq(sessionItems.sessionId, sessionId), eq(sessionItems.type, parsed.data.type)));
 
   const nextOrder = (maxOrderResult?.maxOrder ?? -1) + 1;
 
@@ -99,27 +81,19 @@ export const updateSessionItemHandler = async (c: Context) => {
   const parsed = updateItemSchema.safeParse(body);
 
   if (!parsed.success) {
-    return c.json(
-      errorResponse(ErrorCodes.VALIDATION_ERROR, parsed.error.message),
-      400
-    );
+    return c.json(errorResponse(ErrorCodes.VALIDATION_ERROR, parsed.error.message), 400);
   }
 
   const ownsSession = await verifySessionOwnership(sessionId, userId);
   if (!ownsSession) {
-    return c.json(
-      errorResponse(ErrorCodes.NOT_FOUND, "Session not found"),
-      404
-    );
+    return c.json(errorResponse(ErrorCodes.NOT_FOUND, "Session not found"), 404);
   }
 
   // Check item exists and belongs to this session
   const [existing] = await db
     .select()
     .from(sessionItems)
-    .where(
-      and(eq(sessionItems.id, itemId), eq(sessionItems.sessionId, sessionId))
-    )
+    .where(and(eq(sessionItems.id, itemId), eq(sessionItems.sessionId, sessionId)))
     .limit(1);
 
   if (!existing) {
@@ -157,19 +131,14 @@ export const deleteSessionItemHandler = async (c: Context) => {
 
   const ownsSession = await verifySessionOwnership(sessionId, userId);
   if (!ownsSession) {
-    return c.json(
-      errorResponse(ErrorCodes.NOT_FOUND, "Session not found"),
-      404
-    );
+    return c.json(errorResponse(ErrorCodes.NOT_FOUND, "Session not found"), 404);
   }
 
   // Check item exists and belongs to this session
   const [existing] = await db
     .select()
     .from(sessionItems)
-    .where(
-      and(eq(sessionItems.id, itemId), eq(sessionItems.sessionId, sessionId))
-    )
+    .where(and(eq(sessionItems.id, itemId), eq(sessionItems.sessionId, sessionId)))
     .limit(1);
 
   if (!existing) {

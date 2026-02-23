@@ -12,6 +12,7 @@ Shared types, utilities, constants, and validation schemas consumed by both `fro
 ## Package Exports
 
 Import using subpath exports:
+
 - `shared/types` - TypeScript types and interfaces
 - `shared/utils` - Utility functions
 - `shared/constants` - Shared constants

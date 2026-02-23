@@ -26,4 +26,3 @@ export interface HeatmapActivity {
 export interface HeatmapResponse {
   activity: HeatmapActivity[];
 }
-

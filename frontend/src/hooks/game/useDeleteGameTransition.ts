@@ -13,8 +13,7 @@ async function deleteGameTransition(
     token,
   });
 
-  const result =
-    (await response.json()) as ApiResponse<DeleteGameTransitionResponse>;
+  const result = (await response.json()) as ApiResponse<DeleteGameTransitionResponse>;
   if (!result.success) {
     throw new Error(result.error.message);
   }

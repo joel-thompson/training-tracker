@@ -136,22 +136,13 @@ export function buildSystemPrompt(context: UserContext): string {
               lines.push(`  Technique: ${s.techniqueCovered}`);
             }
             if (s.items.length > 0) {
-              const successes = s.items
-                .filter((i) => i.type === "success")
-                .map((i) => i.content);
-              const problems = s.items
-                .filter((i) => i.type === "problem")
-                .map((i) => i.content);
-              const questions = s.items
-                .filter((i) => i.type === "question")
-                .map((i) => i.content);
+              const successes = s.items.filter((i) => i.type === "success").map((i) => i.content);
+              const problems = s.items.filter((i) => i.type === "problem").map((i) => i.content);
+              const questions = s.items.filter((i) => i.type === "question").map((i) => i.content);
 
-              if (successes.length > 0)
-                lines.push(`  Successes: ${successes.join("; ")}`);
-              if (problems.length > 0)
-                lines.push(`  Problems: ${problems.join("; ")}`);
-              if (questions.length > 0)
-                lines.push(`  Questions: ${questions.join("; ")}`);
+              if (successes.length > 0) lines.push(`  Successes: ${successes.join("; ")}`);
+              if (problems.length > 0) lines.push(`  Problems: ${problems.join("; ")}`);
+              if (questions.length > 0) lines.push(`  Questions: ${questions.join("; ")}`);
             }
             if (s.generalNotes) {
               lines.push(`  Notes: ${s.generalNotes}`);
@@ -180,9 +171,7 @@ export function buildSystemPrompt(context: UserContext): string {
     completedGoals.length > 0
       ? completedGoals
           .slice(0, 5)
-          .map(
-            (g) => `- ${g.goalText} (completed ${g.completedAt ?? "unknown"})`
-          )
+          .map((g) => `- ${g.goalText} (completed ${g.completedAt ?? "unknown"})`)
           .join("\n")
       : "No completed goals yet.";
 

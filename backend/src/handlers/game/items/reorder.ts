@@ -3,11 +3,7 @@ import { db } from "../../../db";
 import { gameItems } from "../../../db/schema";
 import { reorderGameItemSchema } from "shared/validation";
 import { requireUserId } from "../../../utils/auth";
-import {
-  successResponse,
-  errorResponse,
-  ErrorCodes,
-} from "../../../utils/response";
+import { successResponse, errorResponse, ErrorCodes } from "../../../utils/response";
 import type { GameItem } from "shared/types";
 import { eq, and, sql, isNull, asc } from "drizzle-orm";
 
@@ -18,10 +14,7 @@ export const reorderGameItemHandler = async (c: Context) => {
   const parsed = reorderGameItemSchema.safeParse(body);
 
   if (!parsed.success) {
-    return c.json(
-      errorResponse(ErrorCodes.VALIDATION_ERROR, parsed.error.message),
-      400
-    );
+    return c.json(errorResponse(ErrorCodes.VALIDATION_ERROR, parsed.error.message), 400);
   }
 
   const { direction } = parsed.data;
@@ -43,9 +36,7 @@ export const reorderGameItemHandler = async (c: Context) => {
     .where(
       and(
         eq(gameItems.userId, userId),
-        item.parentId
-          ? eq(gameItems.parentId, item.parentId)
-          : isNull(gameItems.parentId)
+        item.parentId ? eq(gameItems.parentId, item.parentId) : isNull(gameItems.parentId)
       )
     )
     .orderBy(asc(gameItems.displayOrder), asc(gameItems.createdAt));
@@ -61,28 +52,16 @@ export const reorderGameItemHandler = async (c: Context) => {
   const currentIndex = sortedSiblings.findIndex((s) => s.id === itemId);
 
   if (currentIndex === -1) {
-    return c.json(
-      errorResponse(ErrorCodes.NOT_FOUND, "Item not found in siblings"),
-      404
-    );
+    return c.json(errorResponse(ErrorCodes.NOT_FOUND, "Item not found in siblings"), 404);
   }
 
   // Check if move is possible
   if (direction === "up" && currentIndex === 0) {
-    return c.json(
-      errorResponse(ErrorCodes.VALIDATION_ERROR, "Item is already at the top"),
-      400
-    );
+    return c.json(errorResponse(ErrorCodes.VALIDATION_ERROR, "Item is already at the top"), 400);
   }
 
   if (direction === "down" && currentIndex === sortedSiblings.length - 1) {
-    return c.json(
-      errorResponse(
-        ErrorCodes.VALIDATION_ERROR,
-        "Item is already at the bottom"
-      ),
-      400
-    );
+    return c.json(errorResponse(ErrorCodes.VALIDATION_ERROR, "Item is already at the bottom"), 400);
   }
 
   // Swap items in the array
@@ -117,11 +96,7 @@ export const reorderGameItemHandler = async (c: Context) => {
   });
 
   // Fetch the updated item
-  const [updated] = await db
-    .select()
-    .from(gameItems)
-    .where(eq(gameItems.id, itemId))
-    .limit(1);
+  const [updated] = await db.select().from(gameItems).where(eq(gameItems.id, itemId)).limit(1);
 
   const responseData: GameItem = {
     id: updated.id,

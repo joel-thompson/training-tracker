@@ -29,4 +29,3 @@ export function ClassTypeSelect({ value, onChange }: ClassTypeSelectProps) {
     </Select>
   );
 }
-

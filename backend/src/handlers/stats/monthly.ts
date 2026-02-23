@@ -58,4 +58,3 @@ export const getMonthlySessionsHandler = async (c: Context) => {
 
   return c.json(successResponse(responseData));
 };
-

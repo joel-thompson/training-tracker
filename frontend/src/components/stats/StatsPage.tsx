@@ -1,11 +1,5 @@
 import { useState } from "react";
-import {
-  Flame,
-  TrendingUp,
-  TrendingDown,
-  ChevronLeft,
-  ChevronRight,
-} from "lucide-react";
+import { Flame, TrendingUp, TrendingDown, ChevronLeft, ChevronRight } from "lucide-react";
 import { PieChart, Pie, Cell } from "recharts";
 import { useWeeklyStreak } from "@/hooks/stats/useWeeklyStreak";
 import { useMonthlySessionsCount } from "@/hooks/stats/useMonthlySessionsCount";
@@ -15,11 +9,7 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Skeleton } from "@/components/ui/skeleton";
-import {
-  ChartContainer,
-  ChartTooltip,
-  ChartTooltipContent,
-} from "@/components/ui/chart";
+import { ChartContainer, ChartTooltip, ChartTooltipContent } from "@/components/ui/chart";
 import { CLASS_TYPE_LABELS } from "shared/constants";
 
 function StreakCard() {
@@ -39,9 +29,7 @@ function StreakCard() {
               <Flame className="h-8 w-8 text-orange-600 dark:text-orange-400" />
             </div>
             <div>
-              <div className="text-3xl font-bold">
-                {data?.currentStreak ?? 0}
-              </div>
+              <div className="text-3xl font-bold">{data?.currentStreak ?? 0}</div>
               <div className="text-muted-foreground text-sm">
                 {data?.currentStreak === 1 ? "week" : "weeks"} in a row
               </div>
@@ -62,8 +50,7 @@ function MonthlySessionsCard() {
   const { data, isLoading } = useMonthlySessionsCount();
 
   const delta = data ? data.thisMonth - data.lastMonth : 0;
-  const deltaPercent =
-    data && data.lastMonth > 0 ? Math.round((delta / data.lastMonth) * 100) : 0;
+  const deltaPercent = data && data.lastMonth > 0 ? Math.round((delta / data.lastMonth) * 100) : 0;
 
   return (
     <Card>
@@ -83,17 +70,12 @@ function MonthlySessionsCard() {
                 ) : (
                   <TrendingDown className="h-4 w-4 text-red-600 dark:text-red-400" />
                 )}
-                <Badge
-                  variant={delta >= 0 ? "default" : "destructive"}
-                  className="text-xs"
-                >
+                <Badge variant={delta >= 0 ? "default" : "destructive"} className="text-xs">
                   {delta >= 0 ? "+" : ""}
                   {delta} ({deltaPercent >= 0 ? "+" : ""}
                   {deltaPercent}%)
                 </Badge>
-                <span className="text-muted-foreground text-sm">
-                  vs last month
-                </span>
+                <span className="text-muted-foreground text-sm">vs last month</span>
               </div>
             )}
           </div>
@@ -158,19 +140,13 @@ function ClassTypeSplitCard() {
             </ChartContainer>
             <div className="flex items-center justify-center gap-6 text-sm">
               <div className="flex items-center gap-2">
-                <div
-                  className="h-3 w-3 rounded-full"
-                  style={{ backgroundColor: giColor }}
-                />
+                <div className="h-3 w-3 rounded-full" style={{ backgroundColor: giColor }} />
                 <span className="text-muted-foreground">
                   {CLASS_TYPE_LABELS.gi}: {data.gi} ({Math.round((data.gi / data.total) * 100)}%)
                 </span>
               </div>
               <div className="flex items-center gap-2">
-                <div
-                  className="h-3 w-3 rounded-full"
-                  style={{ backgroundColor: nogiColor }}
-                />
+                <div className="h-3 w-3 rounded-full" style={{ backgroundColor: nogiColor }} />
                 <span className="text-muted-foreground">
                   {CLASS_TYPE_LABELS.nogi}: {data.nogi} (
                   {Math.round((data.nogi / data.total) * 100)}%)
@@ -179,9 +155,7 @@ function ClassTypeSplitCard() {
             </div>
           </div>
         ) : (
-          <div className="text-muted-foreground text-center py-8">
-            No training data yet
-          </div>
+          <div className="text-muted-foreground text-center py-8">No training data yet</div>
         )}
       </CardContent>
     </Card>
@@ -193,11 +167,7 @@ function ActivityCalendar() {
   const [monthOffset, setMonthOffset] = useState(0);
 
   const today = new Date();
-  const viewingDate = new Date(
-    today.getFullYear(),
-    today.getMonth() - monthOffset,
-    1
-  );
+  const viewingDate = new Date(today.getFullYear(), today.getMonth() - monthOffset, 1);
   const viewingMonth = viewingDate.getMonth();
   const viewingYear = viewingDate.getFullYear();
 
@@ -267,10 +237,10 @@ function ActivityCalendar() {
   };
 
   // Count sessions in viewing month
-  const monthSessionCount = Array.from(
-    { length: daysInMonth },
-    (_, i) => i + 1
-  ).reduce((sum, day) => sum + getSessionCount(day), 0);
+  const monthSessionCount = Array.from({ length: daysInMonth }, (_, i) => i + 1).reduce(
+    (sum, day) => sum + getSessionCount(day),
+    0
+  );
 
   const dayHeaders = ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"];
 
@@ -312,9 +282,7 @@ function ActivityCalendar() {
             >
               <ChevronLeft className="h-4 w-4" />
             </Button>
-            <span className="text-sm font-medium w-32 text-center">
-              {monthName}
-            </span>
+            <span className="text-sm font-medium w-32 text-center">{monthName}</span>
             <Button
               variant="outline"
               size="icon"
@@ -332,10 +300,7 @@ function ActivityCalendar() {
           {/* Day headers */}
           <div className="grid grid-cols-7 gap-1 mb-1">
             {dayHeaders.map((day) => (
-              <div
-                key={day}
-                className="text-center text-xs font-medium text-muted-foreground"
-              >
+              <div key={day} className="text-center text-xs font-medium text-muted-foreground">
                 {day}
               </div>
             ))}
@@ -360,20 +325,12 @@ function ActivityCalendar() {
                     aspect-square rounded flex flex-col items-center justify-center
                     ${future ? "text-muted-foreground/50" : ""}
                     ${todayDay ? "ring-2 ring-primary" : ""}
-                    ${
-                      count > 0
-                        ? "bg-green-100 dark:bg-green-900/30"
-                        : "bg-muted/30"
-                    }
+                    ${count > 0 ? "bg-green-100 dark:bg-green-900/30" : "bg-muted/30"}
                   `}
                   title={
                     future
                       ? ""
-                      : `${new Date(
-                          viewingYear,
-                          viewingMonth,
-                          day
-                        ).toLocaleDateString("en-US", {
+                      : `${new Date(viewingYear, viewingMonth, day).toLocaleDateString("en-US", {
                           weekday: "long",
                           month: "long",
                           day: "numeric",
@@ -383,15 +340,13 @@ function ActivityCalendar() {
                   <span className="text-xs">{day}</span>
                   {count > 0 && (
                     <div className="flex gap-0.5">
-                      {Array.from({ length: Math.min(count, 3) }).map(
-                        (_, i) => (
-                          <div
-                            // eslint-disable-next-line react-x/no-array-index-key
-                            key={i}
-                            className="w-1 h-1 rounded-full bg-green-600 dark:bg-green-400"
-                          />
-                        )
-                      )}
+                      {Array.from({ length: Math.min(count, 3) }).map((_, i) => (
+                        <div
+                          // eslint-disable-next-line react-x/no-array-index-key
+                          key={i}
+                          className="w-1 h-1 rounded-full bg-green-600 dark:bg-green-400"
+                        />
+                      ))}
                     </div>
                   )}
                 </div>
@@ -415,9 +370,7 @@ export function StatsPage() {
     <div className="space-y-6">
       <div>
         <h1 className="text-3xl font-bold">Stats</h1>
-        <p className="text-muted-foreground text-lg">
-          View your training analytics
-        </p>
+        <p className="text-muted-foreground text-lg">View your training analytics</p>
       </div>
 
       <div className="grid gap-6 md:grid-cols-2">

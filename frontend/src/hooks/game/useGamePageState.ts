@@ -48,9 +48,7 @@ export function useGamePageState() {
   const [editingItem, setEditingItem] = useState<GameItem | null>(null);
   const [deletingItem, setDeletingItem] = useState<GameItem | null>(null);
   const [viewingItem, setViewingItem] = useState<GameItem | null>(null);
-  const [transitionFromItemId, setTransitionFromItemId] = useState<
-    string | null
-  >(null);
+  const [transitionFromItemId, setTransitionFromItemId] = useState<string | null>(null);
   const [parentId, setParentId] = useState<string | null>(null);
   const [showTransitions, setShowTransitions] = useState(false);
   const [moveToDialogOpen, setMoveToDialogOpen] = useState(false);
@@ -160,10 +158,7 @@ export function useGamePageState() {
     }
   };
 
-  const handleUpdateTransition = (
-    transitionId: string,
-    notes?: string | null
-  ) => {
+  const handleUpdateTransition = (transitionId: string, notes?: string | null) => {
     updateTransition.mutate({
       id: transitionId,
       input: { notes: notes ?? null },
@@ -267,4 +262,3 @@ export function useGamePageState() {
     getSiblings,
   };
 }
-

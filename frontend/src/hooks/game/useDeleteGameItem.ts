@@ -4,10 +4,7 @@ import type { DeleteGameItemResponse, ApiResponse } from "shared/types";
 import { api } from "@/utils/api";
 import { gameKeys } from "./gameKeys";
 
-async function deleteGameItem(
-  id: string,
-  token: string | null
-): Promise<DeleteGameItemResponse> {
+async function deleteGameItem(id: string, token: string | null): Promise<DeleteGameItemResponse> {
   const response = await api(`/api/v1/game/items/${id}`, {
     method: "DELETE",
     token,

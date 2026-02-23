@@ -6,9 +6,7 @@ export function GoalsPageHeader({ onNewGoal }: { onNewGoal: () => void }) {
     <div className="flex items-center justify-between">
       <div>
         <h1 className="text-3xl font-bold">Goals</h1>
-        <p className="text-muted-foreground text-lg">
-          Manage your training goals
-        </p>
+        <p className="text-muted-foreground text-lg">Manage your training goals</p>
       </div>
       <Button onClick={onNewGoal}>
         <Plus className="mr-2 h-4 w-4" />

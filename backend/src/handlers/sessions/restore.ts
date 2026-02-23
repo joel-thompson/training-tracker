@@ -2,11 +2,7 @@ import type { Context } from "hono";
 import { db } from "../../db";
 import { trainingSessions } from "../../db/schema";
 import { requireUserId } from "../../utils/auth";
-import {
-  successResponse,
-  errorResponse,
-  ErrorCodes,
-} from "../../utils/response";
+import { successResponse, errorResponse, ErrorCodes } from "../../utils/response";
 import type { RestoreSessionResponse } from "shared/types";
 import { eq, and, isNotNull } from "drizzle-orm";
 
@@ -28,10 +24,7 @@ export const restoreSessionHandler = async (c: Context) => {
     .limit(1);
 
   if (!existing) {
-    return c.json(
-      errorResponse(ErrorCodes.NOT_FOUND, "Session not found"),
-      404
-    );
+    return c.json(errorResponse(ErrorCodes.NOT_FOUND, "Session not found"), 404);
   }
 
   const updatedAt = new Date();

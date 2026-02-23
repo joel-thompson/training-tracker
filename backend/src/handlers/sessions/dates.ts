@@ -12,12 +12,7 @@ export const getSessionDatesHandler = async (c: Context) => {
   const sessions = await db
     .selectDistinct({ sessionDate: trainingSessions.sessionDate })
     .from(trainingSessions)
-    .where(
-      and(
-        eq(trainingSessions.userId, userId),
-        isNull(trainingSessions.deletedAt)
-      )
-    )
+    .where(and(eq(trainingSessions.userId, userId), isNull(trainingSessions.deletedAt)))
     .orderBy(desc(trainingSessions.sessionDate));
 
   const responseData: SessionDatesResponse = {

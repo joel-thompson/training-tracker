@@ -39,4 +39,3 @@ export const getHeatmapHandler = async (c: Context) => {
 
   return c.json(successResponse(responseData));
 };
-
