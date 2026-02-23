@@ -1,6 +1,7 @@
 import js from "@eslint/js";
 import globals from "globals";
 import reactHooks from "eslint-plugin-react-hooks";
+import vitest from "@vitest/eslint-plugin";
 import reactRefresh from "eslint-plugin-react-refresh";
 import tseslint from "typescript-eslint";
 import reactX from "eslint-plugin-react-x";
@@ -41,5 +42,10 @@ export default [
   {
     files: ["**/*.js"],
     ...tseslint.configs.disableTypeChecked,
+  },
+  {
+    files: ["src/**/*.test.ts", "src/**/*.test.tsx"],
+    plugins: { vitest },
+    rules: vitest.configs.recommended.rules,
   },
 ];

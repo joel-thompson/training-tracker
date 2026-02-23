@@ -5,6 +5,8 @@
     "dev": "bun run --hot src/index.ts",
     "lint": "eslint .",
     "typecheck": "tsc --noEmit",
+    "test": "vitest run",
+    "test:watch": "vitest",
     "db:generate": "drizzle-kit generate",
     "db:migrate": "drizzle-kit migrate",
     "db:studio": "drizzle-kit studio",
@@ -28,6 +30,7 @@
     "drizzle-kit": "^0.31.8",
     "eslint": "^9.39.1",
     "globals": "^16.5.0",
-    "typescript-eslint": "^8.48.1"
+    "typescript-eslint": "^8.48.1",
+    "vitest": "^4.0.18"
   }
 }

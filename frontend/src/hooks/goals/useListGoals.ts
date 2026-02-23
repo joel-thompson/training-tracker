@@ -4,7 +4,7 @@ import type { ListGoalsResponse, ApiResponse } from "shared/types";
 import { api } from "@/utils/api";
 import { goalKeys, type ListGoalsParams } from "./goalKeys";
 
-async function fetchListGoals(
+export async function fetchListGoals(
   params: ListGoalsParams & { cursor?: string },
   token: string | null
 ): Promise<ListGoalsResponse> {
