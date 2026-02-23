@@ -14,9 +14,7 @@ describe("createGoalSchema", () => {
   it("defaults isActive to true", () => {
     const result = createGoalSchema.safeParse({ goalText: "Improve guard passing" });
     expect(result.success).toBe(true);
-    if (result.success) {
-      expect(result.data.isActive).toBe(true);
-    }
+    expect((result as { success: true; data: { isActive: boolean } }).data.isActive).toBe(true);
   });
 
   it("rejects empty goalText", () => {

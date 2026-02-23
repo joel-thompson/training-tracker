@@ -1,7 +1,6 @@
 import { describe, it, expect, vi, beforeEach } from "vitest";
 import { Hono } from "hono";
-import type { ApiResponse } from "shared/types";
-import type { Goal } from "shared/types";
+import type { ApiSuccessResponse, ApiErrorResponse, Goal } from "shared/types";
 
 const { mockReturning, mockInsert } = vi.hoisted(() => {
   const mockReturning = vi.fn();
@@ -50,12 +49,10 @@ describe("createGoalHandler", () => {
     );
 
     expect(res.status).toBe(201);
-    const data = (await res.json()) as ApiResponse<Goal>;
+    const data = (await res.json()) as ApiSuccessResponse<Goal>;
     expect(data.success).toBe(true);
-    if (data.success) {
-      expect(data.data.goalText).toBe("Improve guard passing");
-      expect(data.data.userId).toBe("test-user-id");
-    }
+    expect(data.data.goalText).toBe("Improve guard passing");
+    expect(data.data.userId).toBe("test-user-id");
   });
 
   it("returns 400 for empty goalText", async () => {
@@ -68,11 +65,9 @@ describe("createGoalHandler", () => {
     );
 
     expect(res.status).toBe(400);
-    const data = (await res.json()) as ApiResponse<Goal>;
+    const data = (await res.json()) as ApiErrorResponse;
     expect(data.success).toBe(false);
-    if (!data.success) {
-      expect(data.error.code).toBe("VALIDATION_ERROR");
-    }
+    expect(data.error.code).toBe("VALIDATION_ERROR");
   });
 
   it("returns 400 for invalid category", async () => {
@@ -85,10 +80,8 @@ describe("createGoalHandler", () => {
     );
 
     expect(res.status).toBe(400);
-    const data = (await res.json()) as ApiResponse<Goal>;
+    const data = (await res.json()) as ApiErrorResponse;
     expect(data.success).toBe(false);
-    if (!data.success) {
-      expect(data.error.code).toBe("VALIDATION_ERROR");
-    }
+    expect(data.error.code).toBe("VALIDATION_ERROR");
   });
 });

@@ -1,6 +1,7 @@
 import js from "@eslint/js";
 import globals from "globals";
 import tseslint from "typescript-eslint";
+import vitest from "@vitest/eslint-plugin";
 
 export default [
   { ignores: ["dist"] },
@@ -29,5 +30,10 @@ export default [
   {
     files: ["**/*.js"],
     ...tseslint.configs.disableTypeChecked,
+  },
+  {
+    files: ["src/**/*.test.ts"],
+    plugins: { vitest },
+    rules: vitest.configs.recommended.rules,
   },
 ];
