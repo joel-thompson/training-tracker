@@ -6,10 +6,11 @@ Shared types, utilities, constants, and validation schemas consumed by both `fro
 
 ## Commands
 
-- `bun run lint` - Run ESLint
 - `bun run typecheck` - Type-check
 - `bun run test` - Run all tests
-- `bun run test src/path/to/file.test.ts` - Run a single test file (use `bun run test`, NOT `bun test`)
+- `bun run test src/path/to/file.test.ts` - Run a single test file (use `bun run test`, not `bun test`)
+
+Repo-wide linting runs from the root with `bun run lint`.
 
 ## Package Exports
 
@@ -19,20 +20,6 @@ Import using subpath exports:
 - `shared/utils` - Utility functions
 - `shared/constants` - Shared constants
 - `shared/validation` - Zod validation schemas
-
-## Validation Pattern
-
-Schemas are defined in `validation/`, and types are inferred from them:
-
-```typescript
-// validation/sessions.ts
-export const createSessionSchema = z.object({ ... });
-
-// types/index.ts
-import type { z } from "zod";
-import type { createSessionSchema } from "../validation/sessions";
-export type CreateSessionInput = z.infer<typeof createSessionSchema>;
-```
 
 ## Adding New Code
 

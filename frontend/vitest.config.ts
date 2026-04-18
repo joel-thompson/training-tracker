@@ -1,5 +1,5 @@
-import { defineConfig, mergeConfig } from "vitest/config";
-import { resolve } from "path";
+import { mergeConfig, defineConfig } from "vitest/config";
+import { resolve } from "node:path";
 import viteConfig from "./vite.config";
 
 export default mergeConfig(
@@ -7,17 +7,17 @@ export default mergeConfig(
   defineConfig({
     resolve: {
       alias: {
+        "shared/constants": resolve(__dirname, "../shared/src/constants/index.ts"),
         "shared/types": resolve(__dirname, "../shared/src/types/index.ts"),
         "shared/utils": resolve(__dirname, "../shared/src/utils/index.ts"),
-        "shared/constants": resolve(__dirname, "../shared/src/constants/index.ts"),
-        "shared/validation": resolve(__dirname, "../shared/src/validation/index.ts"),
-      },
+        "shared/validation": resolve(__dirname, "../shared/src/validation/index.ts")
+      }
     },
     test: {
       environment: "jsdom",
       globals: true,
       setupFiles: ["./src/test/setup.ts"],
-      include: ["src/**/*.test.ts", "src/**/*.test.tsx"],
-    },
+      include: ["src/**/*.test.ts", "src/**/*.test.tsx"]
+    }
   })
 );

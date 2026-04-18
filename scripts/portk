@@ -1,0 +1,36 @@
+#!/usr/bin/env bash
+
+set -euo pipefail
+
+if [ "${1-}" = "" ] || [ "$#" -ne 1 ]; then
+  echo "Usage: portk <port>" >&2
+  exit 1
+fi
+
+port="$1"
+
+if ! [[ "$port" =~ ^[0-9]+$ ]] || [ "$port" -lt 1 ] || [ "$port" -gt 65535 ]; then
+  echo "portk: port must be an integer between 1 and 65535" >&2
+  exit 1
+fi
+
+pids="$(lsof -t -i :"$port" 2>/dev/null | sort -u || true)"
+
+if [ -z "$pids" ]; then
+  echo "portk: no process found on port $port"
+  exit 0
+fi
+
+echo "portk: stopping process(es) on port $port: $pids"
+kill $pids
+
+sleep 1
+
+remaining_pids="$(lsof -t -i :"$port" 2>/dev/null | sort -u || true)"
+
+if [ -n "$remaining_pids" ]; then
+  echo "portk: forcing shutdown for: $remaining_pids"
+  kill -9 $remaining_pids
+fi
+
+echo "portk: port $port is clear"

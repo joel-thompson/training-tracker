@@ -1,81 +1,73 @@
-# Training Tracker 🥋
+# Training Tracker
 
-A web application for Brazilian Jiu-Jitsu practitioners to track training sessions, set goals, and plan their game.
+Training Tracker is a BJJ-focused web app for logging sessions, managing goals, mapping game plans, reviewing stats, and using an AI coach.
 
-## What It Does
+This repo is a Bun workspaces monorepo aligned with the current MossKit project shape.
 
-- **Training Sessions** — Log sessions with date, class type, techniques covered, and reflective notes (what went well, areas to improve, questions to explore)
-- **Goals** — Set and manage training goals to stay focused on improvement
-- **Game Planning** — Build a map of positions and techniques with transitions between them
+## Included
 
-## Tech Stack
+- Bun workspaces
+- Vite + React frontend with TanStack Router and TanStack Query
+- Hono backend with Drizzle and PostgreSQL
+- shared TypeScript + Zod contracts
+- Clerk authentication
+- shadcn/ui primitives
+- AI coach streaming integration
 
-- **Frontend:** React, Vite, TanStack Router/Query, Tailwind
-- **Backend:** Hono, PostgreSQL, Drizzle ORM
-- **Auth:** Clerk
-- **Runtime:** Bun (monorepo with workspaces)
+## Local Development
 
-## Project Structure
-
-```
-training-tracker/
-├── frontend/     # React SPA
-├── backend/      # API server
-└── shared/       # Shared types, validation, utilities
-```
-
-Each package has a `CLAUDE.md` with detailed documentation on commands, patterns, and conventions.
-
-## Quick Start
-
-1. Install dependencies: `bun install`
-2. Set up environment variables (see package READMEs)
-3. Start the database: `cd backend && bun run db:start`
-4. Run migrations: `bun run db:migrate`
-5. Start dev servers: `bun run dev`
-
-The frontend runs on port 5173, backend on port 3000.
-
-## Development
-
-Common commands (run from root):
+If `bun` is not available in your shell, run `nvm use` first.
 
 ```bash
-bun run dev          # Start frontend + backend
-bun run build        # Build all packages
-bun run lint         # Lint all packages
-bun run typecheck    # Type check all packages
+bun install
+bun run db:start
+bun run db:migrate
+bun run dev
 ```
 
-Database commands are in `backend/`. See `backend/CLAUDE.md` for details.
+The frontend runs on `http://localhost:5173`.
+The backend runs on `http://localhost:3000`.
 
-## Testing
+## Environment Setup
 
-Tests use [Vitest](https://vitest.dev/). Always use `bun run test` — not `bun test` (Bun's built-in runner doesn't process Vitest mocks).
+Set the required environment variables before starting the app.
 
-**All packages at once (from root):**
+- Frontend: `VITE_CLERK_PUBLISHABLE_KEY`
+- Frontend optional: `VITE_API_URL` defaults to `http://localhost:3000`
+- Backend: `DATABASE_URL`, `CLERK_SECRET_KEY`, `CLERK_PUBLISHABLE_KEY`, `OPENAI_API_KEY`
+- Backend optional: `FRONTEND_URL` defaults to `http://localhost:5173`
+
+See [frontend/src/utils/env.ts](/Users/Joel/src/training-tracker/frontend/src/utils/env.ts) and [backend/src/utils/env.ts](/Users/Joel/src/training-tracker/backend/src/utils/env.ts) for the current source of truth.
+
+## Useful Commands
 
 ```bash
+bun run dev
+bun run build
 bun run test
+bun run lint
+bun run typecheck
+bun run format
+bun run db:start
+bun run db:stop
+bun run db:migrate
 ```
 
-**Single package (from root):**
+## App Management
+
+This app includes `mosskit.json`, which is used by MossKit app-management commands.
+
+From the app root you can run:
 
 ```bash
-bun run --filter backend test
-bun run --filter frontend test
-bun run --filter shared test
+bunx @joelthompson/create-mosskit info
+bunx @joelthompson/create-mosskit features
+bunx @joelthompson/create-mosskit add auth
+bunx @joelthompson/create-mosskit add shadcn
 ```
 
-**Single package (after cd):**
+## Notes
 
-```bash
-cd backend && bun run test
-```
-
-**Single file (after cd into the package):**
-
-```bash
-cd backend && bun run test src/handlers/goals/create.test.ts
-cd frontend && bun run test src/utils/api.test.ts
-```
+- Shared contracts should be defined in `shared` first and then consumed by frontend and backend.
+- Tests use Vitest. Use `bun run test`, not Bun's built-in `bun test`.
+- Each package has a `CLAUDE.md` with more detailed guidance on local conventions.

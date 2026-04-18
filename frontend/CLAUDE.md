@@ -8,128 +8,41 @@ React 19 + Vite application with TanStack Router. See root `CLAUDE.md` for monor
 
 - `bun run dev` - Start dev server (port 5173)
 - `bun run build` - Type-check and build
-- `bun run lint` - Run ESLint
+- `bun run preview` - Preview the production build
 - `bun run typecheck` - Type-check without building
 - `bun run test` - Run all tests
-- `bun run test src/path/to/file.test.ts` - Run a single test file (use `bun run test`, NOT `bun test`)
+- `bun run test src/path/to/file.test.ts` - Run a single test file (use `bun run test`, not `bun test`)
 
-## Routing (TanStack Router)
+Repo-wide linting runs from the root with `bun run lint`.
 
-File-based routing in `src/routes/`:
+## Routing
 
-- `__root.tsx` - Root layout
-- `_app.tsx` - Authenticated app layout (uses `AppLayout` component)
-- `_app/` - Authenticated routes (get app layout automatically)
-- `routeTree.gen.ts` - Auto-generated, **do not edit**
+File-based routing lives in `src/routes/`.
 
-### Route File Pattern
-
-Simple route (no params/search):
-
-```tsx
-import { createFileRoute } from "@tanstack/react-router";
-import { GoalsPage } from "@/components/goals/GoalsPage";
-
-export const Route = createFileRoute("/_app/goals")({
-  component: GoalsPage,
-});
-```
-
-Route with params/search — use a named wrapper to satisfy React hooks linting:
-
-```tsx
-import { createFileRoute } from "@tanstack/react-router";
-import { EditSessionPage } from "@/components/sessions/EditSessionPage";
-
-export const Route = createFileRoute("/_app/sessions/$id/edit")({
-  component: EditSessionPageWrapper,
-});
-
-function EditSessionPageWrapper() {
-  const { id } = Route.useParams();
-  return <EditSessionPage sessionId={id} />;
-}
-```
-
-- Route files should be minimal — they only configure routing and import page components
-- Page components live in `src/components/<feature>/`
-- Use named exports for page components
-
-## Component Structure
-
-```
-src/components/
-├── ui/          # Radix UI wrappers (Button, Card, etc.)
-├── layout/      # AppLayout (header, nav, mobile bottom tab bar)
-└── <feature>/   # Feature-specific page components
-```
+- Keep route files minimal
+- Put page components in `src/components/<feature>/`
+- Do not edit `routeTree.gen.ts` by hand
 
 ## React Query Hooks
 
-Custom hooks live in `src/hooks/` organized by feature. Each feature directory contains a query key factory and one file per operation:
-
-```
-src/hooks/sessions/
-  sessionKeys.ts       # Query key factory
-  useListSessions.ts
-  useCreateSession.ts
-  useDeleteSession.ts
-  ...
-```
-
-### Hook Convention
-
-Always define `queryFn`/`mutationFn` logic as a separate async function above the hook:
-
-```typescript
-async function fetchGoal(id: string, token: string | null): Promise<Goal> {
-  const response = await api(`/api/v1/goals/${id}`, { token });
-  const result = (await response.json()) as ApiResponse<Goal>;
-  if (!result.success) throw new Error(result.error.message);
-  return result.data;
-}
-
-export function useGoal(id: string) {
-  const { getToken } = useAuth();
-
-  return useQuery({
-    queryKey: goalKeys.byId(id),
-    queryFn: async () => {
-      const token = await getToken();
-      return fetchGoal(id, token);
-    },
-    enabled: !!id,
-  });
-}
-```
+Custom hooks live in `src/hooks/` organized by feature.
 
 Rules:
 
-- API function accepts all arguments including `token: string | null` as last parameter
-- Hook's `queryFn`/`mutationFn` only calls `getToken()` and invokes the API function
+- Define API request logic as a separate async function above the hook
+- Pass `token: string | null` into API helpers as the last argument
+- Keep hook bodies focused on token lookup and query/mutation wiring
 
 ## API Requests
 
-Use the `api` utility from `src/utils/api.ts` for all backend requests — do not use raw `fetch` with manual URL construction:
-
-```typescript
-import { api } from "@/utils/api";
-
-const response = await api("/api/v1/goals", {
-  method: "POST",
-  token,
-  body: JSON.stringify(data),
-});
-```
+Use the `api` helper from `src/utils/api.ts` for backend requests instead of raw `fetch`.
 
 ## Effect Usage
 
-- **DO** use Effects to synchronize with external systems (APIs, browser APIs, third-party libraries)
-- **DON'T** use Effects to transform data for rendering — calculate during render instead
-- **DON'T** use Effects to handle user events — use event handlers
-- **DON'T** use Effects for state derivable from existing props/state
-- Use `useMemo` for expensive calculations instead of Effects
-- Always add cleanup logic in Effects that fetch data (handle race conditions)
+- Use Effects for external synchronization only
+- Do not use Effects for derivable render state
+- Do not use Effects for user events
+- Add cleanup logic when an Effect performs async work
 
 ## Environment Variables
 

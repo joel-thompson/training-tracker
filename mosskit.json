@@ -1,0 +1,22 @@
+{
+  "schemaVersion": 1,
+  "framework": {
+    "name": "mosskit",
+    "displayName": "MossKit"
+  },
+  "project": {
+    "name": "training-tracker",
+    "packageName": "training-tracker"
+  },
+  "generatedWith": {
+    "package": "@joelthompson/create-mosskit",
+    "version": "0.1.1"
+  },
+  "templateVersion": "1",
+  "packageManager": "bun",
+  "runtime": "bun",
+  "features": [
+    "auth",
+    "shadcn"
+  ]
+}

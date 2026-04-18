@@ -7,15 +7,19 @@ Hono API server running on Bun. See root `CLAUDE.md` for monorepo-level guidance
 ## Commands
 
 - `bun run dev` - Start with hot reload (port 3000)
-- `bun run lint` - Run ESLint
+- `bun run build` - Build the production bundle
+- `bun run start` - Run the production bundle from `dist/`
 - `bun run typecheck` - Type-check
 - `bun run test` - Run all tests
-- `bun run test src/path/to/file.test.ts` - Run a single test file (use `bun run test`, NOT `bun test`)
+- `bun run test src/path/to/file.test.ts` - Run a single test file (use `bun run test`, not `bun test`)
 - `bun run db:generate` - Generate migrations from schema
 - `bun run db:migrate` - Apply migrations
 - `bun run db:studio` - Open Drizzle Studio
 - `bun run db:start` - Start PostgreSQL container
 - `bun run db:stop` - Stop PostgreSQL container
+- `bun run db:logs` - Tail PostgreSQL logs
+
+Repo-wide linting runs from the root with `bun run lint`.
 
 ## Database Schema Changes
 
@@ -28,97 +32,35 @@ Hono API server running on Bun. See root `CLAUDE.md` for monorepo-level guidance
 
 ## Route Organization
 
-Routes are grouped using Hono's route method:
-
-```typescript
-// routes/sessions.ts
-const sessions = new Hono();
-sessions.post("/", createSessionHandler);
-sessions.get("/", listSessionsHandler);
-
-// index.ts
-app.route("/api/v1/sessions", sessions);
-```
+Routes are grouped using Hono's `route` method.
 
 ## Handlers Pattern
 
-Route handlers live in `src/handlers/` organized by domain:
-
-```
-src/handlers/
-  sessions/
-    create.ts
-    list.ts
-    get.ts
-    ...
-    index.ts  # Re-exports all handlers
-```
-
-### Handler Structure
-
-```typescript
-import type { Context } from "hono";
-import { mySchema } from "shared/validation";
-import { requireUserId } from "../utils/auth";
-import { successResponse, errorResponse, ErrorCodes } from "../utils/response";
-import type { MyResponseType } from "shared/types";
-
-export const myHandler = async (c: Context) => {
-  const userId = requireUserId(c);
-
-  // 1. Parse input as unknown, then validate with Zod
-  const body: unknown = await c.req.json();
-  const parsed = mySchema.safeParse(body);
-
-  if (!parsed.success) {
-    return c.json(
-      errorResponse(ErrorCodes.VALIDATION_ERROR, parsed.error.message),
-      400
-    );
-  }
-
-  // 2. Do work...
-
-  // 3. Create typed response data, then return
-  const responseData: MyResponseType = { ... };
-  return c.json(successResponse(responseData));
-};
-```
+Route handlers live in `src/handlers/` organized by domain.
 
 Key patterns:
 
-1. Assert request body as `unknown`, then use `safeParse`
+1. Assert request bodies as `unknown`, then validate with Zod
 2. Use `parsed.error.message` for validation errors
 3. Create a typed `responseData` variable before returning
 
 ## Auth Pattern
 
-Routes under `/api/*` use Clerk middleware. `requireUserId` throws an `HTTPException` that Hono converts to a 401 automatically — no try/catch needed for auth:
-
-```typescript
-export const myHandler = async (c: Context) => {
-  const userId = requireUserId(c);
-  // Handle authenticated request
-};
-```
+Routes under `/api/*` use Clerk middleware. `requireUserId` throws an `HTTPException` that Hono converts to a 401 automatically.
 
 ## Response Format
 
 All API responses use:
 
-```typescript
-// Success
-{ "success": true, "data": { ... } }
-
-// Error
-{ "success": false, "error": { "code": "...", "message": "..." } }
+```json
+{ "success": true, "data": {} }
 ```
 
-Helpers from `src/utils/response.ts`:
+or:
 
-- `successResponse(data)`
-- `errorResponse(code, message)`
-- `ErrorCodes` — `VALIDATION_ERROR`, `UNAUTHORIZED`, `NOT_FOUND`, `INTERNAL_ERROR`
+```json
+{ "success": false, "error": { "code": "...", "message": "..." } }
+```
 
 ## Environment Variables
 
