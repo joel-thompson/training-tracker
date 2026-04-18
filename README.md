@@ -70,4 +70,4 @@ bunx @joelthompson/create-mosskit add shadcn
 
 - Shared contracts should be defined in `shared` first and then consumed by frontend and backend.
 - Tests use Vitest. Use `bun run test`, not Bun's built-in `bun test`.
-- Each package has a `CLAUDE.md` with more detailed guidance on local conventions.
+- Each package has an `AGENTS.md` with more detailed guidance on local conventions.

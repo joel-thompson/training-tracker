@@ -1,8 +1,6 @@
-# CLAUDE.md
+# AGENTS.md
 
-This file provides guidance to Claude Code (claude.ai/code) when working with code in this repository.
-
-Hono API server running on Bun. See root `CLAUDE.md` for monorepo-level guidance.
+Hono API server running on Bun. See root `AGENTS.md` for monorepo-level guidance.
 
 ## Commands
 

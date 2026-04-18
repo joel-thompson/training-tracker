@@ -1,8 +1,6 @@
-# CLAUDE.md
+# AGENTS.md
 
-This file provides guidance to Claude Code (claude.ai/code) when working with code in this repository.
-
-Shared types, utilities, constants, and validation schemas consumed by both `frontend` and `backend`. See root `CLAUDE.md` for monorepo-level guidance.
+Shared types, utilities, constants, and validation schemas consumed by both `frontend` and `backend`. See root `AGENTS.md` for monorepo-level guidance.
 
 ## Commands
 
