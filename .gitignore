@@ -1,3 +1,8 @@
 # deps
 node_modules/
+dist
+coverage
 .env*
+frontend/.env
+backend/.env
+reference-project

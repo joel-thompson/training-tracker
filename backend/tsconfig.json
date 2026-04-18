@@ -1,25 +1,18 @@
 {
+  "extends": "../tsconfig.base.json",
   "compilerOptions": {
-    "target": "ES2022",
-    "module": "ESNext",
-    "lib": ["ES2022"],
-    // "types": ["bun-types"],
-    "moduleResolution": "bundler",
-    "strict": true,
+    "lib": ["ES2023"],
+    "noEmit": true,
+    "types": ["bun", "vitest/globals"],
+    "baseUrl": ".",
     "jsx": "react-jsx",
     "jsxImportSource": "hono/jsx",
     "esModuleInterop": true,
-    "skipLibCheck": true,
-    "forceConsistentCasingInFileNames": true,
-    "resolveJsonModule": true,
     "isolatedModules": true,
-    "outDir": "./dist",
-    // "rootDir": "./src",
     "paths": {
       "shared": ["../shared/src/index.ts"],
       "shared/*": ["../shared/src/*"]
     }
   },
-  "include": ["src/**/*", "drizzle.config.ts", "vitest.config.ts"],
-  "exclude": ["node_modules"]
+  "include": ["src", "drizzle.config.ts", "vitest.config.ts"]
 }
