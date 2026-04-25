@@ -46,6 +46,24 @@ Key patterns:
 
 Routes under `/api/*` use Clerk middleware. `requireUserId` throws an `HTTPException` that Hono converts to a 401 automatically.
 
+AI endpoints should also call `requireAiAccess(userId)` unless the user explicitly asks for a temporary local-only diagnostic endpoint. Do not leave AI endpoints unauthenticated in final code.
+
+## AI Feature Pattern
+
+Reusable AI code lives in `src/ai`:
+
+- Add every AI use case to the per-feature model registry in `src/ai/models.ts`.
+- Use `streamAiText`, `generateAiText`, or `generateAiObject` from `src/ai/run.ts` instead of importing AI SDK generation functions directly in handlers.
+- Use `generateAiObject` with a shared Zod response schema for structured inference.
+
+Feature-specific AI orchestration belongs outside handlers, usually in `src/coach` for coach-related work:
+
+- Keep handlers thin: auth, Zod validation, service call, typed response.
+- Keep prompt builders and context formatters pure and testable.
+- Load user-specific training data in a context/service module, not inside route handlers.
+- Put public request/response contracts in `shared/src/validation` and `shared/src/types` before consuming them from backend or frontend.
+- Mock AI services or runner utilities in automated tests. Do not call OpenAI from tests.
+
 ## Response Format
 
 All API responses use:

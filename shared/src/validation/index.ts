@@ -18,4 +18,9 @@ export {
   reorderGameItemSchema,
 } from "./game";
 
-export { chatMessageSchema, chatRequestSchema } from "./coach";
+export {
+  chatMessageSchema,
+  chatRequestSchema,
+  sampleFeedbackRequestSchema,
+  sampleFeedbackResponseSchema,
+} from "./coach";

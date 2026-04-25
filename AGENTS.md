@@ -27,6 +27,8 @@ Each sub-project has its own `AGENTS.md` with more detailed local guidance.
 - `frontend/src/utils`: frontend API and env helpers
 - `backend/src/routes`: Hono route modules
 - `backend/src/handlers`: route handlers organized by domain
+- `backend/src/ai`: backend AI client, model registry, and inference runner utilities
+- `backend/src/coach`: AI coach context loading, prompt builders, and feature services
 - `backend/src/db`: Drizzle schema and database wiring
 - `backend/src/utils`: backend env, auth, and response helpers
 - `shared/src/types`: shared TypeScript types
@@ -37,6 +39,7 @@ Each sub-project has its own `AGENTS.md` with more detailed local guidance.
 
 - Shared contracts and validation should live in `shared` first, then be consumed from frontend and backend.
 - Keep route handlers close to their Hono route definitions rather than introducing a controller layer.
+- Backend AI features should use the shared AI utilities in `backend/src/ai` and feature services in `backend/src/coach`; see `backend/AGENTS.md` for AI-specific backend guidance.
 - Root scripts coordinate common tasks such as `dev`, `build`, `test`, `lint`, `typecheck`, and database commands.
 - `bun run dev` starts both frontend and backend from the repo root.
 - `bun run db:start` and `bun run db:stop` manage the local PostgreSQL container.
@@ -86,6 +89,12 @@ If the server is unavailable, ask the user to start the server.
   - click the sign-in CTA and confirm the `GitHub` auth button reaches the GitHub sign-in page
 - If `browser-use connect` fails, it usually means Chrome is not running with remote debugging enabled. In that case, fall back to `browser-use --profile Default ...` instead of blocking on `connect`.
 - When checking multiple protected routes, navigate sequentially in one browser session. Do not issue parallel `browser-use open ...` commands against the same session.
+- To test auth-gated backend endpoints with the saved Chrome session:
+  - Start from an authenticated frontend page, for example `browser-use --profile Default open http://localhost:5173/coach`.
+  - Confirm Clerk is available with `browser-use eval "Boolean(window.Clerk)"`.
+  - Use the page's active session token in a browser-side fetch:
+    `browser-use eval "(async () => { const token = await window.Clerk.session.getToken(); const res = await fetch('http://localhost:3000/api/v1/your-endpoint', { method: 'POST', headers: { 'Content-Type': 'application/json', Authorization: 'Bearer ' + token }, body: JSON.stringify({}) }); document.body.innerText = res.status + '\n' + await res.text(); })(); 'posted-authenticated-request'"`
+  - Read the result with `browser-use eval "document.body.innerText"` or `browser-use state`.
 - Useful protected-route smoke checks are:
   - `/sessions/new`
   - `/history`
