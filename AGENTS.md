@@ -70,6 +70,12 @@ Each sub-project has its own `AGENTS.md` with more detailed local guidance.
 - `bun run build`: builds backend and frontend
 - `bun run lint`: runs Oxlint across the repo
 
+## Development Server
+
+Do not try to run the development server. It is already running. The frontend is available at http://localhost:5173/, the backend is available at http://localhost:3000
+
+If the server is unavailable, ask the user to start the server.
+
 ## Browser Auth Testing
 
 - For browser smoke tests, use `browser-use`.
