@@ -8,13 +8,20 @@ interface SessionDatePickerProps {
   value: Date | undefined;
   onChange: (date: Date) => void;
   disabled?: boolean;
+  id?: string;
 }
 
-export function SessionDatePicker({ value, onChange, disabled = false }: SessionDatePickerProps) {
+export function SessionDatePicker({
+  value,
+  onChange,
+  disabled = false,
+  id,
+}: SessionDatePickerProps) {
   return (
     <Popover>
       <PopoverTrigger asChild>
         <Button
+          id={id}
           variant="outline"
           className="w-full justify-start text-left font-normal"
           disabled={disabled || !value}

@@ -1,6 +1,14 @@
 import { z } from "zod";
 
 export const classTypeSchema = z.enum(["gi", "nogi"]);
+export const sessionTypeSchema = z.enum([
+  "class",
+  "open_mat",
+  "drilling",
+  "sparring",
+  "competition",
+  "private",
+]);
 
 export const itemTypeSchema = z.enum(["success", "problem", "question"]);
 
@@ -15,6 +23,7 @@ const sessionItemsSchema = z
 export const createSessionSchema = z.object({
   sessionDate: z.string().regex(/^\d{4}-\d{2}-\d{2}$/, "Must be YYYY-MM-DD format"),
   classType: classTypeSchema,
+  sessionType: sessionTypeSchema,
   techniqueCovered: z.string().max(1000).optional().nullable(),
   generalNotes: z.string().max(5000).optional().nullable(),
   items: sessionItemsSchema,
@@ -26,6 +35,7 @@ export const updateSessionSchema = z.object({
     .regex(/^\d{4}-\d{2}-\d{2}$/, "Must be YYYY-MM-DD format")
     .optional(),
   classType: classTypeSchema.optional(),
+  sessionType: sessionTypeSchema.optional(),
   techniqueCovered: z.string().max(1000).optional().nullable(),
   generalNotes: z.string().max(5000).optional().nullable(),
 });

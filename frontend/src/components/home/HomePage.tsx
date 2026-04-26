@@ -1,13 +1,31 @@
+import { useEffect, useState } from "react";
+import { useAuth } from "@clerk/clerk-react";
 import { Link } from "@tanstack/react-router";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Skeleton } from "@/components/ui/skeleton";
 import { useActiveGoals } from "@/hooks/goals/useActiveGoals";
+import { hasFreshSessionDraft } from "@/components/sessions/sessionDraftStorage";
 
 export function HomePage() {
+  const { userId } = useAuth();
   const { data: activeGoalsData, isLoading: activeGoalsLoading } = useActiveGoals();
+  const [hasDraft, setHasDraft] = useState(false);
 
   const activeGoals = activeGoalsData?.goals ?? [];
+
+  useEffect(() => {
+    if (!userId) {
+      setHasDraft(false);
+      return;
+    }
+
+    const syncDraftState = () => setHasDraft(hasFreshSessionDraft(userId));
+
+    syncDraftState();
+    window.addEventListener("focus", syncDraftState);
+    return () => window.removeEventListener("focus", syncDraftState);
+  }, [userId]);
 
   return (
     <div className="space-y-6">
@@ -58,13 +76,13 @@ export function HomePage() {
 
       <Card>
         <CardHeader>
-          <CardTitle className="text-2xl font-bold">Welcome</CardTitle>
-          <CardDescription>Track your BJJ training sessions and progress</CardDescription>
+          <CardTitle className="text-2xl font-bold">Ready to log training?</CardTitle>
+          <CardDescription>Capture what clicked, what broke down, and what to review next.</CardDescription>
         </CardHeader>
         <CardContent className="flex flex-col gap-4">
-          <Link to="/sessions/new">
+          <Link to="/sessions/new" search={hasDraft ? { resumeDraft: "1" } : {}}>
             <Button className="w-full" size="lg">
-              New Session
+              {hasDraft ? "Resume Draft" : "Log Session"}
             </Button>
           </Link>
           <Link to="/history">

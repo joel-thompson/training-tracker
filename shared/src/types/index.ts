@@ -4,6 +4,7 @@ export type { ApiSuccessResponse, ApiErrorResponse, ApiResponse, PaginationInfo 
 // Session types
 export type {
   ClassType,
+  SessionType,
   ItemType,
   CreateSessionInput,
   UpdateSessionInput,

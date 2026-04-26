@@ -17,7 +17,7 @@ export const createSessionHandler = async (c: Context) => {
     return c.json(errorResponse(ErrorCodes.VALIDATION_ERROR, parsed.error.message), 400);
   }
 
-  const { sessionDate, classType, techniqueCovered, generalNotes, items } = parsed.data;
+  const { sessionDate, classType, sessionType, techniqueCovered, generalNotes, items } = parsed.data;
 
   const result = await db.transaction(async (tx) => {
     const [session] = await tx
@@ -26,6 +26,7 @@ export const createSessionHandler = async (c: Context) => {
         userId,
         sessionDate,
         classType,
+        sessionType,
         techniqueCovered,
         generalNotes,
       })

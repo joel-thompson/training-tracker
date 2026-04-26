@@ -16,6 +16,14 @@ export const testTable = pgTable("test_table", {
 });
 
 export const classTypeEnum = pgEnum("class_type", ["gi", "nogi"]);
+export const sessionTypeEnum = pgEnum("session_type", [
+  "class",
+  "open_mat",
+  "drilling",
+  "sparring",
+  "competition",
+  "private",
+]);
 
 export const itemTypeEnum = pgEnum("item_type", ["success", "problem", "question"]);
 
@@ -26,6 +34,7 @@ export const trainingSessions = pgTable("training_sessions", {
   userId: text("user_id").notNull(),
   sessionDate: date("session_date").notNull(),
   classType: classTypeEnum("class_type").notNull(),
+  sessionType: sessionTypeEnum("session_type").notNull().default("class"),
   techniqueCovered: text("technique_covered"),
   generalNotes: text("general_notes"),
   createdAt: timestamp("created_at").defaultNow().notNull(),

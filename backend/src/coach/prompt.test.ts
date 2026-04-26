@@ -31,6 +31,7 @@ describe("coach prompt formatting", () => {
           id: "session-1",
           sessionDate: "2026-04-10",
           classType: "gi",
+          sessionType: "class",
           techniqueCovered: "Half guard knee shield",
           generalNotes: "Felt better keeping frames inside.",
           items: [
@@ -86,4 +87,3 @@ describe("coach prompt formatting", () => {
     expect(prompt).toContain("Today's date is: 2026-04-25");
   });
 });
-

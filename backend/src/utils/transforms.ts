@@ -19,6 +19,7 @@ export const toSessionResponse = (
   userId: session.userId,
   sessionDate: session.sessionDate,
   classType: session.classType,
+  sessionType: session.sessionType,
   techniqueCovered: session.techniqueCovered,
   generalNotes: session.generalNotes,
   createdAt: session.createdAt.toISOString(),
