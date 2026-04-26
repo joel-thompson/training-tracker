@@ -4,12 +4,14 @@ import {
   buildCoachSystemPrompt,
   formatActiveGoals,
   formatCompletedGoals,
+  formatGameStrategy,
   formatTrainingSessions,
 } from "./prompt";
 
 const emptyContext: TrainingContext = {
   sessions: [],
   goals: [],
+  strategy: null,
   stats: {
     totalSessions: 0,
     giCount: 0,
@@ -19,7 +21,9 @@ const emptyContext: TrainingContext = {
 
 describe("coach prompt formatting", () => {
   it("formats empty context fallbacks", () => {
-    expect(formatTrainingSessions(emptyContext)).toBe("No recent sessions logged.");
+    expect(formatTrainingSessions(emptyContext)).toBe(
+      "No recent sessions logged.",
+    );
     expect(formatActiveGoals(emptyContext)).toBe("No active goals set.");
     expect(formatCompletedGoals(emptyContext)).toBe("No completed goals yet.");
   });
@@ -56,6 +60,8 @@ describe("coach prompt formatting", () => {
           completedAt: "2026-04-01T00:00:00.000Z",
         },
       ],
+      strategy:
+        "## Passing\n\n- Prefer knee cut entries\n- Hunt kimuras when they post",
       stats: {
         totalSessions: 1,
         giCount: 1,
@@ -63,18 +69,28 @@ describe("coach prompt formatting", () => {
       },
     };
 
-    expect(formatTrainingSessions(context)).toContain("Technique: Half guard knee shield");
-    expect(formatTrainingSessions(context)).toContain("Successes: Recovered guard twice");
-    expect(formatTrainingSessions(context)).toContain("Problems: Lost underhook");
     expect(formatTrainingSessions(context)).toContain(
-      "Questions: When should I switch to deep half?"
+      "Technique: Half guard knee shield",
+    );
+    expect(formatTrainingSessions(context)).toContain(
+      "Successes: Recovered guard twice",
+    );
+    expect(formatTrainingSessions(context)).toContain(
+      "Problems: Lost underhook",
+    );
+    expect(formatTrainingSessions(context)).toContain(
+      "Questions: When should I switch to deep half?",
     );
     expect(formatActiveGoals(context)).toBe(
-      "- Improve guard retention (bottom) - Focus on knee shield and frames"
+      "- Improve guard retention (bottom) - Focus on knee shield and frames",
     );
     expect(formatCompletedGoals(context)).toBe(
-      "- Finish armbar from mount (completed 2026-04-01T00:00:00.000Z)"
+      "- Finish armbar from mount (completed 2026-04-01T00:00:00.000Z)",
     );
+    expect(formatGameStrategy(context)).toContain(
+      "user-authored preference context",
+    );
+    expect(formatGameStrategy(context)).toContain("Prefer knee cut entries");
   });
 
   it("builds a deterministic system prompt when today is injected", () => {
@@ -83,7 +99,7 @@ describe("coach prompt formatting", () => {
     expect(prompt).toContain("You are a supportive BJJ");
     expect(prompt).toContain("Total sessions: 0");
     expect(prompt).toContain("No recent sessions logged.");
+    expect(prompt).toContain("No game strategy document saved.");
     expect(prompt).toContain("Today's date is: 2026-04-25");
   });
 });
-

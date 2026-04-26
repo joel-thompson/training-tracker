@@ -1,0 +1,1 @@
+export const GAME_STRATEGY_MAX_LENGTH = 20_000;

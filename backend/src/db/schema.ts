@@ -17,9 +17,18 @@ export const testTable = pgTable("test_table", {
 
 export const classTypeEnum = pgEnum("class_type", ["gi", "nogi"]);
 
-export const itemTypeEnum = pgEnum("item_type", ["success", "problem", "question"]);
+export const itemTypeEnum = pgEnum("item_type", [
+  "success",
+  "problem",
+  "question",
+]);
 
-export const goalCategoryEnum = pgEnum("goal_category", ["bottom", "top", "submission", "escape"]);
+export const goalCategoryEnum = pgEnum("goal_category", [
+  "bottom",
+  "top",
+  "submission",
+  "escape",
+]);
 
 export const trainingSessions = pgTable("training_sessions", {
   id: uuid("id").defaultRandom().primaryKey(),
@@ -79,4 +88,11 @@ export const gameTransitions = pgTable("game_transitions", {
     .references(() => gameItems.id, { onDelete: "cascade" }),
   notes: text("notes"),
   createdAt: timestamp("created_at").defaultNow().notNull(),
+});
+
+export const gameStrategies = pgTable("game_strategies", {
+  userId: text("user_id").primaryKey(),
+  markdown: text("markdown").notNull(),
+  createdAt: timestamp("created_at").defaultNow().notNull(),
+  updatedAt: timestamp("updated_at").defaultNow().notNull(),
 });

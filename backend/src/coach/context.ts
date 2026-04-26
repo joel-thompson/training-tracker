@@ -1,7 +1,12 @@
 import { and, desc, eq, gte, isNull, sql } from "drizzle-orm";
 import type { ClassType, GoalCategory, ItemType } from "shared/types";
 import { db } from "../db";
-import { sessionItems, trainingGoals, trainingSessions } from "../db/schema";
+import {
+  gameStrategies,
+  sessionItems,
+  trainingGoals,
+  trainingSessions,
+} from "../db/schema";
 
 export interface TrainingContextSession {
   id: string;
@@ -26,6 +31,7 @@ export interface TrainingContextGoal {
 export interface TrainingContext {
   sessions: TrainingContextSession[];
   goals: TrainingContextGoal[];
+  strategy: string | null;
   stats: {
     totalSessions: number;
     giCount: number;
@@ -33,7 +39,9 @@ export interface TrainingContext {
   };
 }
 
-export async function fetchTrainingContext(userId: string): Promise<TrainingContext> {
+export async function fetchTrainingContext(
+  userId: string,
+): Promise<TrainingContext> {
   const ninetyDaysAgo = new Date();
   ninetyDaysAgo.setDate(ninetyDaysAgo.getDate() - 90);
   const ninetyDaysAgoStr = ninetyDaysAgo.toISOString().split("T")[0];
@@ -45,8 +53,8 @@ export async function fetchTrainingContext(userId: string): Promise<TrainingCont
       and(
         eq(trainingSessions.userId, userId),
         isNull(trainingSessions.deletedAt),
-        gte(trainingSessions.sessionDate, ninetyDaysAgoStr)
-      )
+        gte(trainingSessions.sessionDate, ninetyDaysAgoStr),
+      ),
     )
     .orderBy(desc(trainingSessions.sessionDate))
     .limit(50);
@@ -60,12 +68,15 @@ export async function fetchTrainingContext(userId: string): Promise<TrainingCont
           .where(
             sql`${sessionItems.sessionId} IN (${sql.join(
               sessionIds.map((id) => sql`${id}`),
-              sql`, `
-            )})`
+              sql`, `,
+            )})`,
           )
       : [];
 
-  const itemsBySession = new Map<string, { type: ItemType; content: string }[]>();
+  const itemsBySession = new Map<
+    string,
+    { type: ItemType; content: string }[]
+  >();
   for (const item of items) {
     const existing = itemsBySession.get(item.sessionId) ?? [];
     existing.push({ type: item.type, content: item.content });
@@ -78,8 +89,18 @@ export async function fetchTrainingContext(userId: string): Promise<TrainingCont
     .where(eq(trainingGoals.userId, userId))
     .orderBy(desc(trainingGoals.createdAt));
 
-  const giCount = sessions.filter((session) => session.classType === "gi").length;
-  const nogiCount = sessions.filter((session) => session.classType === "nogi").length;
+  const [strategy] = await db
+    .select()
+    .from(gameStrategies)
+    .where(eq(gameStrategies.userId, userId))
+    .limit(1);
+
+  const giCount = sessions.filter(
+    (session) => session.classType === "gi",
+  ).length;
+  const nogiCount = sessions.filter(
+    (session) => session.classType === "nogi",
+  ).length;
 
   return {
     sessions: sessions.map((session) => ({
@@ -97,6 +118,7 @@ export async function fetchTrainingContext(userId: string): Promise<TrainingCont
       isActive: goal.isActive,
       completedAt: goal.completedAt?.toISOString() ?? null,
     })),
+    strategy: strategy?.markdown ?? null,
     stats: {
       totalSessions: sessions.length,
       giCount,
@@ -104,4 +126,3 @@ export async function fetchTrainingContext(userId: string): Promise<TrainingCont
     },
   };
 }
-
