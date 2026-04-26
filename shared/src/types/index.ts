@@ -1,5 +1,10 @@
 // API response types
-export type { ApiSuccessResponse, ApiErrorResponse, ApiResponse, PaginationInfo } from "./api";
+export type {
+  ApiSuccessResponse,
+  ApiErrorResponse,
+  ApiResponse,
+  PaginationInfo,
+} from "./api";
 
 // Session types
 export type {
@@ -65,3 +70,10 @@ export type {
   SampleFeedbackRequest,
   SampleFeedbackResponse,
 } from "./coach";
+
+export type {
+  UpsertGameStrategyInput,
+  GameStrategy,
+  GetGameStrategyResponse,
+  DeleteGameStrategyResponse,
+} from "./strategy";

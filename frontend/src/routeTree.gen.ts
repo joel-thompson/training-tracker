@@ -15,6 +15,7 @@ import { Route as AppRouteImport } from './routes/_app'
 import { Route as AppIndexRouteImport } from './routes/_app/index'
 import { Route as AppWelcomeRouteImport } from './routes/_app/welcome'
 import { Route as AppWeekRouteImport } from './routes/_app/week'
+import { Route as AppStrategyRouteImport } from './routes/_app/strategy'
 import { Route as AppStatsRouteImport } from './routes/_app/stats'
 import { Route as AppSettingsRouteImport } from './routes/_app/settings'
 import { Route as AppHistoryRouteImport } from './routes/_app/history'
@@ -52,6 +53,11 @@ const AppWelcomeRoute = AppWelcomeRouteImport.update({
 const AppWeekRoute = AppWeekRouteImport.update({
   id: '/week',
   path: '/week',
+  getParentRoute: () => AppRoute,
+} as any)
+const AppStrategyRoute = AppStrategyRouteImport.update({
+  id: '/strategy',
+  path: '/strategy',
   getParentRoute: () => AppRoute,
 } as any)
 const AppStatsRoute = AppStatsRouteImport.update({
@@ -109,6 +115,7 @@ export interface FileRoutesByFullPath {
   '/history': typeof AppHistoryRoute
   '/settings': typeof AppSettingsRoute
   '/stats': typeof AppStatsRoute
+  '/strategy': typeof AppStrategyRoute
   '/week': typeof AppWeekRoute
   '/welcome': typeof AppWelcomeRoute
   '/': typeof AppIndexRoute
@@ -125,6 +132,7 @@ export interface FileRoutesByTo {
   '/history': typeof AppHistoryRoute
   '/settings': typeof AppSettingsRoute
   '/stats': typeof AppStatsRoute
+  '/strategy': typeof AppStrategyRoute
   '/week': typeof AppWeekRoute
   '/welcome': typeof AppWelcomeRoute
   '/': typeof AppIndexRoute
@@ -143,6 +151,7 @@ export interface FileRoutesById {
   '/_app/history': typeof AppHistoryRoute
   '/_app/settings': typeof AppSettingsRoute
   '/_app/stats': typeof AppStatsRoute
+  '/_app/strategy': typeof AppStrategyRoute
   '/_app/week': typeof AppWeekRoute
   '/_app/welcome': typeof AppWelcomeRoute
   '/_app/': typeof AppIndexRoute
@@ -161,6 +170,7 @@ export interface FileRouteTypes {
     | '/history'
     | '/settings'
     | '/stats'
+    | '/strategy'
     | '/week'
     | '/welcome'
     | '/'
@@ -177,6 +187,7 @@ export interface FileRouteTypes {
     | '/history'
     | '/settings'
     | '/stats'
+    | '/strategy'
     | '/week'
     | '/welcome'
     | '/'
@@ -194,6 +205,7 @@ export interface FileRouteTypes {
     | '/_app/history'
     | '/_app/settings'
     | '/_app/stats'
+    | '/_app/strategy'
     | '/_app/week'
     | '/_app/welcome'
     | '/_app/'
@@ -250,6 +262,13 @@ declare module '@tanstack/react-router' {
       path: '/week'
       fullPath: '/week'
       preLoaderRoute: typeof AppWeekRouteImport
+      parentRoute: typeof AppRoute
+    }
+    '/_app/strategy': {
+      id: '/_app/strategy'
+      path: '/strategy'
+      fullPath: '/strategy'
+      preLoaderRoute: typeof AppStrategyRouteImport
       parentRoute: typeof AppRoute
     }
     '/_app/stats': {
@@ -325,6 +344,7 @@ interface AppRouteChildren {
   AppHistoryRoute: typeof AppHistoryRoute
   AppSettingsRoute: typeof AppSettingsRoute
   AppStatsRoute: typeof AppStatsRoute
+  AppStrategyRoute: typeof AppStrategyRoute
   AppWeekRoute: typeof AppWeekRoute
   AppWelcomeRoute: typeof AppWelcomeRoute
   AppIndexRoute: typeof AppIndexRoute
@@ -340,6 +360,7 @@ const AppRouteChildren: AppRouteChildren = {
   AppHistoryRoute: AppHistoryRoute,
   AppSettingsRoute: AppSettingsRoute,
   AppStatsRoute: AppStatsRoute,
+  AppStrategyRoute: AppStrategyRoute,
   AppWeekRoute: AppWeekRoute,
   AppWelcomeRoute: AppWelcomeRoute,
   AppIndexRoute: AppIndexRoute,

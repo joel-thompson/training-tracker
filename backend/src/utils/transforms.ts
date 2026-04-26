@@ -1,8 +1,15 @@
 import { sql } from "drizzle-orm";
-import { type sessionItems, type trainingSessions, trainingGoals } from "../db/schema";
-import type { Session, SessionItem, Goal } from "shared/types";
+import {
+  type gameStrategies,
+  type sessionItems,
+  type trainingSessions,
+  trainingGoals,
+} from "../db/schema";
+import type { GameStrategy, Goal, Session, SessionItem } from "shared/types";
 
-export const toSessionItemResponse = (item: typeof sessionItems.$inferSelect): SessionItem => ({
+export const toSessionItemResponse = (
+  item: typeof sessionItems.$inferSelect,
+): SessionItem => ({
   id: item.id,
   sessionId: item.sessionId,
   type: item.type,
@@ -13,7 +20,7 @@ export const toSessionItemResponse = (item: typeof sessionItems.$inferSelect): S
 
 export const toSessionResponse = (
   session: typeof trainingSessions.$inferSelect,
-  items: (typeof sessionItems.$inferSelect)[]
+  items: (typeof sessionItems.$inferSelect)[],
 ): Session => ({
   id: session.id,
   userId: session.userId,
@@ -26,7 +33,9 @@ export const toSessionResponse = (
   items: items.map(toSessionItemResponse),
 });
 
-export const toGoalResponse = (goal: typeof trainingGoals.$inferSelect): Goal => ({
+export const toGoalResponse = (
+  goal: typeof trainingGoals.$inferSelect,
+): Goal => ({
   id: goal.id,
   userId: goal.userId,
   goalText: goal.goalText,
@@ -35,6 +44,15 @@ export const toGoalResponse = (goal: typeof trainingGoals.$inferSelect): Goal =>
   isActive: goal.isActive,
   createdAt: goal.createdAt.toISOString(),
   completedAt: goal.completedAt?.toISOString() ?? null,
+});
+
+export const toGameStrategyResponse = (
+  strategy: typeof gameStrategies.$inferSelect,
+): GameStrategy => ({
+  userId: strategy.userId,
+  markdown: strategy.markdown,
+  createdAt: strategy.createdAt.toISOString(),
+  updatedAt: strategy.updatedAt.toISOString(),
 });
 
 export const goalCategorySortOrder = sql`CASE

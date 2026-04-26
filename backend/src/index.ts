@@ -11,6 +11,7 @@ import { goals } from "./routes/goals";
 import { game } from "./routes/game";
 import { stats } from "./routes/stats";
 import { coach } from "./routes/coach";
+import { strategy } from "./routes/strategy";
 import { getEnvWithDefault } from "./utils/env";
 
 const app = new Hono();
@@ -27,10 +28,10 @@ app.use(
   "*",
   cors({
     origin: [getEnvWithDefault("FRONTEND_URL", "http://localhost:5173")],
-    allowMethods: ["GET", "POST", "PATCH", "DELETE", "OPTIONS"],
+    allowMethods: ["GET", "POST", "PUT", "PATCH", "DELETE", "OPTIONS"],
     allowHeaders: ["Content-Type", "Authorization"],
     credentials: true,
-  })
+  }),
 );
 
 app.use("/api/*", clerkMiddleware());
@@ -42,6 +43,7 @@ app.get("/api/db/test", dbTestHandler);
 app.route("/api/v1/sessions", sessions);
 app.route("/api/v1/goals", goals);
 app.route("/api/v1/game", game);
+app.route("/api/v1/strategy", strategy);
 app.route("/api/v1/stats", stats);
 app.route("/api/v1/coach", coach);
 
