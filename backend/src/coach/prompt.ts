@@ -8,7 +8,7 @@ export function formatTrainingSessions(context: TrainingContext): string {
 
   return context.sessions
     .map((session) => {
-      const lines = [`- ${session.sessionDate} (${session.classType})`];
+      const lines = [`- ${session.sessionDate} (${session.sessionType}, ${session.classType})`];
 
       if (session.techniqueCovered) {
         lines.push(`  Technique: ${session.techniqueCovered}`);
@@ -105,4 +105,3 @@ Today's date is: ${today}`;
 function getTodayDate(): string {
   return new Date().toISOString().split("T")[0];
 }
-

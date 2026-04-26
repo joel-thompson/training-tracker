@@ -42,7 +42,7 @@ export function AppLayout() {
               to="/sessions/new"
               className="text-sm font-medium transition-colors hover:text-foreground/80 text-foreground/60"
             >
-              New Session
+              Log
             </Link>
             <Link
               to="/history"
@@ -117,7 +117,7 @@ export function AppLayout() {
             }`}
           >
             <Plus className="h-5 w-5" />
-            <span className="text-xs font-medium">New</span>
+            <span className="text-xs font-medium">Log</span>
           </Link>
           <Link
             to="/history"

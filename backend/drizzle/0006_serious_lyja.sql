@@ -1,0 +1,2 @@
+CREATE TYPE "public"."session_type" AS ENUM('class', 'open_mat', 'drilling', 'sparring', 'competition', 'private');--> statement-breakpoint
+ALTER TABLE "training_sessions" ADD COLUMN "session_type" "session_type" DEFAULT 'class' NOT NULL;

@@ -1,4 +1,4 @@
-import { useState, useMemo } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { useNavigate } from "@tanstack/react-router";
 import { Plus, Trash2 } from "lucide-react";
 import { format, parseISO } from "date-fns";
@@ -24,9 +24,10 @@ import {
   AlertDialogTrigger,
 } from "@/components/ui/alert-dialog";
 import { Skeleton } from "@/components/ui/skeleton";
-import type { ClassType, ItemType, SessionItem } from "shared/types";
+import type { ClassType, ItemType, SessionItem, SessionType } from "shared/types";
 import { SessionDatePicker } from "./components/SessionDatePicker";
 import { ClassTypeSelect } from "./components/ClassTypeSelect";
+import { SessionTypeSelect } from "./components/SessionTypeSelect";
 import { CharCountTextarea } from "./components/CharCountTextarea";
 import { ItemInputRow } from "./components/ItemInputRow";
 import { ITEM_TYPE_LABELS } from "shared/constants";
@@ -49,6 +50,7 @@ export function EditSessionPage({ sessionId }: EditSessionPageProps) {
       return {
         sessionDate: undefined as Date | undefined,
         classType: "" as ClassType | "",
+        sessionType: "" as SessionType | "",
         techniqueCovered: "",
         generalNotes: "",
         editingItems: {} as Record<string, string>,
@@ -61,40 +63,49 @@ export function EditSessionPage({ sessionId }: EditSessionPageProps) {
     return {
       sessionDate: parseISO(session.sessionDate),
       classType: session.classType,
+      sessionType: session.sessionType,
       techniqueCovered: session.techniqueCovered ?? "",
       generalNotes: session.generalNotes ?? "",
       editingItems: editing,
     };
   }, [session]);
 
-  const [localSessionDate, setLocalSessionDate] = useState<Date | undefined>(
-    initialFormState.sessionDate
-  );
-  const [classType, setClassType] = useState<ClassType | "">(initialFormState.classType);
-  const [techniqueCovered, setTechniqueCovered] = useState(initialFormState.techniqueCovered);
-  const [generalNotes, setGeneralNotes] = useState(initialFormState.generalNotes);
-  const [editingItems, setEditingItems] = useState<Record<string, string>>(
-    initialFormState.editingItems
-  );
+  const [localSessionDate, setLocalSessionDate] = useState<Date | undefined>(undefined);
+  const [classType, setClassType] = useState<ClassType | "">("");
+  const [sessionType, setSessionType] = useState<SessionType | "">("");
+  const [techniqueCovered, setTechniqueCovered] = useState("");
+  const [generalNotes, setGeneralNotes] = useState("");
+  const [editingItems, setEditingItems] = useState<Record<string, string>>({});
   const [newItemContent, setNewItemContent] = useState<{
     success: string;
     problem: string;
     question: string;
   }>({ success: "", problem: "", question: "" });
 
-  // Use session data directly when available, otherwise use state
-  // Key prop ensures component remounts when sessionId changes
-  const formSessionDate = localSessionDate ?? initialFormState.sessionDate;
-  const formClassType = classType || initialFormState.classType;
-  const formTechniqueCovered = techniqueCovered || initialFormState.techniqueCovered;
-  const formGeneralNotes = generalNotes || initialFormState.generalNotes;
-  const formEditingItems =
-    Object.keys(editingItems).length > 0 ? editingItems : initialFormState.editingItems;
+  useEffect(() => {
+    if (!session) {
+      return;
+    }
+
+    setLocalSessionDate(initialFormState.sessionDate);
+    setClassType(initialFormState.classType);
+    setSessionType(initialFormState.sessionType);
+    setTechniqueCovered(initialFormState.techniqueCovered);
+    setGeneralNotes(initialFormState.generalNotes);
+    setEditingItems(initialFormState.editingItems);
+  }, [initialFormState, session]);
+
+  const formSessionDate = localSessionDate;
+  const formClassType = classType;
+  const formSessionType = sessionType;
+  const formTechniqueCovered = techniqueCovered;
+  const formGeneralNotes = generalNotes;
+  const formEditingItems = editingItems;
 
   const handleUpdateSession = async (e: React.FormEvent) => {
     e.preventDefault();
 
-    if (!session || !formSessionDate || !formClassType) {
+    if (!session || !formSessionDate || !formClassType || !formSessionType) {
       return;
     }
 
@@ -119,6 +130,7 @@ export function EditSessionPage({ sessionId }: EditSessionPageProps) {
         input: {
           sessionDate: format(formSessionDate, "yyyy-MM-dd"),
           classType: formClassType,
+          sessionType: formSessionType,
           techniqueCovered: formTechniqueCovered.trim() || null,
           generalNotes: formGeneralNotes.trim() || null,
         },
@@ -257,19 +269,31 @@ export function EditSessionPage({ sessionId }: EditSessionPageProps) {
             <div className="space-y-2">
               <Label htmlFor="sessionDate">Date</Label>
               <SessionDatePicker
+                id="sessionDate"
                 value={formSessionDate}
                 onChange={setLocalSessionDate}
                 disabled={!formSessionDate}
               />
             </div>
 
-            <div className="space-y-2">
-              <Label htmlFor="classType">Class Type</Label>
-              <ClassTypeSelect value={formClassType} onChange={setClassType} />
+            <div className="grid gap-4 md:grid-cols-2">
+              <div className="space-y-2">
+                <Label htmlFor="classType">Class Type</Label>
+                <ClassTypeSelect value={formClassType} onChange={setClassType} />
+              </div>
+
+              <div className="space-y-2">
+                <Label htmlFor="sessionType">Session Type</Label>
+                <SessionTypeSelect value={formSessionType} onChange={setSessionType} />
+              </div>
             </div>
 
+            <p className="text-muted-foreground text-sm">
+              Update how this session should appear in history and the coach context.
+            </p>
+
             <div className="space-y-2">
-              <Label htmlFor="techniqueCovered">Technique Covered</Label>
+              <Label htmlFor="techniqueCovered">Main Position / Technique</Label>
               <CharCountTextarea
                 id="techniqueCovered"
                 value={formTechniqueCovered}
@@ -293,9 +317,9 @@ export function EditSessionPage({ sessionId }: EditSessionPageProps) {
                 <div key={type} className="space-y-3">
                   <div className="flex items-center justify-between">
                     <Label>
-                      {type === "success" && "Things That Went Well"}
-                      {type === "problem" && "Things to Improve"}
-                      {type === "question" && "Question to Explore"}
+                      {type === "success" && "What Clicked"}
+                      {type === "problem" && "Where You Got Stuck"}
+                      {type === "question" && "What To Review Next"}
                     </Label>
                   </div>
                   {items.map((item) => (
@@ -314,12 +338,16 @@ export function EditSessionPage({ sessionId }: EditSessionPageProps) {
                       onRemove={() => {
                         handleDeleteItem(item);
                       }}
+                      name={`${type}-${item.id}`}
                       placeholder={`${ITEM_TYPE_LABELS[type]} ${item.order}`}
                       disabled={deleteItem.isPending}
                     />
                   ))}
                   <div className="flex gap-2">
                     <Input
+                      aria-label={`Add new ${ITEM_TYPE_LABELS[type].toLowerCase()}`}
+                      name={`new-${type}`}
+                      autoComplete="off"
                       value={newItemContent[type]}
                       onChange={(e) =>
                         setNewItemContent({
@@ -343,6 +371,7 @@ export function EditSessionPage({ sessionId }: EditSessionPageProps) {
                       onClick={() => {
                         handleAddItem(type);
                       }}
+                      aria-label={`Add new ${ITEM_TYPE_LABELS[type].toLowerCase()}`}
                       disabled={!newItemContent[type].trim() || addItem.isPending}
                     >
                       <Plus className="h-4 w-4" />
@@ -362,7 +391,7 @@ export function EditSessionPage({ sessionId }: EditSessionPageProps) {
             <CharCountTextarea
               value={formGeneralNotes}
               onChange={setGeneralNotes}
-              placeholder="Any additional notes about this session..."
+              placeholder="Any additional context, coaching cues, or reminders..."
               rows={6}
               maxLength={5000}
             />
@@ -384,6 +413,7 @@ export function EditSessionPage({ sessionId }: EditSessionPageProps) {
             disabled={
               !formSessionDate ||
               !formClassType ||
+              !formSessionType ||
               addItem.isPending ||
               updateSession.isPending ||
               deleteSession.isPending

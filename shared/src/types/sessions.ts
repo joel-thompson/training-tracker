@@ -1,6 +1,7 @@
 import type { z } from "zod";
 import type {
   classTypeSchema,
+  sessionTypeSchema,
   itemTypeSchema,
   createSessionSchema,
   updateSessionSchema,
@@ -11,6 +12,7 @@ import type { PaginationInfo } from "./api";
 
 // Enum types inferred from Zod schemas
 export type ClassType = z.infer<typeof classTypeSchema>;
+export type SessionType = z.infer<typeof sessionTypeSchema>;
 export type ItemType = z.infer<typeof itemTypeSchema>;
 
 // Input types inferred from Zod schemas
@@ -37,6 +39,7 @@ export interface Session {
   userId: string;
   sessionDate: string;
   classType: ClassType;
+  sessionType: SessionType;
   techniqueCovered: string | null;
   generalNotes: string | null;
   createdAt: string;

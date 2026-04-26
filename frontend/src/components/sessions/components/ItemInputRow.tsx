@@ -11,6 +11,11 @@ interface ItemInputRowProps {
   placeholder: string;
   disabled?: boolean;
   showRemove?: boolean;
+  ariaLabel?: string;
+  removeLabel?: string;
+  name?: string;
+  autoComplete?: string;
+  autoFocus?: boolean;
 }
 
 export function ItemInputRow({
@@ -22,10 +27,18 @@ export function ItemInputRow({
   placeholder,
   disabled = false,
   showRemove = true,
+  ariaLabel,
+  removeLabel = "Remove item",
+  name,
+  autoComplete = "off",
+  autoFocus = false,
 }: ItemInputRowProps) {
   return (
     <div className="flex gap-2">
       <Input
+        aria-label={ariaLabel ?? placeholder}
+        name={name}
+        autoComplete={autoComplete}
         value={value}
         onChange={(e) => onChange(e.target.value)}
         onBlur={onBlur}
@@ -33,9 +46,17 @@ export function ItemInputRow({
         placeholder={placeholder}
         maxLength={1000}
         disabled={disabled}
+        autoFocus={autoFocus}
       />
       {showRemove && onRemove && (
-        <Button type="button" variant="outline" size="icon" onClick={onRemove} disabled={disabled}>
+        <Button
+          type="button"
+          variant="outline"
+          size="icon"
+          onClick={onRemove}
+          disabled={disabled}
+          aria-label={removeLabel}
+        >
           <X className="h-4 w-4" />
         </Button>
       )}

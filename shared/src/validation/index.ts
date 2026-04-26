@@ -1,5 +1,6 @@
 export {
   classTypeSchema,
+  sessionTypeSchema,
   itemTypeSchema,
   createSessionSchema,
   updateSessionSchema,

@@ -44,6 +44,9 @@ export const updateSessionHandler = async (c: Context) => {
   if (parsed.data.classType !== undefined) {
     updateData.classType = parsed.data.classType;
   }
+  if (parsed.data.sessionType !== undefined) {
+    updateData.sessionType = parsed.data.sessionType;
+  }
   if (parsed.data.techniqueCovered !== undefined) {
     updateData.techniqueCovered = parsed.data.techniqueCovered;
   }

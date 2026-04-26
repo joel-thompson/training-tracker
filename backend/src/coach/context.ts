@@ -1,5 +1,5 @@
 import { and, desc, eq, gte, isNull, sql } from "drizzle-orm";
-import type { ClassType, GoalCategory, ItemType } from "shared/types";
+import type { ClassType, GoalCategory, ItemType, SessionType } from "shared/types";
 import { db } from "../db";
 import { sessionItems, trainingGoals, trainingSessions } from "../db/schema";
 
@@ -7,6 +7,7 @@ export interface TrainingContextSession {
   id: string;
   sessionDate: string;
   classType: ClassType;
+  sessionType: SessionType;
   techniqueCovered: string | null;
   generalNotes: string | null;
   items: {
@@ -86,6 +87,7 @@ export async function fetchTrainingContext(userId: string): Promise<TrainingCont
       id: session.id,
       sessionDate: session.sessionDate,
       classType: session.classType,
+      sessionType: session.sessionType,
       techniqueCovered: session.techniqueCovered,
       generalNotes: session.generalNotes,
       items: itemsBySession.get(session.id) ?? [],
@@ -104,4 +106,3 @@ export async function fetchTrainingContext(userId: string): Promise<TrainingCont
     },
   };
 }
-
